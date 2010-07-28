@@ -42,6 +42,7 @@ SECTIONS
 	.bss :	{
 		__bss_start = .;
 		*(.bss)
+		*(.bss.*)
 		__bss_end = .;
 	}
 

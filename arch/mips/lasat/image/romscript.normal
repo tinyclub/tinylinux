@@ -12,6 +12,7 @@ SECTIONS
   .data ALIGN(0x10) :
   {
     *(.data)
+    *(.data.*)
   }
   _image_start = ADDR(.data);
   _image_size = SIZEOF(.data);

@@ -1,9 +1,9 @@
 SECTIONS {
 	. = SIZEOF_HEADERS;
-	.rodata : { *(.rodata) } :ro
+	.rodata : { *(.rodata) *(.rodata.*) } :ro
 	.note : { *(.note*) }
 	. = 0xa0000;
-	.data : { *(.data) } :dat
+	.data : { *(.data) *(.data.*) } :dat
 	/DISCARD/ : { *(*) }
 }
 PHDRS {

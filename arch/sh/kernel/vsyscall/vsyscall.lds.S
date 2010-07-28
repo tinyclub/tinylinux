@@ -35,7 +35,7 @@ SECTIONS
 	 */
 	. = 0x400;
 
-	.text		: { *(.text) } 			:text	=0x90909090
+	.text		: { *(.text) *(.text.*) }	:text	=0x90909090
 	.note		: { *(.note.*) }		:text	:note
 	.eh_frame_hdr	: { *(.eh_frame_hdr ) }		:text	:eh_frame_hdr
 	.eh_frame	: {

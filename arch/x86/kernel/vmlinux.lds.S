@@ -307,6 +307,7 @@ SECTIONS
 		__bss_start = .;
 		*(.bss..page_aligned)
 		*(.bss)
+		*(.bss.*)
 		. = ALIGN(4);
 		__bss_stop = .;
 	}

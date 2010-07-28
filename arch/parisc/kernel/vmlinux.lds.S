@@ -112,6 +112,7 @@ SECTIONS
 	}
 	.bss : {
 		*(.bss)
+		*(.bss.*)
 		*(COMMON)
 	}
 	__bss_stop = .;

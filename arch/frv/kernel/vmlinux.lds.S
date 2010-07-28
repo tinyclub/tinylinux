@@ -114,7 +114,6 @@ SECTIONS
 
   .sbss		: { *(.sbss .sbss.*) }
   .bss		: { *(.bss .bss.*) }
-  .bss..stack	: { *(.bss) }
 
   __bss_stop = .;
   _end = . ;
