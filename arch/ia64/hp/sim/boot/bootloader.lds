@@ -7,13 +7,13 @@ SECTIONS
   . = 0x100000;
 
   _text = .;
-  .text : { *(__ivt_section) *(.text) }
+  .text : { *(__ivt_section) *(.text) *(.text.*) }
   _etext = .;
 
   /* Global data */
   _data = .;
   .rodata : { *(.rodata) *(.rodata.*) }
-  .data    : { *(.data) *(.gnu.linkonce.d*) CONSTRUCTORS }
+  .data    : { *(.data) *(.data.*) *(.gnu.linkonce.d*) CONSTRUCTORS }
   __gp = ALIGN (8) + 0x200000;
   .got           : { *(.got.plt) *(.got) }
   /* We want the small data sections together, so single-instruction offsets
@@ -24,7 +24,7 @@ SECTIONS
 
   __bss_start = .;
   .sbss      : { *(.sbss) *(.scommon) }
-  .bss       : { *(.bss) *(COMMON) }
+  .bss       : { *(.bss) *(.bss.*) *(COMMON) }
   . = ALIGN(64 / 8);
   __bss_stop = .;
   _end = . ;

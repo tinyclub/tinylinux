@@ -10,11 +10,13 @@ SECTIONS
 	{
 		stext = . ;
 		*(.text)
+		*(.text.*)
 		etext = . ;
 	} > flash
 	.data :
 	{
 		*(.data)
+		*(.data.*)
 		edata = . ;
 	} > flash
 }

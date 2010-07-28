@@ -13,6 +13,7 @@ SECTIONS
 	{
 		_stext = . ;
 		*(.text)
+		*(.text.*)
 		*(.rodata)
 		*(.rodata.*)
 		_etext = . ;
@@ -20,11 +21,13 @@ SECTIONS
 	.data :
 	{
 		*(.data)
+		*(.data.*)
 		_edata = . ;
 	} > dram
 	.bss :
 	{
 		*(.bss)
+		*(.bss.*)
 		_end = ALIGN( 0x10 ) ;
 	} > dram
 }

@@ -6,12 +6,12 @@ SECTIONS
   . = CONFIG_MEMORY_START + 0x00400000;
 
   _text = .;
-  .text : { *(.text) } = 0
+  .text : { *(.text) *(.text.*) } = 0
   .rodata : { *(.rodata) *(.rodata.*) }
   _etext = .;
 
   . = ALIGN(32 / 8);
-  .data : { *(.data) }
+  .data : { *(.data) *(.data.*) }
   . = ALIGN(32 / 8);
   _got = .;
   .got  : { *(.got) _egot = .; *(.got.*) }
@@ -19,7 +19,7 @@ SECTIONS
 
   . = ALIGN(32 / 8);
   __bss_start = .;
-  .bss : { *(.bss) *(.sbss) }
+  .bss : { *(.bss) *(.bss.*) *(.sbss) }
   . = ALIGN(32 / 8);
   _ebss = .;
   . = ALIGN(4096);

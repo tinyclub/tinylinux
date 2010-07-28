@@ -4,17 +4,17 @@ printk = srm_printk;
 SECTIONS
 {
   . = 0x20000000;
-  .text : { *(.text) }
+  .text : { *(.text) *(.text.*) }
   _etext = .;
   PROVIDE (etext = .);
   .rodata : { *(.rodata) *(.rodata.*) }
-  .data : { *(.data) CONSTRUCTORS }
+  .data : { *(.data) *(.data.*) CONSTRUCTORS }
   .got : { *(.got) }
   .sdata : { *(.sdata) }
   _edata = .;
   PROVIDE (edata = .);
   .sbss : { *(.sbss) *(.scommon) }
-  .bss : { *(.bss) *(COMMON) }
+  .bss : { *(.bss) *(.bss.*) *(COMMON) }
   _end = . ;
   PROVIDE (end = .);
 

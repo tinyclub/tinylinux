@@ -7,6 +7,7 @@ SECTIONS
   .text      :
   {
     *(.text)
+    *(.text.*)
     *(.fixup)
   }
   _etext = .;
@@ -45,6 +46,7 @@ SECTIONS
   {
    *(.sbss)
    *(.bss)
+   *(.bss.*)
   }
   . = ALIGN(4096);
   _end = . ;

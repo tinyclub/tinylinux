@@ -7,6 +7,7 @@ SECTIONS
   .text      :
   {
     *(.text)
+    *(.text.*)
     *(.fixup)
   }
   _etext = .;
@@ -41,6 +42,7 @@ SECTIONS
   {
    *(.sbss)
    *(.bss)
+   *(.bss.*)
   }
   _end = . ;
 

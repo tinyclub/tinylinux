@@ -6,12 +6,14 @@ SECTIONS
 	__text = .;
 	       *(.text..startup)
 	       *(.text)
+	       *(.text.*)
         __etext = . ;
         }
 
 	.rodata :
 	{
 		*(.rodata)
+		*(.rodata.*)
 	}
         .data :
 

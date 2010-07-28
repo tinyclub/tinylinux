@@ -16,6 +16,7 @@ SECTIONS
    _stext = .;
    *(.start)
    *(.text)
+   *(.text.*)
    initrd_size = initrd_end - initrd_start;
    _etext = .;
   }

@@ -20,7 +20,7 @@ SECTIONS
 	.initdata	: { *(.initdata) }
 	__end_init = .;
 
-	.text		: { *(.text) }
+	.text		: { *(.text) *(.text.*) }
 	.text32		: { *(.text32) }
 
 	. = ALIGN(16);
@@ -46,6 +46,7 @@ SECTIONS
 	{
 		__bss_start = .;
 		*(.bss)
+		*(.bss.*)
 		__bss_end = .;
 	}
 	. = ALIGN(16);

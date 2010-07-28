@@ -4,6 +4,7 @@ SECTIONS
 	_input_len = .;
 	LONG(_input_data_end - _input_data) _input_data = .;
 	*(.data)
+	*(.data.*)
 	_input_data_end = .;
 	}
 }

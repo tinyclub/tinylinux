@@ -10,19 +10,21 @@ SECTIONS
 	{
 		__reloc_start = . ;
 		_text_start = . ;
-		*(.literal .text.literal .text)
+		*(.literal .text.literal .text .text.*)
 		_text_end = . ;
 	}
 
 	.rodata ALIGN(0x04):
 	{
 		*(.rodata)
+		*(.rodata.*)
 		*(.rodata1)
 	}
 
 	.data ALIGN(0x04):
 	{
 		*(.data)
+		*(.data.*)
 		*(.data1)
 		*(.sdata)
 		*(.sdata2)
@@ -58,6 +60,7 @@ SECTIONS
 		*(.scommon)
 		*(.dynbss)
 		*(.bss)
+		*(.bss.*)
 		__bss_end = .;
 	}
 	_end = .;
