@@ -1075,8 +1075,6 @@ config CPU_LOONGSON2F
 	bool "Loongson 2F"
 	depends on SYS_HAS_CPU_LOONGSON2F
 	select CPU_LOONGSON2
-	select GENERIC_GPIO
-	select ARCH_REQUIRE_GPIOLIB
 	help
 	  The Loongson 2F processor implements the MIPS III instruction set
 	  with many extensions.
@@ -1351,7 +1349,7 @@ config CPU_LOONGSON2
 	bool
 	select CPU_SUPPORTS_32BIT_KERNEL
 	select CPU_SUPPORTS_64BIT_KERNEL
-	select CPU_SUPPORTS_HIGHMEM
+	select CPU_SUPPORTS_HIGHMEM if ! EMBEDDED
 
 config SYS_HAS_CPU_LOONGSON2E
 	bool

@@ -3,7 +3,10 @@
 #
 
 obj-y += setup.o init.o cmdline.o env.o time.o reset.o irq.o \
-    pci.o bonito-irq.o mem.o machtype.o platform.o
+    bonito-irq.o mem.o machtype.o platform.o
+
+obj-$(CONFIG_PCI)	+= pci.o
+
 obj-$(CONFIG_GENERIC_GPIO) += gpio.o
 
 #
