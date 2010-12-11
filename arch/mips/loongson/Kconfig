@@ -32,7 +32,7 @@ config LEMOTE_FULOONG2E
 
 config LEMOTE_MACH2F
 	bool "Lemote Loongson 2F family machines"
-	select ARCH_SPARSEMEM_ENABLE
+	select ARCH_SPARSEMEM_ENABLE if HIBERNATION
 	select BOARD_SCACHE
 	select BOOT_ELF32
 	select CEVT_R4K if ! MIPS_EXTERNAL_TIMER

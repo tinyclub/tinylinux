@@ -1848,7 +1848,7 @@ config SYS_SUPPORTS_SMARTMIPS
 
 config ARCH_FLATMEM_ENABLE
 	def_bool y
-	depends on !NUMA && !CPU_LOONGSON2
+	depends on !NUMA && !(CPU_LOONGSON2 && HIBERNATION)
 
 config ARCH_DISCONTIGMEM_ENABLE
 	bool
