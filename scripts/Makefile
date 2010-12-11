@@ -1,4 +1,5 @@
 ###
+
 # scripts contains sources for various helper programs used throughout
 # the kernel for the build process.
 # ---------------------------------------------------------------------------
@@ -11,6 +12,7 @@ hostprogs-$(CONFIG_KALLSYMS)     += kallsyms
 hostprogs-$(CONFIG_LOGO)         += pnmtologo
 hostprogs-$(CONFIG_VT)           += conmakehash
 hostprogs-$(CONFIG_IKCONFIG)     += bin2c
+hostprogs-$(CONFIG_SSTRIP)       += sstrip
 
 always		:= $(hostprogs-y) $(hostprogs-m)
 

@@ -64,7 +64,16 @@ quiet_cmd_zld = LD      $@
       cmd_zld = $(LD) $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T $< $(vmlinuzobjs-y) -o $@
 quiet_cmd_strip = STRIP   $@
       cmd_strip = $(STRIP) -s $@
+ifdef CONFIG_SSTRIP
+quiet_cmd_sstrip = SSTRIP  $@
+      cmd_sstrip = $(srctree)/scripts/sstrip $@
+endif
 vmlinuz: $(src)/ld.script $(vmlinuzobjs-y) $(obj)/calc_vmlinuz_load_addr
+	$(call cmd,zld)
+	$(call cmd,strip)
+	$(call cmd,sstrip)
+
+vmlinuz.unsstrip: $(src)/ld.script $(vmlinuzobjs-y) $(obj)/calc_vmlinuz_load_addr
 	$(call cmd,zld)
 	$(call cmd,strip)
 
@@ -79,14 +88,14 @@ endif
 hostprogs-y += ../elf2ecoff
 
 ifdef CONFIG_32BIT
-	VMLINUZ = vmlinuz
+	VMLINUZ = vmlinuz.unsstrip
 else
 	VMLINUZ = vmlinuz.32
 endif
 
 quiet_cmd_32 = OBJCOPY $@
       cmd_32 = $(OBJCOPY) -O $(32bit-bfd) $(OBJCOPYFLAGS) $< $@
-vmlinuz.32: vmlinuz
+vmlinuz.32: vmlinuz.unsstrip
 	$(call cmd,32)
 
 quiet_cmd_ecoff = ECOFF   $@
@@ -95,11 +104,11 @@ vmlinuz.ecoff: $(obj)/../elf2ecoff $(VMLINUZ)
 	$(call cmd,ecoff)
 
 OBJCOPYFLAGS_vmlinuz.bin := $(OBJCOPYFLAGS) -O binary
-vmlinuz.bin: vmlinuz
+vmlinuz.bin: vmlinuz.unsstrip
 	$(call cmd,objcopy)
 
 OBJCOPYFLAGS_vmlinuz.srec := $(OBJCOPYFLAGS) -S -O srec
-vmlinuz.srec: vmlinuz
+vmlinuz.srec: vmlinuz.unsstrip
 	$(call cmd,objcopy)
 
-clean-files := $(objtree)/vmlinuz $(objtree)/vmlinuz.{32,ecoff,bin,srec}
+clean-files := $(objtree)/vmlinuz $(objtree)/vmlinuz.{32,ecoff,bin,srec,unsstrip}

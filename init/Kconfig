@@ -966,6 +966,17 @@ config AIO
           by some high performance threaded applications. Disabling
           this option saves about 7k.
 
+config SSTRIP
+	bool "Strip more than strip -a" if EMBEDDED
+	default EMBEDDED
+	help
+	  This uses scripts/sstrip[1] to strip the section table of the
+	  indicated kernel image. In theory, the section table is useless to
+	  the running of a image, so, it is safe to be stripped out but this
+	  may make some tools not work if they need the section table.
+
+	  [1] https://dev.openwrt.org/browser/trunk/tools/sstrip/src/sstrip.c
+
 config HAVE_PERF_EVENTS
 	bool
 	help
