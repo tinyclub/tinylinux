@@ -19,7 +19,6 @@
 #include <loongson.h>
 #include <linux/gpio.h>
 
-#define STLS2F_N_GPIO		4
 #define STLS2F_GPIO_IN_OFFSET	16
 
 static DEFINE_SPINLOCK(gpio_lock);
@@ -29,7 +28,7 @@ int gpio_get_value(unsigned gpio)
 	u32 val;
 	u32 mask;
 
-	if (gpio >= STLS2F_N_GPIO)
+	if (gpio >= ARCH_NR_GPIOS)
 		return __gpio_get_value(gpio);
 
 	mask = 1 << (gpio + STLS2F_GPIO_IN_OFFSET);
@@ -46,7 +45,7 @@ void gpio_set_value(unsigned gpio, int state)
 	u32 val;
 	u32 mask;
 
-	if (gpio >= STLS2F_N_GPIO) {
+	if (gpio >= ARCH_NR_GPIOS) {
 		__gpio_set_value(gpio, state);
 		return ;
 	}
@@ -66,7 +65,7 @@ EXPORT_SYMBOL(gpio_set_value);
 
 int gpio_cansleep(unsigned gpio)
 {
-	if (gpio < STLS2F_N_GPIO)
+	if (gpio < ARCH_NR_GPIOS)
 		return 0;
 	else
 		return __gpio_cansleep(gpio);
@@ -78,7 +77,7 @@ static int ls2f_gpio_direction_input(struct gpio_chip *chip, unsigned gpio)
 	u32 temp;
 	u32 mask;
 
-	if (gpio >= STLS2F_N_GPIO)
+	if (gpio >= ARCH_NR_GPIOS)
 		return -EINVAL;
 
 	spin_lock(&gpio_lock);
@@ -97,7 +96,7 @@ static int ls2f_gpio_direction_output(struct gpio_chip *chip,
 	u32 temp;
 	u32 mask;
 
-	if (gpio >= STLS2F_N_GPIO)
+	if (gpio >= ARCH_NR_GPIOS)
 		return -EINVAL;
 
 	gpio_set_value(gpio, level);
@@ -129,7 +128,7 @@ static struct gpio_chip ls2f_chip = {
 	.direction_output       = ls2f_gpio_direction_output,
 	.set                    = ls2f_gpio_set_value,
 	.base                   = 0,
-	.ngpio                  = STLS2F_N_GPIO,
+	.ngpio                  = ARCH_NR_GPIOS,
 };
 
 static int __init ls2f_gpio_setup(void)
