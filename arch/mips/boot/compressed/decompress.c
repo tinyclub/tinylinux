@@ -16,6 +16,8 @@
 
 #include <asm/addrspace.h>
 
+#include "boot.h"
+
 /*
  * These two variables specify the free mem region
  * that can be used for temporary malloc area

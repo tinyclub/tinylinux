@@ -14,6 +14,7 @@
 
 #include <asm/asm.h>
 #include <asm/regdef.h>
+#include "boot.h"
 
 	.set noreorder
 	.cprestore
@@ -33,7 +34,7 @@ start:
 	 addiu	a0, a0, 4
 
 	PTR_LA	a0, (.heap)          /* heap address */
-	PTR_LA  sp, (.stack + 8192)  /* stack address */
+	PTR_LA  sp, (.stack + BOOT_STACK_SIZE)  /* stack address */
 
 	PTR_LA	ra, 2f
 	PTR_LA	k0, decompress_kernel
@@ -53,4 +54,4 @@ start:
 	END(start)
 
 	.comm .heap,BOOT_HEAP_SIZE,4
-	.comm .stack,4096*2,4
+	.comm .stack,BOOT_STACK_SIZE,4
