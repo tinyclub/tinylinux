@@ -52,7 +52,21 @@
 #define EHCI_USBLEGCTLSTS	4		/* legacy control/status */
 #define EHCI_USBLEGCTLSTS_SOOE	(1 << 13)	/* SMI on ownership change */
 
+static inline int io_type_enabled(struct pci_dev *pdev, unsigned int mask)
+{
+	u16 cmd;
+	return !pci_read_config_word(pdev, PCI_COMMAND, &cmd) && (cmd & mask);
+}
 
+#define pio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_IO)
+#define mmio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_MEMORY)
+
+static int __devinit mmio_resource_enabled(struct pci_dev *pdev, int idx)
+{
+	return pci_resource_start(pdev, idx) && mmio_enabled(pdev);
+}
+
+#if defined(CONFIG_USB_UHCI_HCD) || defined(CONFIG_USB_UHCI_HCD_MODULE)
 /*
  * Make sure the controller is completely inactive, unable to
  * generate interrupts or do DMA.
@@ -134,15 +148,6 @@ reset_needed:
 }
 EXPORT_SYMBOL_GPL(uhci_check_and_reset_hc);
 
-static inline int io_type_enabled(struct pci_dev *pdev, unsigned int mask)
-{
-	u16 cmd;
-	return !pci_read_config_word(pdev, PCI_COMMAND, &cmd) && (cmd & mask);
-}
-
-#define pio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_IO)
-#define mmio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_MEMORY)
-
 static void __devinit quirk_usb_handoff_uhci(struct pci_dev *pdev)
 {
 	unsigned long base = 0;
@@ -160,12 +165,11 @@ static void __devinit quirk_usb_handoff_uhci(struct pci_dev *pdev)
 	if (base)
 		uhci_check_and_reset_hc(pdev, base);
 }
+#else
+#define quirk_usb_handoff_uhci(x) do { } while (0)
+#endif /* CONFIG_USB_UHCI_HCD* */
 
-static int __devinit mmio_resource_enabled(struct pci_dev *pdev, int idx)
-{
-	return pci_resource_start(pdev, idx) && mmio_enabled(pdev);
-}
-
+#if defined(CONFIG_USB_OHCI_HCD) || defined(CONFIG_USB_OHCI_HCD_MODULE)
 static void __devinit quirk_usb_handoff_ohci(struct pci_dev *pdev)
 {
 	void __iomem *base;
@@ -209,7 +213,11 @@ static void __devinit quirk_usb_handoff_ohci(struct pci_dev *pdev)
 
 	iounmap(base);
 }
+#else
+#define quirk_usb_handoff_ohci(x) do { } while(0)
+#endif /* CONFIG_USB_OHCI_HCD* */
 
+#if defined(CONFIG_USB_EHCI_HCD) || defined(CONFIG_USB_EHCI_HCD_MODULE)
 static void __devinit quirk_usb_disable_ehci(struct pci_dev *pdev)
 {
 	int wait_time, delta;
@@ -341,7 +349,11 @@ static void __devinit quirk_usb_disable_ehci(struct pci_dev *pdev)
 
 	return;
 }
+#else
+#define quirk_usb_disable_ehci(x) do { } while (0)
+#endif /* CONFIG_USB_EHCI_HCD* */
 
+#if defined(CONFIG_USB_XHCI_HCD) || defined(CONFIG_USB_XHCI_HCD_MODULE)
 /*
  * handshake - spin reading a register until handshake completes
  * @ptr: address of hc register to be read
@@ -463,6 +475,9 @@ hc_init:
 
 	iounmap(base);
 }
+#else
+#define quirk_usb_handoff_xhci(x) do { } while (0)
+#endif /* CONFIG_USB_UHCI_HCD* */
 
 static void __devinit quirk_usb_early_handoff(struct pci_dev *pdev)
 {
