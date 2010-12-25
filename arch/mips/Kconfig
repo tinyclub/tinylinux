@@ -1491,6 +1491,15 @@ config HARDWARE_WATCHPOINTS
 
 menu "Kernel type"
 
+config SHOW_FULL_CPUINFO
+	bool "show full cpu info for cpu-feature-overrides.sh"
+	help
+	  This option will make show_cpuinfo(/proc/cpuinfo) prints more
+	  information which can be used in cpu-feature-overrides.h
+
+	  Note: this output is cpu specific and should only be enabled for
+	  debugging.
+
 choice
 
 	prompt "Kernel code model"

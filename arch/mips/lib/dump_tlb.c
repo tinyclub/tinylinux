@@ -107,5 +107,5 @@ static void dump_tlb(int first, int last)
 
 void dump_tlb_all(void)
 {
-	dump_tlb(0, current_cpu_data.tlbsize - 1);
+	dump_tlb(0, cpu_tlbsize() - 1);
 }

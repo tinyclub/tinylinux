@@ -81,7 +81,7 @@ void local_flush_tlb_all(void)
 	entry = read_c0_wired();
 
 	/* Blast 'em all away. */
-	while (entry < current_cpu_data.tlbsize) {
+	while (entry < cpu_tlbsize()) {
 		/* Make sure all entries differ. */
 		write_c0_entryhi(UNIQUE_ENTRYHI(entry));
 		write_c0_index(entry);
@@ -124,7 +124,7 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 		ENTER_CRITICAL(flags);
 		size = (end - start + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
 		size = (size + 1) >> 1;
-		if (size <= current_cpu_data.tlbsize/2) {
+		if (size <= cpu_tlbsize()/2) {
 			int oldpid = read_c0_entryhi();
 			int newpid = cpu_asid(cpu, mm);
 
@@ -166,7 +166,7 @@ void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
 	ENTER_CRITICAL(flags);
 	size = (end - start + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
 	size = (size + 1) >> 1;
-	if (size <= current_cpu_data.tlbsize / 2) {
+	if (size <= cpu_tlbsize() / 2) {
 		int pid = read_c0_entryhi();
 
 		start &= (PAGE_MASK << 1);
@@ -450,7 +450,7 @@ void __cpuinit tlb_init(void)
 		write_c0_pagegrain(pg);
 	}
 
-	temp_tlb_entry = current_cpu_data.tlbsize - 1;
+	temp_tlb_entry = cpu_tlbsize() - 1;
 
         /* From this point on the ARC firmware is dead.  */
 	local_flush_tlb_all();
@@ -458,8 +458,8 @@ void __cpuinit tlb_init(void)
 	/* Did I tell you that ARC SUCKS?  */
 
 	if (ntlb) {
-		if (ntlb > 1 && ntlb <= current_cpu_data.tlbsize) {
-			int wired = current_cpu_data.tlbsize - ntlb;
+		if (ntlb > 1 && ntlb <= cpu_tlbsize()) {
+			int wired = cpu_tlbsize() - ntlb;
 			write_c0_wired(wired);
 			write_c0_index(wired-1);
 			printk("Restricting TLB to %d entries\n", ntlb);

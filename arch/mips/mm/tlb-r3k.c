@@ -54,7 +54,7 @@ void local_flush_tlb_all(void)
 	old_ctx = read_c0_entryhi() & ASID_MASK;
 	write_c0_entrylo0(0);
 	entry = r3k_have_wired_reg ? read_c0_wired() : 8;
-	for (; entry < current_cpu_data.tlbsize; entry++) {
+	for (; entry < cpu_tlbsize(); entry++) {
 		write_c0_index(entry << 8);
 		write_c0_entryhi((entry | 0x80000) << 12);
 		BARRIER;
@@ -91,7 +91,7 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 #endif
 		local_irq_save(flags);
 		size = (end - start + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
-		if (size <= current_cpu_data.tlbsize) {
+		if (size <= cpu_tlbsize()) {
 			int oldpid = read_c0_entryhi() & ASID_MASK;
 			int newpid = cpu_context(cpu, mm) & ASID_MASK;
 
@@ -128,7 +128,7 @@ void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
 #endif
 	local_irq_save(flags);
 	size = (end - start + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
-	if (size <= current_cpu_data.tlbsize) {
+	if (size <= cpu_tlbsize()) {
 		int pid = read_c0_entryhi();
 
 		start &= PAGE_MASK;

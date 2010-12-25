@@ -33,10 +33,43 @@
 
 #endif /* CONFIG_CPU_LOONGSON2 */
 
+#define cpu_tlbsize()	64
+
+#define cpu_dcache_size()	65536UL
+#define cpu_icache_size()	65536UL
+#define cpu_scache_size()	524288UL
+
+#define cpu_dcache_sets()	512
+#define cpu_icache_sets()	512
+#define cpu_scache_sets()	4096
+
 #define cpu_dcache_line_size()	32
 #define cpu_icache_line_size()	32
 #define cpu_scache_line_size()	32
 
+#define cpu_dcache_way_size()	16384
+#define cpu_icache_way_size()	16384
+#define cpu_scache_way_size()	131072
+
+#define cpu_dcache_waybit()	0
+#define cpu_icache_waybit()	0
+#define cpu_scache_waybit()	0
+
+#define cpu_dcache_ways()	4
+#define cpu_icache_ways()	1
+#define cpu_scache_ways()	4
+
+#define cpu_dcache_flags()	0
+#define cpu_icache_flags()	0
+#define cpu_scache_flags()	0
+
+#define cpu_isa_level()	4
+
+#define cpu_srsets()	1
+#define cpu_vmbits	40
+
+#define cpu_options()	0x301eb	
+#define cpu_fpu_id()	0x501
 
 #define cpu_has_32fpr		1
 #define cpu_has_3k_cache	0

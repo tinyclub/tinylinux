@@ -273,7 +273,7 @@ static void __show_regs(const struct pt_regs *regs)
 
 	printk("Status: %08x    ", (uint32_t) regs->cp0_status);
 
-	if (current_cpu_data.isa_level == MIPS_CPU_ISA_I) {
+	if (cpu_isa_level() == MIPS_CPU_ISA_I) {
 		if (regs->cp0_status & ST0_KUO)
 			printk("KUo ");
 		if (regs->cp0_status & ST0_IEO)
@@ -594,8 +594,8 @@ static int simulate_rdhwr(struct pt_regs *regs, unsigned int opcode)
 			regs->regs[rt] = smp_processor_id();
 			return 0;
 		case 1:		/* SYNCI length */
-			regs->regs[rt] = min(current_cpu_data.dcache.linesz,
-					     current_cpu_data.icache.linesz);
+			regs->regs[rt] = min(cpu_dcache_line_size(),
+					     cpu_icache_line_size());
 			return 0;
 		case 2:		/* Read count register */
 			regs->regs[rt] = read_c0_count();
@@ -1323,7 +1323,6 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
 {
 	unsigned long handler;
 	unsigned long old_handler = vi_handlers[n];
-	int srssets = current_cpu_data.srsets;
 	u32 *w;
 	unsigned char *b;
 
@@ -1338,7 +1337,7 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
 
 	b = (unsigned char *)(ebase + 0x200 + n*VECTORSPACING);
 
-	if (srs >= srssets)
+	if (srs >= cpu_srsets())
 		panic("Shadow register set %d not supported", srs);
 
 	if (cpu_has_veic) {
@@ -1346,7 +1345,7 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
 			board_bind_eic_interrupt(n, srs);
 	} else if (cpu_has_vint) {
 		/* SRSMap is only defined if shadow sets are implemented */
-		if (srssets > 1)
+		if (cpu_srsets() > 1)
 			change_c0_srsmap(0xf << n*4, srs << n*4);
 	}
 
@@ -1473,7 +1472,7 @@ void __cpuinit per_cpu_trap_init(void)
 #ifdef CONFIG_64BIT
 	status_set |= ST0_FR|ST0_KX|ST0_SX|ST0_UX;
 #endif
-	if (current_cpu_data.isa_level == MIPS_CPU_ISA_IV)
+	if (cpu_isa_level() == MIPS_CPU_ISA_IV)
 		status_set |= ST0_XX;
 	if (cpu_has_dsp)
 		status_set |= ST0_MX;

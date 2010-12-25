@@ -609,7 +609,7 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
 		c->isa_level = MIPS_CPU_ISA_III;
 		c->options = R4K_OPTS |
 			     MIPS_CPU_FPU | MIPS_CPU_LLSC |
-			     MIPS_CPU_32FPR;
+			     MIPS_CPU_32FPR | MIPS_CPU_WATCH;
 		c->tlbsize = 64;
 		break;
 	}
@@ -1008,14 +1008,14 @@ __cpuinit void cpu_probe(void)
 	if (mips_dsp_disabled)
 		c->ases &= ~MIPS_ASE_DSP;
 
-	if (c->options & MIPS_CPU_FPU) {
+	if (cpu_options() & MIPS_CPU_FPU) {
 		c->fpu_id = cpu_get_fpu_id();
 
-		if (c->isa_level == MIPS_CPU_ISA_M32R1 ||
-		    c->isa_level == MIPS_CPU_ISA_M32R2 ||
-		    c->isa_level == MIPS_CPU_ISA_M64R1 ||
-		    c->isa_level == MIPS_CPU_ISA_M64R2) {
-			if (c->fpu_id & MIPS_FPIR_3D)
+		if (cpu_isa_level() == MIPS_CPU_ISA_M32R1 ||
+		    cpu_isa_level() == MIPS_CPU_ISA_M32R2 ||
+		    cpu_isa_level() == MIPS_CPU_ISA_M64R1 ||
+		    cpu_isa_level() == MIPS_CPU_ISA_M64R2) {
+			if (cpu_fpu_id() & MIPS_FPIR_3D)
 				c->ases |= MIPS_ASE_MIPS3D;
 		}
 	}
@@ -1030,10 +1030,8 @@ __cpuinit void cpu_probe(void)
 
 __cpuinit void cpu_report(void)
 {
-	struct cpuinfo_mips *c = &current_cpu_data;
-
-	printk(KERN_INFO "CPU revision is: %08x (%s)\n",
+	pr_info("CPU revision is: %08x (%s)\n",
 	       current_cpu_prid(), cpu_name_string());
-	if (c->options & MIPS_CPU_FPU)
-		printk(KERN_INFO "FPU revision is: %08x\n", c->fpu_id);
+	if (cpu_options() & MIPS_CPU_FPU)
+		pr_info("FPU revision is: %08x\n", cpu_fpu_id());
 }

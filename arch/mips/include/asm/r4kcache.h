@@ -344,10 +344,10 @@ static inline void invalidate_tcache_page(unsigned long addr)
 static inline void blast_##pfx##cache##lsize(void)			\
 {									\
 	unsigned long start = INDEX_BASE;				\
-	unsigned long end = start + current_cpu_data.desc.waysize;	\
-	unsigned long ws_inc = 1UL << current_cpu_data.desc.waybit;	\
-	unsigned long ws_end = current_cpu_data.desc.ways <<		\
-	                       current_cpu_data.desc.waybit;		\
+	unsigned long end = start + cpu_## desc ##_way_size();		\
+	unsigned long ws_inc = 1UL << cpu_## desc ##_waybit();		\
+	unsigned long ws_end = cpu_## desc ##_ways() <<			\
+	                       cpu_## desc ## _waybit();		\
 	unsigned long ws, addr;						\
 									\
 	__##pfx##flush_prologue						\
@@ -376,12 +376,12 @@ static inline void blast_##pfx##cache##lsize##_page(unsigned long page)	\
 									\
 static inline void blast_##pfx##cache##lsize##_page_indexed(unsigned long page) \
 {									\
-	unsigned long indexmask = current_cpu_data.desc.waysize - 1;	\
+	unsigned long indexmask = cpu_## desc ##_way_size() - 1;	\
 	unsigned long start = INDEX_BASE + (page & indexmask);		\
 	unsigned long end = start + PAGE_SIZE;				\
-	unsigned long ws_inc = 1UL << current_cpu_data.desc.waybit;	\
-	unsigned long ws_end = current_cpu_data.desc.ways <<		\
-	                       current_cpu_data.desc.waybit;		\
+	unsigned long ws_inc = 1UL << cpu_## desc ##_waybit();		\
+	unsigned long ws_end = cpu_## desc ##_ways() << 		\
+			       cpu_## desc ##_waybit();			\
 	unsigned long ws, addr;						\
 									\
 	__##pfx##flush_prologue						\

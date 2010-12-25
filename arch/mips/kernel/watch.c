@@ -19,7 +19,7 @@ void mips_install_watch_registers(void)
 {
 	struct mips3264_watch_reg_state *watches =
 		&current->thread.watch.mips3264;
-	switch (current_cpu_data.watch_reg_use_cnt) {
+	switch (cpu_watch_reg_use_cnt()) {
 	default:
 		BUG();
 	case 4:
@@ -48,7 +48,7 @@ void mips_read_watch_registers(void)
 {
 	struct mips3264_watch_reg_state *watches =
 		&current->thread.watch.mips3264;
-	switch (current_cpu_data.watch_reg_use_cnt) {
+	switch (cpu_watch_reg_use_cnt()) {
 	default:
 		BUG();
 	case 4:
@@ -60,7 +60,7 @@ void mips_read_watch_registers(void)
 	case 1:
 		watches->watchhi[0] = (read_c0_watchhi0() & 0x0fff);
 	}
-	if (current_cpu_data.watch_reg_use_cnt == 1 &&
+	if (cpu_watch_reg_use_cnt() == 1 &&
 	    (watches->watchhi[0] & 7) == 0) {
 		/* Pathological case of release 1 architecture that
 		 * doesn't set the condition bits.  We assume that
@@ -78,7 +78,7 @@ void mips_read_watch_registers(void)
  */
 void mips_clear_watch_registers(void)
 {
-	switch (current_cpu_data.watch_reg_count) {
+	switch (cpu_watch_reg_count()) {
 	default:
 		BUG();
 	case 8:
@@ -104,7 +104,7 @@ __cpuinit void mips_probe_watch_registers(struct cpuinfo_mips *c)
 {
 	unsigned int t;
 
-	if ((c->options & MIPS_CPU_WATCH) == 0)
+	if (!cpu_has_watch)
 		return;
 	/*
 	 * Check which of the I,R and W bits are supported, then

@@ -20,6 +20,7 @@
  * Descriptor for a cache
  */
 struct cache_desc {
+	unsigned long size;	/* Size */
 	unsigned int waysize;	/* Bytes per way */
 	unsigned short sets;	/* Number of lines per set */
 	unsigned char ways;	/* Number of ways */

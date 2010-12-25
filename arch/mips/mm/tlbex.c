@@ -1585,7 +1585,7 @@ void __cpuinit build_tlb_refill_handler(void)
 	static int run_once = 0;
 
 #ifdef CONFIG_64BIT
-	check_for_high_segbits = current_cpu_data.vmbits > (PGDIR_SHIFT + PGD_ORDER + PAGE_SHIFT - 3);
+	check_for_high_segbits = cpu_vmbits > (PGDIR_SHIFT + PGD_ORDER + PAGE_SHIFT - 3);
 #endif
 
 	switch (current_cpu_type()) {

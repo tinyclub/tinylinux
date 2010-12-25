@@ -265,7 +265,7 @@ static void smtc_configure_tlb(void)
 		/* MIPS32 limits TLB indices to 64 */
 		if (tlbsiz > 64)
 			tlbsiz = 64;
-		cpu_data[0].tlbsize = current_cpu_data.tlbsize = tlbsiz;
+		cpu_data[0].tlbsize = cpu_tlbsize() = tlbsiz;
 		smtc_status |= SMTC_TLB_SHARED;
 		local_flush_tlb_all();
 
@@ -1396,7 +1396,7 @@ void smtc_flush_tlb_asid(unsigned long asid)
 	entry = read_c0_wired();
 
 	/* Traverse all non-wired entries */
-	while (entry < current_cpu_data.tlbsize) {
+	while (entry < cpu_tlbsize()) {
 		write_c0_index(entry);
 		ehb();
 		tlb_read();
