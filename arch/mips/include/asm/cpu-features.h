@@ -41,6 +41,12 @@
 #ifndef cpu_has_octeon_cache
 #define cpu_has_octeon_cache	0
 #endif
+
+#ifdef CONFIG_DISABLE_HW_FPU
+#undef cpu_has_fpu
+#define cpu_has_fpu 0
+#endif
+
 #ifndef cpu_has_fpu
 #define cpu_has_fpu		(current_cpu_data.options & MIPS_CPU_FPU)
 #define raw_cpu_has_fpu		(raw_current_cpu_data.options & MIPS_CPU_FPU)

@@ -39,8 +39,13 @@
 static int (*save_fp_context)(struct sigcontext __user *sc);
 static int (*restore_fp_context)(struct sigcontext __user *sc);
 
+#ifndef CONFIG_DISABLE_HW_FPU
 extern asmlinkage int _save_fp_context(struct sigcontext __user *sc);
 extern asmlinkage int _restore_fp_context(struct sigcontext __user *sc);
+#else
+static asmlinkage inline int _save_fp_context(struct sigcontext __user *sc) { return 0; }
+static asmlinkage inline int _restore_fp_context(struct sigcontext __user *sc) { return 0; }
+#endif
 
 extern asmlinkage int fpu_emulator_save_context(struct sigcontext __user *sc);
 extern asmlinkage int fpu_emulator_restore_context(struct sigcontext __user *sc);

@@ -29,7 +29,13 @@ struct sigcontext;
 struct sigcontext32;
 
 extern void fpu_emulator_init_fpu(void);
+
+#ifdef CONFIG_DISABLE_HW_FPU
+#define _init_fpu()
+#else
 extern void _init_fpu(void);
+#endif
+
 extern void _save_fp(struct task_struct *);
 extern void _restore_fp(struct task_struct *);
 
@@ -56,7 +62,6 @@ do {									\
 	if (cpu_has_fpu)						\
 		__disable_fpu();					\
 } while (0)
-
 
 #define clear_fpu_owner()	clear_thread_flag(TIF_USEDFPU)
 
