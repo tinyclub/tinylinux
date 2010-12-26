@@ -17,7 +17,6 @@
 #include "ec_kb3310b.h"
 
 static DEFINE_SPINLOCK(index_access_lock);
-static DEFINE_SPINLOCK(port_access_lock);
 
 unsigned char ec_read(unsigned short addr)
 {
@@ -50,6 +49,9 @@ void ec_write(unsigned short addr, unsigned char val)
 }
 EXPORT_SYMBOL_GPL(ec_write);
 
+#if defined(CONFIG_LEMOTE_YEELOONG2F) || defined(CONFIG_LEMOTE_YEELOONG2F_MODULE)
+
+static DEFINE_SPINLOCK(port_access_lock);
 /*
  * This function is used for EC command writes and corresponding status queries.
  */
@@ -128,3 +130,5 @@ int ec_get_event_num(void)
 	return value;
 }
 EXPORT_SYMBOL(ec_get_event_num);
+
+#endif /* CONFIG_LEMOTE_YEELOONG2F* */
