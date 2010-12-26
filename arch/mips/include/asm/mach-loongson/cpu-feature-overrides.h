@@ -17,6 +17,9 @@
 #define __ASM_MACH_LOONGSON_CPU_FEATURE_OVERRIDES_H
 
 #ifdef CONFIG_CPU_LOONGSON2
+
+#define current_cpu_type()	CPU_LOONGSON2
+
 #define cpu_prid_loongson2() \
 	cpu_prid_encode(PRID_COMP_LEGACY, PRID_IMP_LOONGSON2, 0)
 

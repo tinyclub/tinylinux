@@ -411,7 +411,7 @@ static void __cpuinit build_tlb_write_entry(u32 **p, struct uasm_label **l,
 
 	default:
 		panic("No TLB refill handler yet (CPU type: %d)",
-		      current_cpu_data.cputype);
+		      current_cpu_type());
 		break;
 	}
 }

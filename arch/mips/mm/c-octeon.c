@@ -181,7 +181,7 @@ static void __cpuinit probe_octeon(void)
 	unsigned int config1;
 	struct cpuinfo_mips *c = &current_cpu_data;
 
-	switch (c->cputype) {
+	switch (current_cpu_type()) {
 	case CPU_CAVIUM_OCTEON:
 	case CPU_CAVIUM_OCTEON_PLUS:
 		config1 = read_c0_config1();

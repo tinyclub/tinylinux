@@ -601,7 +601,7 @@ static int simulate_rdhwr(struct pt_regs *regs, unsigned int opcode)
 			regs->regs[rt] = read_c0_count();
 			return 0;
 		case 3:		/* Count register resolution */
-			switch (current_cpu_data.cputype) {
+			switch (current_cpu_type()) {
 			case CPU_20KC:
 			case CPU_25KF:
 				regs->regs[rt] = 1;

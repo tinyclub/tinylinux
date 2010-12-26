@@ -289,13 +289,12 @@ static unsigned int detect_memory_size(void)
 void __init bcm63xx_cpu_init(void)
 {
 	unsigned int tmp, expected_cpu_id;
-	struct cpuinfo_mips *c = &current_cpu_data;
 	unsigned int cpu = smp_processor_id();
 
 	/* soc registers location depends on cpu type */
 	expected_cpu_id = 0;
 
-	switch (c->cputype) {
+	switch (current_cpu_type()) {
 	/*
 	 * BCM6338 as the same PrId as BCM3302 see arch/mips/kernel/cpu-probe.c
 	 */
