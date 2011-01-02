@@ -612,6 +612,10 @@ endif
 
 LDFLAGS_vmlinux += --gc-sections
 
+ifeq ($(KBUILD_VERBOSE),1)
+LDFLAGS_vmlinux += --print-gc-sections
+endif
+
 # Default kernel image to build when no specific target is given.
 # KBUILD_IMAGE may be overruled on the command line or
 # set in the environment
