@@ -34,8 +34,8 @@ SECTIONS
 	      *(.gnu.linkonce.b.*)
 	}
 
-	.altinstructions	: { *(.altinstructions) }
-	.altinstr_replacement	: { *(.altinstr_replacement) }
+	.altinstructions	: { KEEP(*(.altinstructions)) }
+	.altinstr_replacement	: { KEEP(*(.altinstr_replacement)) }
 
 	/*
 	 * Align the actual code well away from the non-instruction data.

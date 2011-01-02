@@ -122,7 +122,7 @@ SECTIONS {
 
 	.init.ramfs ALIGN(4096) : AT(ADDR(.init.ramfs) - LOAD_OFFSET) {
 		__initramfs_start = .;
-		*(.init.ramfs)
+		KEEP(*(.init.ramfs))
 		__initramfs_end = .;
 		. = ALIGN(4);
 		LONG(0);

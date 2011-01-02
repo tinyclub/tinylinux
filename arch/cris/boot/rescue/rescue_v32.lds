@@ -40,7 +40,7 @@ SECTIONS
 	/* Get rid of stuff from EXPORT_SYMBOL(foo). */
 	/DISCARD/ :
 	{
-	        *(__ksymtab_strings)
-	        *(__ksymtab)
+		KEEP(*(__ksymtab_strings))
+		*(__ksymtab)
 	}
 }

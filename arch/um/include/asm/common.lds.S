@@ -76,10 +76,10 @@
   . = ALIGN(4);
   .altinstructions : {
 	__alt_instructions = .;
-	*(.altinstructions)
+	KEEP(*(.altinstructions))
 	__alt_instructions_end = .;
   }
-  .altinstr_replacement : { *(.altinstr_replacement) }
+  .altinstr_replacement : { KEEP(*(.altinstr_replacement)) }
   /* .exit.text is discard at runtime, not link time, to deal with references
      from .altinstructions and .eh_frame */
   .exit.text : { *(.exit.text) }

@@ -112,7 +112,7 @@ SECTIONS
 	. = ALIGN(0x4) ;
 	INIT_SETUP(0x4)
 	___setup_start = .;
-		*(.init.setup)
+		KEEP(*(.init.setup))
 	. = ALIGN(0x4) ;
 	___setup_end = .;
 	INIT_CALLS

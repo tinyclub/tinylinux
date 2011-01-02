@@ -162,46 +162,46 @@ SECTIONS
 
 	. = VSYSCALL_ADDR;
 	.vsyscall_0 : AT(VLOAD(.vsyscall_0)) {
-		*(.vsyscall_0)
+		KEEP(*(.vsyscall_0))
 	} :user
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.vsyscall_fn : AT(VLOAD(.vsyscall_fn)) {
-		*(.vsyscall_fn)
+		KEEP(*(.vsyscall_fn))
 	}
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.vsyscall_gtod_data : AT(VLOAD(.vsyscall_gtod_data)) {
-		*(.vsyscall_gtod_data)
+		KEEP(*(.vsyscall_gtod_data))
 	}
 
 	vsyscall_gtod_data = VVIRT(.vsyscall_gtod_data);
 	.vsyscall_clock : AT(VLOAD(.vsyscall_clock)) {
-		*(.vsyscall_clock)
+		KEEP(*(.vsyscall_clock))
 	}
 	vsyscall_clock = VVIRT(.vsyscall_clock);
 
 
 	.vsyscall_1 ADDR(.vsyscall_0) + 1024: AT(VLOAD(.vsyscall_1)) {
-		*(.vsyscall_1)
+		KEEP(*(.vsyscall_1))
 	}
 	.vsyscall_2 ADDR(.vsyscall_0) + 2048: AT(VLOAD(.vsyscall_2)) {
-		*(.vsyscall_2)
+		KEEP(*(.vsyscall_2))
 	}
 
 	.vgetcpu_mode : AT(VLOAD(.vgetcpu_mode)) {
-		*(.vgetcpu_mode)
+		KEEP(*(.vgetcpu_mode))
 	}
 	vgetcpu_mode = VVIRT(.vgetcpu_mode);
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.jiffies : AT(VLOAD(.jiffies)) {
-		*(.jiffies)
+		KEEP(*(.jiffies))
 	}
 	jiffies = VVIRT(.jiffies);
 
 	.vsyscall_3 ADDR(.vsyscall_0) + 3072: AT(VLOAD(.vsyscall_3)) {
-		*(.vsyscall_3)
+		KEEP(*(.vsyscall_3))
 	}
 
 	. = __vsyscall_0 + PAGE_SIZE;
@@ -252,12 +252,12 @@ SECTIONS
 	. = ALIGN(8);
 	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
 		__alt_instructions = .;
-		*(.altinstructions)
+		KEEP(*(.altinstructions))
 		__alt_instructions_end = .;
 	}
 
 	.altinstr_replacement : AT(ADDR(.altinstr_replacement) - LOAD_OFFSET) {
-		*(.altinstr_replacement)
+		KEEP(*(.altinstr_replacement))
 	}
 
 	/*
@@ -290,7 +290,7 @@ SECTIONS
 	. = ALIGN(PAGE_SIZE);
 	.smp_locks : AT(ADDR(.smp_locks) - LOAD_OFFSET) {
 		__smp_locks = .;
-		*(.smp_locks)
+		KEEP(*(.smp_locks))
 		. = ALIGN(PAGE_SIZE);
 		__smp_locks_end = .;
 	}

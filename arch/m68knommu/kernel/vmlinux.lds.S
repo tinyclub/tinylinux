@@ -72,7 +72,7 @@ SECTIONS {
 
 		. = ALIGN(16);          /* Exception table              */
 		__start___ex_table = .;
-		*(__ex_table)
+		KEEP(*(__ex_table))
 		__stop___ex_table = .;
 
 		*(.rodata) *(.rodata.*)
@@ -129,16 +129,16 @@ SECTIONS {
 
 		/* Kernel symbol table: GPL-future symbols */
 		__start___kcrctab_gpl_future = .;
-		*(__kcrctab_gpl_future)
+		KEEP(*(__kcrctab_gpl_future))
 		__stop___kcrctab_gpl_future = .;
 
 		/* Kernel symbol table: strings */
-		*(__ksymtab_strings)
+		KEEP(*(__ksymtab_strings))
 
 		/* Built-in module parameters */
 		. = ALIGN(4) ;
 		__start___param = .;
-		*(__param)
+		KEEP(*(__param))
 		__stop___param = .;
 
 		. = ALIGN(4) ;

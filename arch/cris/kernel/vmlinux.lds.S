@@ -72,7 +72,7 @@ SECTIONS
 	.init.setup : { INIT_SETUP(16) }
 #ifdef CONFIG_ETRAX_ARCH_V32
 	__start___param = .;
-	__param : { *(__param) }
+	__param : { KEEP(*(__param)) }
 	__stop___param = .;
 #endif
 	.initcall.init : {
@@ -88,7 +88,7 @@ SECTIONS
 #ifdef CONFIG_BLK_DEV_INITRD
 	.init.ramfs : {
 		__initramfs_start = .;
-		*(.init.ramfs)
+		KEEP(*(.init.ramfs))
 		__initramfs_end = .;
 	}
 #endif

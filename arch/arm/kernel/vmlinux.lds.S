@@ -158,7 +158,7 @@ SECTIONS
 		. = ALIGN(32);
 		__start___ex_table = .;
 #ifdef CONFIG_MMU
-		*(__ex_table)
+		KEEP(*(__ex_table))
 #endif
 		__stop___ex_table = .;
 

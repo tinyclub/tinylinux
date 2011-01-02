@@ -51,7 +51,7 @@ SECTIONS
   . = ALIGN(PAGE_SIZE);
   .smp_locks : AT(ADDR(.smp_locks) - LOAD_OFFSET) {
   	__smp_locks = .;
-	*(.smp_locks)
+	KEEP(*(.smp_locks))
 	__smp_locks_end = .;
   }
 
@@ -62,9 +62,9 @@ SECTIONS
   INIT_DATA_SECTION(16)
   . = ALIGN(4);
   __alt_instructions = .;
-  .altinstructions : { *(.altinstructions) }
+  .altinstructions : { KEEP(*(.altinstructions)) }
   __alt_instructions_end = .;
- .altinstr_replacement : { *(.altinstr_replacement) }
+ .altinstr_replacement : { KEEP(*(.altinstr_replacement)) }
   /* .exit.text is discard at runtime, not link time, to deal with references
      from .altinstructions and .eh_frame */
 	.exit.text : { EXIT_TEXT; }
