@@ -14,7 +14,9 @@ SECTIONS
 	/* . = VMLINUZ_LOAD_ADDRESS; */
 	.text : {
 		*(.text)
+		*(.text.[A-Za-z0-9_$^]*)
 		*(.rodata)
+		*(.rodata.[A-Za-z0-9_$^]*)
 		/* Put the compressed image here */
 		__image_begin = .;
 		*(.image)
@@ -26,6 +28,7 @@ SECTIONS
 	.bss : {
 		__bss_begin = .;
 		*(.bss)
+		*(.bss.[A-Za-z0-9_$^]*)
 		. = ALIGN(16);
 		__bss_end = .;
 	}
