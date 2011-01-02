@@ -15,28 +15,20 @@ SECTIONS
 	.text : {
 		*(.text)
 		*(.rodata)
-	}
-	/* End of text section */
-
-	/* Writable data */
-	.data : {
-		*(.data)
 		/* Put the compressed image here */
 		__image_begin = .;
 		*(.image)
 		__image_end = .;
-		CONSTRUCTORS
+		. = ALIGN(16);
 	}
-	. = ALIGN(16);
-	_edata = .;
-	/* End of data section */
 
 	/* BSS */
 	.bss : {
+		__bss_begin = .;
 		*(.bss)
+		. = ALIGN(16);
+		__bss_end = .;
 	}
-	. = ALIGN(16);
-	_end = .;
 
 	/* Sections to be discarded */
 	/DISCARD/ : {
@@ -47,5 +39,6 @@ SECTIONS
 		*(.comment)
 		*(.note)
 		*(.gnu.attributes)
+		*(.data)
 	}
 }
