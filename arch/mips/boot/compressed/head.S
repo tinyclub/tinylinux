@@ -18,8 +18,7 @@
 
 	.set noreorder
 	.cprestore
-	LEAF(start)
-start:
+LEAF(start)
 	/* Save boot rom start args */
 	move	s0, a0
 	move	s1, a1
