@@ -49,6 +49,7 @@
  * LEAF - declare leaf routine
  */
 #define	LEAF(symbol)                                    \
+		.section	.text.asm.symbol;	\
 		.globl	symbol;                         \
 		.align	2;                              \
 		.type	symbol, @function;              \
@@ -59,6 +60,7 @@ symbol:		.frame	sp, 0, ra
  * NESTED - declare nested routine entry point
  */
 #define	NESTED(symbol, framesize, rpc)                  \
+		.section	.text.asm.symbol;	\
 		.globl	symbol;                         \
 		.align	2;                              \
 		.type	symbol, @function;              \
@@ -76,6 +78,7 @@ symbol:		.frame	sp, framesize, rpc
  * EXPORT - export definition of symbol
  */
 #define EXPORT(symbol)					\
+		.section	.data.asm.symbol;	\
 		.globl	symbol;                         \
 symbol:
 
