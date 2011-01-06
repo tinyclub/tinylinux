@@ -570,6 +570,12 @@ endif
 NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
 CHECKFLAGS     += $(NOSTDINC_FLAGS)
 
+# Enable unit-at-a-time mode when possible. It shrinks the
+# kernel considerably.
+ifdef CONFIG_CC_FUNIT_AT_A_TIME
+CFLAGS += $(call cc-option,-funit-at-a-time,)
+endif
+
 # warn about C99 declaration after statement
 KBUILD_CFLAGS += $(call cc-option,-Wdeclaration-after-statement,)
 
