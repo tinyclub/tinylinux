@@ -386,7 +386,11 @@ static int flow_cache_init(struct flow_cache *fc)
 	unsigned long order;
 	int i;
 
+#ifdef CONFIG_NET_SMALL
+	fc->hash_shift = 3;
+#else
 	fc->hash_shift = 10;
+#endif
 	fc->low_watermark = 2 * flow_cache_hash_size(fc);
 	fc->high_watermark = 4 * flow_cache_hash_size(fc);
 
