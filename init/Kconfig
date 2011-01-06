@@ -1085,6 +1085,14 @@ config XATTR
 	help
 	  This enables the filesystem extended attribute syscalls.
 
+config ETHTOOL
+	depends on NET
+	default y
+	bool "Enable ethtool support" if EMBEDDED
+	help
+	  Disabling this option removes support for configuring
+	  ethernet device features via ethtool. Saves about 6k.
+
 config CC_FUNIT_AT_A_TIME
        bool "add -funit-at-a-time to gcc option" if EMBEDDED
        default n
