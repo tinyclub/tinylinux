@@ -1024,6 +1024,12 @@ config MAX_SWAPFILES_SHIFT
 	help
 	  Select the maximum number of swapfiles (5 for default).
 
+config BINFMT_SCRIPT
+	default y
+	bool "Enable support for executable shell scripts" if EMBEDDED
+	help
+	  Enable support for standard #!-style shell scripts.
+
 config HAVE_PERF_EVENTS
 	bool
 	help
