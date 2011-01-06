@@ -1079,6 +1079,12 @@ config MEMPOOL
 	  will somewhat decrease code size, but with a higher risk of
 	  deadlock under some loads.
 
+config XATTR
+	default y
+	bool "Enable filesystem extended attribute support" if EMBEDDED
+	help
+	  This enables the filesystem extended attribute syscalls.
+
 config CC_FUNIT_AT_A_TIME
        bool "add -funit-at-a-time to gcc option" if EMBEDDED
        default n
