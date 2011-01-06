@@ -1,0 +1,143 @@
+#!/usr/bin/env python
+#
+# slabalyze - analyze the information from /proc/slabinfo
+#
+# Written: by Tim Bird <tim.bird@am.sony.com>
+# Copyright: 2007 by Sony Corporation
+# License: GPL v2
+
+import sys, re
+
+if "-h" in sys.argv or "--help" in sys.argv:
+	print """Usage: slabalyze [options]
+-h,--help  Show this usage help
+-z	   Show empty caches
+-f <file>  Read slab data from indicated file, instead of /proc/slabinfo
+-s <sort_field>  Sort by the indicated field.  Fields are:
+     'a' = active, 'o'=overhead, 't'=total
+
+active memory = amount of memory in a cache that is currently allocated
+and actually in-use.  This does not include overhead for cache and slab
+structures.
+
+overhead = amount of memory taken by the cache, but not directly
+used for active object allocations.  This includes bookkeeping overhead
+as well as unused (free) objects.
+
+total memory = total amount of memory currently used for a cache
+
+"""
+	sys.exit(0)
+
+show_empty = 0
+if "-z" in sys.argv:
+	show_empty = 1
+
+slabinfo_file = "/proc/slabinfo"
+if "-f" in sys.argv:
+	slabinfo_file = sys.argv[sys.argv.index('-f')+1]
+
+sort_field = 'n'
+if "-s" in sys.argv:
+	sort_field = sys.argv[sys.argv.index('-s')+1]
+
+page_size = 4096
+
+class stub_class:
+	pass
+
+lines = open(slabinfo_file).readlines()
+caches = {}
+active_memory = 0
+total_memory = 0
+
+# collect data from the file
+for line in lines[2:]:
+	items = line.split()
+	name = items[0]
+	cache = stub_class()
+	cache.name = name
+	caches[name] = cache
+	cache.active_objs = int(items[1])
+	cache.num_objs = int(items[2])
+	cache.objsize = int(items[3])
+	cache.objperslab = int(items[4])
+	cache.pagesperslab = int(items[5])
+	cache.active_slabs = int(items[13])
+	cache.num_slabs = int(items[14])
+
+	# calculated items
+	cache.active_memory = cache.active_objs * cache.objsize
+	cache.total_memory = cache.num_slabs * cache.pagesperslab * page_size
+	cache.overhead = cache.total_memory - cache.active_memory
+
+	active_memory += cache.active_memory
+	total_memory += cache.total_memory
+
+overhead = total_memory - active_memory
+
+def sort_value(cache):
+	global sort_field
+
+	if sort_field=='a':
+		return cache.active_memory
+	if sort_field=='o':
+		return cache.overhead
+	if sort_field=='t':
+		return cache.total_memory
+	return cache.name
+
+def mixed_str_cmp(a, b):
+	# if both strings have the same prefix, but end in a number,
+	# sort them numerically by the number
+	# this is for cases like 'size-32' vs. 'size-1024'
+
+	# remove DMA from end of string, if present (but remember it)
+	a_dma = ''
+	if a.endswith('(DMA)'):
+		a = a[:-5]
+		a_dma='DMA'
+	b_dma = ''
+	if b.endswith('(DMA)'):
+		b= b[:-5]
+		b_dma='DMA'
+
+	# just do regular string compare on strings NOT ending with a number
+	num_end_pat = '.*-[0-9]+$'
+	if not re.match(num_end_pat, a) or not re.match(num_end_pat, b):
+		return cmp(a, b)
+
+	str_a = '-'.join(a.split('-')[:-1])+a_dma
+	str_b = '-'.join(b.split('-')[:-1])+b_dma
+	int_a = int(a.split('-')[-1])
+	int_b = int(b.split('-')[-1])
+	if str_a != str_b:
+		# if not same prefix, compare the strings
+		return cmp(str_a, str_b)
+	else:
+		return cmp(int_a, int_b)
+
+def sort_cache(cache_a, cache_b):
+	global sort_field
+	a = sort_value(cache_a)
+	b = sort_value(cache_b)
+
+	if sort_field == 'n':
+		# handle names somewhat differently
+		return mixed_str_cmp(a, b)
+	else:
+		return cmp(a, b)
+
+# display the collected data
+line_format = "%-25s %10s %10s %10s"
+print line_format % ("<Name>", "<active>", "<overhead>", "<total>")
+cache_list = caches.values()
+cache_list.sort(sort_cache)
+for cache in cache_list:
+	if show_empty or cache.total_memory:
+		print line_format % (cache.name, cache.active_memory, \
+			cache.overhead, cache.total_memory)
+
+print line_format % \
+	("TOTAL", active_memory, overhead, total_memory)
+
