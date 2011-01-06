@@ -1108,6 +1108,14 @@ config NET_SK_FILTER
 	  This enables the basic kernel level socket filtering, not to
 	  be confused with netfilter. Required by PPP.
 
+config IGMP
+	depends on NET
+	default y
+	bool "Enable IGMP support" if EMBEDDED && !IP_MULTICAST
+	help
+	  This includes support for the Internet group management
+	  protocol, used for multicast.
+
 config CC_FUNIT_AT_A_TIME
        bool "add -funit-at-a-time to gcc option" if EMBEDDED
        default n

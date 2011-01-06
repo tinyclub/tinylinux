@@ -317,6 +317,7 @@ static struct ctl_table ipv4_table[] = {
 
 #endif
 #ifdef CONFIG_INETPEER
+#ifdef CONFIG_IGMP
 	{
 		.procname	= "igmp_max_msf",
 		.data		= &sysctl_igmp_max_msf,
@@ -324,6 +325,7 @@ static struct ctl_table ipv4_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec
 	},
+#endif /* CONFIG_IGMP */
 	{
 		.procname	= "inet_peer_threshold",
 		.data		= &inet_peer_threshold,
@@ -592,7 +594,7 @@ static struct ctl_table ipv4_table[] = {
 		.mode           = 0644,
 		.proc_handler   = proc_dointvec
 	},
-        {
+	{
 		.procname       = "tcp_thin_dupack",
 		.data           = &sysctl_tcp_thin_dupack,
 		.maxlen         = sizeof(int),
