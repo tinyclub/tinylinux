@@ -1,0 +1,89 @@
+#!/usr/bin/python
+
+# This reads the output of a kernel compile with
+# CONFIG_MEASURE_INLINES enabled and counts the number of code
+# instantiations. This is slightly tricky as gcc reports
+# instantiations of inlines inside of other inlines in header files,
+# so we need to build a call tree and credit only instantiations in C
+# files.
+#
+# Usage:
+#
+#  make 2> inline-data
+#  chmod a+x scripts/count-inlines
+#  scripts/count-inlines inline-data | less
+#
+
+import sys, re
+
+showtree=1
+seen={}
+defined={}
+calls={}
+callers={}
+file={}
+uses={}
+usecount={}
+used=[]
+findcache={}
+bytesused={}
+total={}
+in_c={}
+
+inlines = open(sys.argv[1])
+
+# Credit nested inlines
+def credit(func, nest):
+    if nest>10: sys.exit(-1)
+    usecount[func] = usecount.get(func, 0) + 1
+    if not calls.has_key(func): return
+    for f in calls[func]: credit(f, nest+1)
+
+fr = re.compile(r"In function `(\S+)'")
+dr = re.compile(r"(\S+):(\d+): warning: `(\S+)' is deprecated \(declared at (\S+):(\d+)\)")
+current = "unknown"
+
+for l in inlines.xreadlines():
+    g = dr.match(l)
+    if not g:
+        try: current = fr.search(l).group(1)
+        except: pass
+        continue
+
+    use, useline, name, src, srcline = g.groups()
+    srcline, useline = int(srcline), int(useline)
+
+    total[name]= total.get(name, 0) + 1
+    if use[-1] == 'c': in_c[name] = in_c.get(name, 0) + 1
+
+    file.setdefault(src, []).append((name, srcline))
+    if src != use or (srcline != useline and srcline != useline-1):
+        uses.setdefault(name, []).append((use,useline))
+        if use[-1] == 'c': used.append(name)
+
+    if not name in calls.setdefault(current, []):
+        calls[current].append(name)
+    if not current in callers.setdefault(name, []):
+        callers[name].append(current)
+
+for func in used: credit(func, 0)
+
+l = [ (usecount[f], f) for f in usecount.keys() ]
+l.sort()
+l.reverse()
+
+for (c,f) in l:
+    def list(l):
+        a = [ (usecount.get(f),f) for f in l ]
+        a = filter(lambda x: x[0], a)
+        n = len(l) - len(a)
+        if n:
+            a.append((n,"<other>"))
+        a.sort()
+        a.reverse()
+        return " ".join(["%s(%d)" % (f,c) for c,f in a])
+    print "%d  %s (%d in *.c)" % (c, f, in_c.get(f, 0))
+    if showtree:
+        print "calls:", list(calls.get(f, []))
+        print "callers:", list(callers.get(f, []))
+        print

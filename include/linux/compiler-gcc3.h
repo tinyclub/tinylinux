@@ -28,4 +28,4 @@
  */
 #define uninitialized_var(x) x = x
 
-#define __always_inline		inline __attribute__((always_inline))
+#define __always_inline		inline __attribute__((always_inline)) SHOWINLINE

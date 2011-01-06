@@ -44,9 +44,16 @@
  */
 #if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) || \
     !defined(CONFIG_OPTIMIZE_INLINING) || (__GNUC__ < 4)
-# define inline		inline		__attribute__((always_inline))
-# define __inline__	__inline__	__attribute__((always_inline))
-# define __inline	__inline	__attribute__((always_inline))
+#ifdef CONFIG_MEASURE_INLINES
+#define SHOWINLINE __attribute__((deprecated))
+#else
+#define SHOWINLINE
+#endif
+
+#define inline		inline		__attribute__((always_inline)) SHOWINLINE
+#define __inline__	__inline__	__attribute__((always_inline)) SHOWINLINE
+#define __inline	__inline	__attribute__((always_inline)) SHOWINLINE
+
 #endif
 
 #define __deprecated			__attribute__((deprecated))
