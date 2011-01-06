@@ -551,7 +551,7 @@ __do_follow_link(struct path *path, struct nameidata *nd, void **p)
 		char *s = nd_get_link(nd);
 		error = 0;
 		if (s)
-			error = __vfs_follow_link(nd, s);
+			error = vfs_follow_link(nd, s);
 		else if (nd->last_type == LAST_BIND) {
 			error = force_reval_path(&nd->path, nd);
 			if (error)
@@ -568,7 +568,7 @@ __do_follow_link(struct path *path, struct nameidata *nd, void **p)
  * Without that kind of total limit, nasty chains of consecutive
  * symlinks can cause almost arbitrarily long lookups. 
  */
-static inline int do_follow_link(struct path *path, struct nameidata *nd)
+static int do_follow_link(struct path *path, struct nameidata *nd)
 {
 	void *cookie;
 	int err = -ELOOP;
