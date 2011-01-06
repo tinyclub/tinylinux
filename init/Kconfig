@@ -1069,6 +1069,16 @@ config CRC32_TABLES
 	  reduces kernel size by about 2K. This may actually result in
 	  faster code on machines with limited memory bandwidth.
 
+config MEMPOOL
+	default y
+	bool "Use mempool allocator" if EMBEDDED
+	help
+	  The mempool allocator attempts keep a reserve pool of
+	  various objects available for use in low-memory situations.
+	  Disabling this feature may make more memory available and
+	  will somewhat decrease code size, but with a higher risk of
+	  deadlock under some loads.
+
 config CC_FUNIT_AT_A_TIME
        bool "add -funit-at-a-time to gcc option" if EMBEDDED
        default n
