@@ -512,7 +512,11 @@ EXPORT_SYMBOL(mark_buffer_async_write);
 /*
  * The buffer's backing address_space's private_lock must be held
  */
+#ifdef CONFIG_LINUXTINY_DO_UNINLINE
 static void __remove_assoc_queue(struct buffer_head *bh)
+#else
+static inline void __remove_assoc_queue(struct buffer_head *bh)
+#endif
 {
 	list_del_init(&bh->b_assoc_buffers);
 	WARN_ON(!bh->b_assoc_map);

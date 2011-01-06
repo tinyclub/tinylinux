@@ -37,7 +37,11 @@
 #include "acl.h"
 #include "xip.h"
 
+#ifdef CONFIG_LINUXTINY_DO_UNINLINE
 static int ext2_add_nondir(struct dentry *dentry, struct inode *inode)
+#else
+static inline int ext2_add_nondir(struct dentry *dentry, struct inode *inode)
+#endif
 {
 	int err = ext2_add_link(dentry, inode);
 	if (!err) {

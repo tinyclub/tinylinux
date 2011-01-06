@@ -1037,6 +1037,12 @@ config BINFMT_SCRIPT
 	help
 	  Enable support for standard #!-style shell scripts.
 
+config LINUXTINY_DO_UNINLINE
+       bool "un-inline several functions for smaller kernel size" if EMBEDDED
+       default n
+       help
+	  Un-inline some function for smaller kernel size.
+
 config CC_FUNIT_AT_A_TIME
        bool "add -funit-at-a-time to gcc option" if EMBEDDED
        default n

@@ -551,7 +551,11 @@ __do_follow_link(struct path *path, struct nameidata *nd, void **p)
 		char *s = nd_get_link(nd);
 		error = 0;
 		if (s)
+#ifdef CONFIG_LINUXTINY_DO_UNINLINE
 			error = vfs_follow_link(nd, s);
+#else
+			error = __vfs_follow_link(nd, s);
+#endif
 		else if (nd->last_type == LAST_BIND) {
 			error = force_reval_path(&nd->path, nd);
 			if (error)
@@ -568,7 +572,11 @@ __do_follow_link(struct path *path, struct nameidata *nd, void **p)
  * Without that kind of total limit, nasty chains of consecutive
  * symlinks can cause almost arbitrarily long lookups. 
  */
+#ifdef CONFIG_LINUXTINY_DO_UNINLINE
 static int do_follow_link(struct path *path, struct nameidata *nd)
+#else
+static inline int do_follow_link(struct path *path, struct nameidata *nd)
+#endif
 {
 	void *cookie;
 	int err = -ELOOP;
@@ -1350,7 +1358,11 @@ static int may_delete(struct inode *dir,struct dentry *victim,int isdir)
  *  3. We should have write and exec permissions on dir
  *  4. We can't do it if dir is immutable (done in permission())
  */
+#ifdef CONFIG_LINUXTINY_DO_UNINLINE
+static int may_create(struct inode *dir, struct dentry *child)
+#else
 static inline int may_create(struct inode *dir, struct dentry *child)
+#endif
 {
 	if (child->d_inode)
 		return -EEXIST;
