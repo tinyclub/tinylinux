@@ -1002,6 +1002,13 @@ config IDE_HWIFS
 	  Select the maximum number of IDE interfaces (0 for default).
 	  Saves up to 14k.
 
+config MAX_USER_RT_PRIO
+	int "Number of realtime priority levels" if EMBEDDED
+	range 5 100
+	default 100
+	help
+	  This option allows reducing the size of the O(1) scheduler arrays.
+
 config HAVE_PERF_EVENTS
 	bool
 	help
