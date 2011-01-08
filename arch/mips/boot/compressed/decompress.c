@@ -47,10 +47,6 @@ void error(char *x)
 		;	/* Halt */
 }
 
-/* activate the code for pre-boot environment */
-#define STATIC static
-
-#ifdef CONFIG_KERNEL_GZIP
 void *memcpy(void *dest, const void *src, size_t n)
 {
 	int i;
@@ -61,10 +57,7 @@ void *memcpy(void *dest, const void *src, size_t n)
 		d[i] = s[i];
 	return dest;
 }
-#include "../../../../lib/decompress_inflate.c"
-#endif
 
-#ifdef CONFIG_KERNEL_BZIP2
 void *memset(void *s, int c, size_t n)
 {
 	int i;
@@ -74,6 +67,14 @@ void *memset(void *s, int c, size_t n)
 		ss[i] = c;
 	return s;
 }
+/* activate the code for pre-boot environment */
+#define STATIC static
+
+#ifdef CONFIG_KERNEL_GZIP
+#include "../../../../lib/decompress_inflate.c"
+#endif
+
+#ifdef CONFIG_KERNEL_BZIP2
 #include "../../../../lib/decompress_bunzip2.c"
 #endif
 
