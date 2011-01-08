@@ -983,7 +983,7 @@ static int cvmx_pcie_rc_initialize(int pcie_port)
  *               as it goes through each bridge.
  * Returns Interrupt number for the device
  */
-int __init octeon_pcie_pcibios_map_irq(const struct pci_dev *dev,
+int __init octeon_pcie_pcibios_map_irq(struct pci_dev *dev,
 				       u8 slot, u8 pin)
 {
 	/*

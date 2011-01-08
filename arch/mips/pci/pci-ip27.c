@@ -142,7 +142,7 @@ int __cpuinit bridge_probe(nasid_t nasid, int widget_id, int masterwid)
  * A given PCI device, in general, should be able to intr any of the cpus
  * on any one of the hubs connected to its xbow.
  */
-int __devinit pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+int __devinit pcibios_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 {
 	return 0;
 }

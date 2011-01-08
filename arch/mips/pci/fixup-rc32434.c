@@ -37,7 +37,7 @@ static int __devinitdata irq_map[2][12] = {
 	{0, 0, 1, 3, 0, 2, 1, 3, 0, 2, 1, 3}
 };
 
-int __devinit pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+int __devinit pcibios_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 {
 	int irq = 0;
 

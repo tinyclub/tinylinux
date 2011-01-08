@@ -26,7 +26,7 @@
 #include <linux/pci.h>
 #include <linux/ssb/ssb.h>
 
-int __init pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+int __init pcibios_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 {
 	return 0;
 }
