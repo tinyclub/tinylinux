@@ -1133,6 +1133,8 @@ config CC_FUNIT_AT_A_TIME
 
 config MEASURE_INLINES
 	default n
+	select MIPS_DISABLE_WERROR if MIPS
+	select PPC_DISABLE_WERROR if PPC
 	bool "Enable inline measurement" if EMBEDDED
 	help
 	  This marks inline functions deprecated, causing a kernel compile
