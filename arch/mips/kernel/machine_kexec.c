@@ -13,12 +13,6 @@
 #include <asm/cacheflush.h>
 #include <asm/page.h>
 
-extern const unsigned char relocate_new_kernel[];
-extern const size_t relocate_new_kernel_size;
-
-extern unsigned long kexec_start_address;
-extern unsigned long kexec_indirection_page;
-
 int (*_machine_kexec_prepare)(struct kimage *) = NULL;
 void (*_machine_kexec_shutdown)(void) = NULL;
 void (*_machine_crash_shutdown)(struct pt_regs *regs) = NULL;
@@ -61,21 +55,34 @@ typedef void (*noretfun_t)(void) __attribute__((noreturn));
 void
 machine_kexec(struct kimage *image)
 {
+	unsigned long kexec_relocate_size;
 	unsigned long reboot_code_buffer;
 	unsigned long entry;
 	unsigned long *ptr;
 
+	kexec_relocate_size = (unsigned long)(&__end___kexec_relocate) -
+		(unsigned long)(&__start___kexec_relocate);
+	pr_info("kexec_relocate_size = %lu\n", kexec_relocate_size);
+
 	reboot_code_buffer =
 	  (unsigned long)page_address(image->control_code_page);
+	pr_info("reboot_code_buffer = %p\n", (void *)reboot_code_buffer);
 
 	kexec_start_address =
 		(unsigned long) phys_to_virt(image->start);
+	pr_info("kexec_start_address(entry point of new kernel) = %p\n",
+			(void *)kexec_start_address);
 
 	kexec_indirection_page =
 		(unsigned long) phys_to_virt(image->head & PAGE_MASK);
+	pr_info("kexec_indirection_page = %p\n",
+			(void *)kexec_indirection_page);
 
-	memcpy((void*)reboot_code_buffer, relocate_new_kernel,
-	       relocate_new_kernel_size);
+	memcpy((void *)reboot_code_buffer, &__start___kexec_relocate,
+	       kexec_relocate_size);
+
+	pr_info("Copy kexec_relocate section from %p to reboot_code_buffer: %p\n",
+			&__start___kexec_relocate, (void *)reboot_code_buffer);
 
 	/*
 	 * The generic kexec code builds a page list with physical
@@ -96,8 +103,8 @@ machine_kexec(struct kimage *image)
 	 */
 	local_irq_disable();
 
-	printk("Will call new kernel at %08lx\n", image->start);
-	printk("Bye ...\n");
+	pr_info("Will call new kernel at %p\n", (void *)kexec_start_address);
+	pr_info("Bye ...\n");
 	__flush_cache_all();
 #ifdef CONFIG_SMP
 	/* All secondary cpus now may jump to kexec_wait cycle */
@@ -108,4 +115,3 @@ machine_kexec(struct kimage *image)
 #endif
 	((noretfun_t) reboot_code_buffer)();
 }
-

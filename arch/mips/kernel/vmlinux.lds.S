@@ -50,6 +50,10 @@ SECTIONS
 		*(.text.*)
 		*(.fixup)
 		*(.gnu.warning)
+		__start___kexec_relocate = .;
+		KEEP(*(.kexec.relocate))
+		KEEP(*(.__kexec.relocate))
+		__end___kexec_relocate = .;
 	} :text = 0
 	_etext = .;	/* End of text section */
 

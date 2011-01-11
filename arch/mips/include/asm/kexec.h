@@ -36,6 +36,16 @@ static inline void crash_setup_regs(struct pt_regs *newregs,
 }
 
 #ifdef CONFIG_KEXEC
+
+#define __kexec __attribute__((__section__(".__kexec.relocate")))
+
+/* The linker tells us where the relocate_new_kernel part is. */
+extern const unsigned char __start___kexec_relocate;
+extern const unsigned char __end___kexec_relocate;
+
+extern unsigned long kexec_start_address;
+extern unsigned long kexec_indirection_page;
+
 struct kimage;
 extern unsigned long kexec_args[4];
 extern int (*_machine_kexec_prepare)(struct kimage *);

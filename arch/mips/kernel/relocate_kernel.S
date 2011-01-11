@@ -14,6 +14,8 @@
 #include <asm/stackframe.h>
 #include <asm/addrspace.h>
 
+	.section	.kexec.relocate, "ax"
+
 LEAF(relocate_new_kernel)
 	PTR_L a0,	arg0
 	PTR_L a1,	arg1
@@ -155,9 +157,3 @@ EXPORT(kexec_start_address)
 EXPORT(kexec_indirection_page)
 	PTR		0
 	.size		kexec_indirection_page, PTRSIZE
-
-relocate_new_kernel_end:
-
-EXPORT(relocate_new_kernel_size)
-	PTR		relocate_new_kernel_end - relocate_new_kernel
-	.size		relocate_new_kernel_size, PTRSIZE
