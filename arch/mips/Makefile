@@ -659,6 +659,10 @@ else
 load-$(CONFIG_CPU_CAVIUM_OCTEON) 	+= 0xffffffff81100000
 endif
 
+ifdef CONFIG_PHYSICAL_START
+load-y                                  = $(CONFIG_PHYSICAL_START)
+endif
+
 cflags-y			+= -I$(srctree)/arch/mips/include/asm/mach-generic
 drivers-$(CONFIG_PCI)		+= arch/mips/pci/
 
