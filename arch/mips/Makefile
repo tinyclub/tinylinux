@@ -49,7 +49,12 @@ ifneq ($(SUBARCH),$(ARCH))
 endif
 
 ifndef CONFIG_FUNCTION_TRACER
-cflags-y := -ffunction-sections -fdata-sections
+cflags-y := -ffunction-sections
+  # 32bit has observed not work well with -fdata-sections, a failure has happen
+  # on YeeLoong with framebuffer broken.
+  ifdef CONFIG_64BIT
+    cflags-y += -fdata-sections
+  endif
 endif
 ifdef CONFIG_FUNCTION_GRAPH_TRACER
   ifndef KBUILD_MCOUNT_RA_ADDRESS
