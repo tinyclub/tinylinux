@@ -10,6 +10,7 @@
 #include <linux/mm.h>
 #include <linux/delay.h>
 
+#include <asm/bootinfo.h>
 #include <asm/cacheflush.h>
 #include <asm/page.h>
 
@@ -21,9 +22,30 @@ void (*relocated_kexec_smp_wait) (void *);
 atomic_t kexec_ready_to_reboot = ATOMIC_INIT(0);
 #endif
 
+static void machine_kexec_init_args(void)
+{
+	kexec_args[0] = fw_arg0;
+	kexec_args[1] = fw_arg1;
+	kexec_args[2] = fw_arg2;
+	kexec_args[3] = fw_arg3;
+
+	pr_info("kexec_args[0] (argc): %lu\n", kexec_args[0]);
+	pr_info("kexec_args[1] (argv): %p\n", (void *)kexec_args[1]);
+	pr_info("kexec_args[2] (env ): %p\n", (void *)kexec_args[2]);
+	pr_info("kexec_args[3] (desc): %p\n", (void *)kexec_args[3]);
+}
+
 int
 machine_kexec_prepare(struct kimage *kimage)
 {
+	/*
+	 * Whenever arguments passed from kexec-tools, Init the arguments as
+	 * the original ones to avoid booting failure.
+	 *
+	 * This can be overrided by _machine_kexec_prepare().
+	 */
+	machine_kexec_init_args();
+
 	if (_machine_kexec_prepare)
 		return _machine_kexec_prepare(kimage);
 	return 0;
