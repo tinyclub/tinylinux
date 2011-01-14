@@ -881,6 +881,19 @@ config SETUP_PARAM
 	  With this set to 'N', you can still enable some necessary parameters
 	  from a single file, by using __raw_setup() instead of __setup().
 
+config PARAM_LIST
+	default "console root"
+	depends on !SETUP_PARAM
+	string "List the parameters need to be setup" if EMBEDDED
+	help
+	  This option allows users to list some parameters which are needed the
+	  target kernel image.
+
+	  Note: If you are not using a ramfs, please at least keep console and
+	  root in this list. In reality, these two are enabled by default, to
+	  get more param list enabled by kernel, please refer to
+	  usr/default_param_list.txt
+
 config MEASURE_PARAMS
 	default n
 	depends on !SETUP_PARAM

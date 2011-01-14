@@ -1,0 +1,16 @@
+# This is a param list which has already been enabled by kernel, as a regular
+# user, please don't touch this but config CONFIG_PARAM_LIST instead.
+
+# For the kernel maintainer, whenever you want to add a new param here, please
+# remember to add it via:
+# 	$ scripts/setup_param.sh param_name
+# Or if you want to remove one default param:
+# 	$ scripts/unsetup_param.sh param_name
+#
+# If you want to do them automatically, you can config CONFIG_PARAM_LIST at
+# first, then, checkin the change and copy your config to this file.
+#
+# Note: To {un}setup an {un}setup param will be very slow, so, please don't try
+# to do that ;-)
+
+console root

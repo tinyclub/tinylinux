@@ -250,9 +250,13 @@ struct obs_kernel_param {
 
 #define __raw_setup(str, fn)					\
 	__setup(str, fn)
+#define __raw_early_param(str, fn)				\
+	early_param(str, fn)
 #else
 #define __raw_setup(str, fn)					\
 	__setup_param(str, fn, fn, 0)
+#define __raw_early_param(str, fn)				\
+	__setup_param(str, fn, fn, 1)
 
 #define __setup(str, fn)
 #define early_param(str, fn)
