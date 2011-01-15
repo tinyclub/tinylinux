@@ -38,6 +38,8 @@ static void machine_kexec_init_args(void)
 
 #define ARGV_MAX_ARGS (COMMAND_LINE_SIZE / 15)
 
+#ifndef CONFIG_CMDLINE_OVERRIDE
+
 int machine_kexec_pass_args(struct kimage *image)
 {
 	int i, argc = 0;
@@ -85,6 +87,47 @@ int machine_kexec_pass_args(struct kimage *image)
 
 	return 0;
 }
+#else	/* !CONFIG_CMDLINE_OVERRIDE */
+static int machine_use_builtin_args(void)
+{
+	int i, argc = 0;
+	unsigned long *kexec_argv;
+	char cmd_buf[COMMAND_LINE_SIZE];
+	char *str = cmd_buf;
+	char *kbuf, *ptr;
+
+	kexec_argv = (unsigned long *)kexec_args[1];
+	kbuf = (char *)kexec_argv[0];
+
+	/* Copy saved_command_line to cmd_buf */
+	memcpy(cmd_buf, saved_command_line, strlen(saved_command_line) + 1);
+
+	/* Whenever --command-line or --append used, "kexec" is copied */
+	argc = 1;
+	ptr = strchr(str, ' ');
+	/* Parse the offset */
+	while (ptr && (ARGV_MAX_ARGS > argc)) {
+		*ptr = '\0';
+		if (ptr[1] != ' ' && ptr[1] != '\0') {
+			int offt = ptr - str + 1;
+			kexec_argv[argc] = (unsigned long)kbuf + offt;
+			argc++;
+		}
+		ptr = strchr(ptr + 1, ' ');
+	}
+	if (argc > 1) {
+		/* Copy to reserved area */
+		memcpy(kbuf, cmd_buf, strlen(saved_command_line) + 1);
+		fw_arg0 = kexec_args[0] = argc;
+	}
+
+	pr_info("argc = %lu\n", kexec_args[0]);
+	for (i = 0; i < kexec_args[0]; i++)
+		pr_info("argv[%d] = %p, %s\n", i, (char *)kexec_argv[i], (char *)kexec_argv[i]);
+
+	return 0;
+}
+#endif	/* CONFIG_CMDLINE_OVERRIDE */
 
 int
 machine_kexec_prepare(struct kimage *kimage)
@@ -96,7 +139,11 @@ machine_kexec_prepare(struct kimage *kimage)
 	 * This can be overrided by _machine_kexec_prepare().
 	 */
 	machine_kexec_init_args();
+#ifndef CONFIG_CMDLINE_OVERRIDE
 	machine_kexec_pass_args(kimage);
+#else
+	machine_use_builtin_args();
+#endif
 
 	if (_machine_kexec_prepare)
 		return _machine_kexec_prepare(kimage);
