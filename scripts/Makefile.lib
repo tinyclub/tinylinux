@@ -127,6 +127,12 @@ _c_flags += $(if $(patsubst n%,, \
 		$(CFLAGS_GCOV))
 endif
 
+ifeq ($(CONFIG_GCOV_KERNEL_OPT),y)
+_c_flags += $(if $(patsubst n%,, \
+		$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
+		$(CFLAGS_GCOV_OPT))
+endif
+
 ifdef CONFIG_SYMBOL_PREFIX
 _cpp_flags += -DSYMBOL_PREFIX=$(patsubst "%",%,$(CONFIG_SYMBOL_PREFIX))
 endif

@@ -33,8 +33,8 @@ config GCOV_KERNEL
 
 config GCOV_PROFILE_ALL
 	bool "Profile entire Kernel"
-	depends on GCOV_KERNEL
-	depends on S390 || X86 || (PPC && EXPERIMENTAL) || MICROBLAZE
+	depends on GCOV_KERNEL || GCOV_KERNEL_OPT
+	depends on MIPS || S390 || X86 || (PPC && EXPERIMENTAL) || MICROBLAZE
 	default n
 	---help---
 	This options activates profiling for the entire kernel.
@@ -44,5 +44,20 @@ config GCOV_PROFILE_ALL
 	Note that a kernel compiled with profiling flags will be significantly
 	larger and run slower. Also be sure to exclude files from profiling
 	which are not linked to the kernel image to prevent linker errors.
+
+config GCOV_KERNEL_OPT
+	bool "Optimize kernel image via recomping with gcov restuls"
+	depends on !GCOV_KERNEL
+	select GCOV_PROFILE_ALL
+	help
+	  This option activates -fbranch-probabilities to allow recompile the
+	  kernel with gcov result. The new generated kernel will have better
+	  performance and smaller size.
+
+	  If no gcov profiling data genearted, this option will have no effect
+	  but only warning. To use this option, please enable GCOV_KERNEL to do
+	  gcov profiling at first.
+
+	  If unsure, Say N.
 
 endmenu
