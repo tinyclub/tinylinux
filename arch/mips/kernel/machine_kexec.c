@@ -13,6 +13,7 @@
 #include <asm/bootinfo.h>
 #include <asm/cacheflush.h>
 #include <asm/page.h>
+#include <asm/uaccess.h>
 
 int (*_machine_kexec_prepare)(struct kimage *) = NULL;
 void (*_machine_kexec_shutdown)(void) = NULL;
@@ -35,6 +36,56 @@ static void machine_kexec_init_args(void)
 	pr_info("kexec_args[3] (desc): %p\n", (void *)kexec_args[3]);
 }
 
+#define ARGV_MAX_ARGS (COMMAND_LINE_SIZE / 15)
+
+int machine_kexec_pass_args(struct kimage *image)
+{
+	int i, argc = 0;
+	char *bootloader = "kexec";
+	unsigned long *kexec_argv = (unsigned long *)kexec_args[1];
+
+	for (i = 0; i < image->nr_segments; i++) {
+		if (!strncmp(bootloader, (char *)image->segment[i].buf,
+				strlen(bootloader))) {
+			/*
+			 * convert command line string to array
+			 * of parameters (as bootloader does).
+			 */
+			/*
+			 * Note: we do treat the 1st string "kexec" as an
+			 * argument ;-) so, argc here is 1.
+			 */
+			char *str = (char *)image->segment[i].buf;
+			char *ptr = strchr(str, ' ');
+			char *kbuf = (char *)kexec_argv[0];
+			/* Whenever --command-line or --append used, "kexec" is copied */
+			argc = 1;
+			/* Parse the offset */
+			while (ptr && (ARGV_MAX_ARGS > argc)) {
+				*ptr = '\0';
+				if (ptr[1] != ' ' && ptr[1] != '\0') {
+					int offt = (ptr - str + 1);
+					kexec_argv[argc] = (unsigned long)kbuf + offt;
+					argc++;
+				}
+				ptr = strchr(ptr + 1, ' ');
+			}
+			if (argc > 1) {
+				/* Copy to kernel space */
+				copy_from_user(kbuf, (char *)image->segment[i].buf, image->segment[i].bufsz);
+				fw_arg0 = kexec_args[0] = argc;
+			}
+			break;
+		}
+	}
+
+	pr_info("argc = %lu\n", kexec_args[0]);
+	for (i = 0; i < kexec_args[0]; i++)
+		pr_info("argv[%d] = %p, %s\n", i, (char *)kexec_argv[i], (char *)kexec_argv[i]);
+
+	return 0;
+}
+
 int
 machine_kexec_prepare(struct kimage *kimage)
 {
@@ -45,6 +96,7 @@ machine_kexec_prepare(struct kimage *kimage)
 	 * This can be overrided by _machine_kexec_prepare().
 	 */
 	machine_kexec_init_args();
+	machine_kexec_pass_args(kimage);
 
 	if (_machine_kexec_prepare)
 		return _machine_kexec_prepare(kimage);
