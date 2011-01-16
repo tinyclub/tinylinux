@@ -67,7 +67,7 @@ vmlinuz-lds := $(obj)/vmlinuz.lds
 
 targets	+= vmlinuz.lds
 
-LDFLAGS += --gc-sections
+LDFLAGS += --gc-sections -n
 
 ifeq ($(KBUILD_VERBOSE),1)
 LDFLAGS += --print-gc-sections
