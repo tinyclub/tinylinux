@@ -18,7 +18,7 @@
 
 	.set noreorder
 	.cprestore
-LEAF(start)
+LEAF(__start)
 	/* Save boot rom start args */
 	move	s0, a0
 	move	s1, a1
@@ -50,7 +50,7 @@ LEAF(start)
 3:
 	b	3b
 	 nop
-	END(start)
+	END(__start)
 
 	.comm .heap,BOOT_HEAP_SIZE,4
 	.comm .stack,BOOT_STACK_SIZE,4

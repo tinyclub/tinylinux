@@ -13,6 +13,7 @@ hostprogs-$(CONFIG_LOGO)         += pnmtologo
 hostprogs-$(CONFIG_VT)           += conmakehash
 hostprogs-$(CONFIG_IKCONFIG)     += bin2c
 hostprogs-$(CONFIG_SSTRIP)       += sstrip
+hostprogs-$(CONFIG_MIPS)         += calc_vmlinuz_load_addr
 
 always		:= $(hostprogs-y) $(hostprogs-m)
 

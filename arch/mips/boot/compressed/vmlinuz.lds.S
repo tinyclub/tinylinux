@@ -7,23 +7,22 @@
  */
 
 OUTPUT_ARCH(mips)
-ENTRY(start)
+ENTRY(__start)
 SECTIONS
 {
 	/* Text and read-only data */
-	/* . = VMLINUZ_LOAD_ADDRESS; */
+	. = VMLINUZ_LOAD_ADDRESS;
 	.text : {
 		*(.text.asm.start)
-		/* Put the compressed image here */
-		__image_begin = .;
-		KEEP(*(.image))
-		__image_end = .;
-		*(.text)
 		*(.text.*)
 		*(.text.[A-Za-z0-9_$^]*)
 		*(.rodata)
 		*(.rodata.*)
 		*(.rodata.[A-Za-z0-9_$^]*)
+		/* Put the compressed image here */
+		__image_begin = .;
+		KEEP(*(.image))
+		__image_end = .;
 	}
 
 	/* BSS */

@@ -14,12 +14,6 @@
 
 GCOV_PROFILE := n
 
-LDFLAGS_vmlinuz += --gc-sections
-
-ifeq ($(KBUILD_VERBOSE),1)
-LDFLAGS_vmlinuz += --print-gc-sections
-endif
-
 # Disable Function Tracer
 KBUILD_CFLAGS := $(shell echo $(KBUILD_CFLAGS) | sed -e "s/-pg//")
 
@@ -30,8 +24,11 @@ KBUILD_AFLAGS := $(LINUXINCLUDE) $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
 
 targets := head.o decompress.o dbg.o uart-16550.o uart-alchemy.o
 
+# bootstrap code
+vmlinuz-init  := $(obj)/head.o
+
 # decompressor objects (linked with vmlinuz)
-vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o
+vmlinuzobjs-y := $(obj)/decompress.o
 
 ifdef CONFIG_DEBUG_ZBOOT
 vmlinuzobjs-y += $(obj)/dbg.o
@@ -54,33 +51,47 @@ $(obj)/vmlinux.bin.z: $(obj)/vmlinux.bin FORCE
 	$(call if_changed,$(tool_y))
 
 targets += piggy.o
+vmlinuzobjs-y += $(obj)/piggy.o
 OBJCOPYFLAGS_piggy.o := --add-section=.image=$(obj)/vmlinux.bin.z \
                         --set-section-flags=.image=contents,alloc,load,readonly,data
 $(obj)/piggy.o: $(obj)/dummy.o $(obj)/vmlinux.bin.z FORCE
 	$(call if_changed,objcopy)
 
 # Calculate the load address of the compressed kernel image
-hostprogs-y := calc_vmlinuz_load_addr
-
-VMLINUZ_LOAD_ADDRESS = $(shell $(obj)/calc_vmlinuz_load_addr \
+VMLINUZ_LOAD_ADDRESS = $(shell $(objtree)/scripts/calc_vmlinuz_load_addr \
 		$(obj)/vmlinux.bin $(VMLINUX_LOAD_ADDRESS))
 
-vmlinuzobjs-y += $(obj)/piggy.o
+KBUILD_CPPFLAGS += -D"VMLINUZ_LOAD_ADDRESS=$(VMLINUZ_LOAD_ADDRESS)"
+CPPFLAGS_vmlinuz.lds += $(KBUILD_CFLAGS)
+vmlinuz-lds := $(obj)/vmlinuz.lds
+
+targets	+= vmlinuz.lds
+
+LDFLAGS += --gc-sections
+
+ifeq ($(KBUILD_VERBOSE),1)
+LDFLAGS += --print-gc-sections
+endif
 
 quiet_cmd_zld = LD      $@
-      cmd_zld = $(LD) $(LDFLAGS) $(LDFLAGS_vmlinuz) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T $< $(vmlinuzobjs-y) -o $@
+      cmd_zld = $(LD) $(LDFLAGS) -o $@ -T $< $(vmlinuz-init) \
+		--start-group $(vmlinuzobjs-y) --end-group
 quiet_cmd_strip = STRIP   $@
       cmd_strip = $(STRIP) -s $@
+quiet_cmd_copy  = COPY    $< to $@
+      cmd_copy  = cp $< $@
 ifdef CONFIG_SSTRIP
 quiet_cmd_sstrip = SSTRIP  $@
-      cmd_sstrip = $(srctree)/scripts/sstrip $@
+      cmd_sstrip = $(objtree)/scripts/sstrip $@
 endif
-vmlinuz: $(src)/ld.script $(vmlinuzobjs-y) $(obj)/calc_vmlinuz_load_addr
-	$(call cmd,zld)
-	$(call cmd,strip)
+
+vmlinuz-unsstrip := $(obj)/vmlinuz.unsstrip
+
+vmlinuz: $(vmlinuz-unsstrip) FORCE
+	$(call cmd,copy)
 	$(call cmd,sstrip)
 
-vmlinuz.unsstrip: $(src)/ld.script $(vmlinuzobjs-y) $(obj)/calc_vmlinuz_load_addr
+$(vmlinuz-unsstrip): $(vmlinuz-lds) $(vmlinuz-init) $(vmlinuzobjs-y) FORCE
 	$(call cmd,zld)
 	$(call cmd,strip)
 
@@ -92,17 +103,17 @@ ifdef CONFIG_MACH_DECSTATION
 endif
 
 # elf2ecoff can only handle 32bit image
-hostprogs-y += ../elf2ecoff
+hostprogs-y := ../elf2ecoff
 
 ifdef CONFIG_32BIT
-	VMLINUZ = vmlinuz.unsstrip
+	VMLINUZ = $(vmlinuz_unsstrip)
 else
 	VMLINUZ = vmlinuz.32
 endif
 
 quiet_cmd_32 = OBJCOPY $@
       cmd_32 = $(OBJCOPY) -O $(32bit-bfd) $(OBJCOPYFLAGS) $< $@
-vmlinuz.32: vmlinuz.unsstrip
+vmlinuz.32: $(vmlinuz_unsstrip)
 	$(call cmd,32)
 
 quiet_cmd_ecoff = ECOFF   $@
@@ -111,11 +122,11 @@ vmlinuz.ecoff: $(obj)/../elf2ecoff $(VMLINUZ)
 	$(call cmd,ecoff)
 
 OBJCOPYFLAGS_vmlinuz.bin := $(OBJCOPYFLAGS) -O binary
-vmlinuz.bin: vmlinuz.unsstrip
+vmlinuz.bin: $(vmlinuz_unsstrip)
 	$(call cmd,objcopy)
 
 OBJCOPYFLAGS_vmlinuz.srec := $(OBJCOPYFLAGS) -S -O srec
-vmlinuz.srec: vmlinuz.unsstrip
+vmlinuz.srec: $(vmlinuz_unsstrip)
 	$(call cmd,objcopy)
 
-clean-files := $(objtree)/vmlinuz $(objtree)/vmlinuz.{32,ecoff,bin,srec,unsstrip}
+clean-files := $(objtree)/vmlinuz $(objtree)/vmlinuz.{32,ecoff,bin,srec,unsstrip,lds}
