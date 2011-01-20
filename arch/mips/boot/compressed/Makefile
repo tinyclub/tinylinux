@@ -129,4 +129,4 @@ OBJCOPYFLAGS_vmlinuz.srec := $(OBJCOPYFLAGS) -S -O srec
 vmlinuz.srec: $(vmlinuz_unsstrip)
 	$(call cmd,objcopy)
 
-clean-files := $(objtree)/vmlinuz $(objtree)/vmlinuz.{32,ecoff,bin,srec,unsstrip,lds}
+clean-files := vmlinuz $(objtree)/vmlinuz.{32,ecoff,bin,srec,unsstrip,lds}
