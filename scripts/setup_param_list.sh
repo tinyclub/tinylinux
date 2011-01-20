@@ -10,7 +10,7 @@ new_param_list="$@"
 [ -z "$srctree" ] && srctree=./
 
 # Get the old param list
-param_list_bak=$objtree/param_list.bak
+param_list_bak=$objtree/param_list.plist
 
 # At the first time, save the default param list enabled by kernel as the old
 # param list
@@ -29,7 +29,7 @@ if [ "$new_param_list" = "$old_param_list" ]; then
 fi
 
 # Save the new param list temply
-new_param_list_bak=$objtree/new_param_list.bak
+new_param_list_bak=$objtree/new_param_list.plist
 echo $new_param_list | tr ' ' '\n' | sort -u > $new_param_list_bak
 
 # Check which one need to unsetup/setup
