@@ -28,6 +28,8 @@ unsigned long free_mem_end_ptr;
 /* The linker tells us where the image is. */
 extern unsigned char __image_begin, __image_end;
 
+extern void flush_cache_all(void);
+
 /* debug interfaces  */
 #ifdef CONFIG_DEBUG_ZBOOT
 extern void puts(const char *s);
@@ -114,5 +116,6 @@ void decompress_kernel(unsigned long boot_heap_start)
 		   (void *)_ULL(VMLINUX_LOAD_ADDRESS), 0, error);
 
 	/* FIXME: should we flush cache here? */
+	flush_cache_all();
 	puts("Now, booting the kernel...\n");
 }

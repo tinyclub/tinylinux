@@ -22,13 +22,13 @@ KBUILD_CFLAGS := $(LINUXINCLUDE) $(KBUILD_CFLAGS)
 KBUILD_AFLAGS := $(LINUXINCLUDE) $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
 	-DKERNEL_ENTRY=0x$(shell $(NM) $(objtree)/$(KBUILD_IMAGE) 2>/dev/null | grep " kernel_entry" | cut -f1 -d \ )
 
-targets := head.o decompress.o dbg.o uart-16550.o uart-alchemy.o
+targets := head.o decompress.o cache.o dbg.o uart-16550.o uart-alchemy.o
 
 # bootstrap code
 vmlinuz-init  := $(obj)/head.o
 
 # decompressor objects (linked with vmlinuz)
-vmlinuzobjs-y := $(obj)/decompress.o
+vmlinuzobjs-y := $(obj)/decompress.o $(obj)/cache.o
 
 ifdef CONFIG_DEBUG_ZBOOT
 vmlinuzobjs-y += $(obj)/dbg.o
