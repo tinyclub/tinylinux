@@ -14,6 +14,8 @@
 #include <asm/bootinfo.h>
 #include <machine.h>
 
+#ifdef CONFIG_MIPS_PLATFORM_DEVICES
+
 static struct platform_device yeeloong_pdev = {
 	.name = "yeeloong_laptop",
 	.id = -1,
@@ -47,3 +49,5 @@ static int __init lemote2f_platform_init(void)
 }
 
 arch_initcall(lemote2f_platform_init);
+
+#endif /* CONFIG_MIPS_PLATFORM_DEVICES */

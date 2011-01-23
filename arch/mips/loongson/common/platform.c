@@ -11,6 +11,7 @@
 #include <linux/err.h>
 #include <linux/platform_device.h>
 
+#ifdef CONFIG_CPUFREQ
 static struct platform_device loongson2_cpufreq_device = {
 	.name = "loongson2_cpufreq",
 	.id = -1,
@@ -28,3 +29,4 @@ static int __init loongson2_cpufreq_init(void)
 }
 
 arch_initcall(loongson2_cpufreq_init);
+#endif /* CONFIG_CPU_FREQ */
