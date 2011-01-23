@@ -36,7 +36,7 @@ struct cpuinfo_mips cpu_data[NR_CPUS] __read_mostly;
 
 EXPORT_SYMBOL(cpu_data);
 
-#ifdef CONFIG_VT
+#if defined(CONFIG_VT) && defined(CONFIG_VGA_CONSOLE)
 struct screen_info screen_info;
 #endif
 
