@@ -119,7 +119,11 @@ struct ata_force_ent {
 static struct ata_force_ent *ata_force_tbl;
 static int ata_force_tbl_size;
 
+#ifdef CONFIG_MODULE_PARAM
 static char ata_force_param_buf[PAGE_SIZE] __initdata;
+#else
+static char ata_force_param_buf[0] __initdata;
+#endif
 /* param_buf is thrown away after initialization, disallow read */
 module_param_string(force, ata_force_param_buf, sizeof(ata_force_param_buf), 0);
 MODULE_PARM_DESC(force, "Force ATA configurations including cable type, link speed and transfer mode (see Documentation/kernel-parameters.txt for details)");
@@ -6391,6 +6395,9 @@ static int __init ata_parse_force_one(char **cur,
 	 * gcc.  Once __initdataconst is implemented, add const to the
 	 * following structure.
 	 */
+#ifndef CONFIG_MODULE_PARAM
+	static struct ata_force_param force_tbl[] __initdata = {};
+#else
 	static struct ata_force_param force_tbl[] __initdata = {
 		{ "40c",	.cbl		= ATA_CBL_PATA40 },
 		{ "80c",	.cbl		= ATA_CBL_PATA80 },
@@ -6441,6 +6448,7 @@ static int __init ata_parse_force_one(char **cur,
 		{ "nosrst",	.lflags		= ATA_LFLAG_NO_SRST },
 		{ "norst",	.lflags		= ATA_LFLAG_NO_HRST | ATA_LFLAG_NO_SRST },
 	};
+#endif /* CONFIG_MODULE_PARAM */
 	char *start = *cur, *p = *cur;
 	char *id, *val, *endp;
 	const struct ata_force_param *match_fp = NULL;
