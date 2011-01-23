@@ -13,4 +13,4 @@
 # Note: To {un}setup an {un}setup param will be very slow, so, please don't try
 # to do that ;-)
 
-console root
+console init root

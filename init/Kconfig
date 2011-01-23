@@ -882,7 +882,7 @@ config SETUP_PARAM
 	  from a single file, by using __raw_setup() instead of __setup().
 
 config PARAM_LIST
-	default "console root"
+	default "console init root"
 	depends on !SETUP_PARAM
 	string "List the parameters need to be setup" if EMBEDDED
 	help

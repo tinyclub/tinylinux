@@ -341,7 +341,7 @@ static int __init init_setup(char *str)
 		argv_init[i] = NULL;
 	return 1;
 }
-__setup("init=", init_setup);
+__raw_setup("init=", init_setup);
 
 static int __init rdinit_setup(char *str)
 {
