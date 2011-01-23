@@ -46,19 +46,19 @@ extern char *smtc_RegBaseAddress;
 #define SIZE_VPR		(0x6C + 1)
 #define SIZE_DPR		(0x44 + 1)
 
-static void smtc_crtcw(int reg, int val)
+static inline void smtc_crtcw(int reg, int val)
 {
 	smtc_mmiowb(reg, 0x3d4);
 	smtc_mmiowb(val, 0x3d5);
 }
 
-static void smtc_grphw(int reg, int val)
+static inline void smtc_grphw(int reg, int val)
 {
 	smtc_mmiowb(reg, 0x3ce);
 	smtc_mmiowb(val, 0x3cf);
 }
 
-static void smtc_attrw(int reg, int val)
+static inline void smtc_attrw(int reg, int val)
 {
 	smtc_mmiorb(0x3da);
 	smtc_mmiowb(reg, 0x3c0);
@@ -66,13 +66,13 @@ static void smtc_attrw(int reg, int val)
 	smtc_mmiowb(val, 0x3c0);
 }
 
-static void smtc_seqw(int reg, int val)
+static inline void smtc_seqw(int reg, int val)
 {
 	smtc_mmiowb(reg, 0x3c4);
 	smtc_mmiowb(val, 0x3c5);
 }
 
-static unsigned int smtc_seqr(int reg)
+static inline unsigned int smtc_seqr(int reg)
 {
 	smtc_mmiowb(reg, 0x3c4);
 	return smtc_mmiorb(0x3c5);
