@@ -4157,6 +4157,9 @@ struct ata_blacklist_entry {
 };
 
 static const struct ata_blacklist_entry ata_device_blacklist [] = {
+#ifdef CONFIG_EMBEDDED
+#warning "Does your harddrive has DMA related problems?"
+#else
 	/* Devices with DMA related problems under Linux */
 	{ "WDC AC11000H",	NULL,		ATA_HORKAGE_NODMA },
 	{ "WDC AC22100H",	NULL,		ATA_HORKAGE_NODMA },
@@ -4322,6 +4325,7 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
 	 */
 	{ "PIONEER DVD-RW  DVRTD08",	"1.00",	ATA_HORKAGE_NOSETXFER },
 
+#endif /* CONFIG_EMBEDDED */
 	/* End Marker */
 	{ }
 };
