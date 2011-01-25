@@ -15,6 +15,8 @@
 
 #include "base.h"
 
+#ifndef CONFIG_PREVENT_FIRMWARE_BUILD
+
 struct kobject *firmware_kobj;
 EXPORT_SYMBOL_GPL(firmware_kobj);
 
@@ -25,3 +27,4 @@ int __init firmware_init(void)
 		return -ENOMEM;
 	return 0;
 }
+#endif /* !CONFIG_PREVENT_FIRMWARE_BUILD */

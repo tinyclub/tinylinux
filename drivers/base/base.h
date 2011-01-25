@@ -98,7 +98,11 @@ extern int device_private_init(struct device *dev);
 extern int devices_init(void);
 extern int buses_init(void);
 extern int classes_init(void);
+#ifdef CONFIG_PREVENT_FIRMWARE_BUILD
+static inline int firmware_init(void) { return 0; }
+#else
 extern int firmware_init(void);
+#endif
 #ifdef CONFIG_SYS_HYPERVISOR
 extern int hypervisor_init(void);
 #else
