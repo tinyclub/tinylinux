@@ -555,6 +555,8 @@ void __init timekeeping_init(void)
 	write_sequnlock_irqrestore(&xtime_lock, flags);
 }
 
+#if defined(CONFIG_SYSFS) && defined(CONFIG_PM)
+
 /* time in seconds when suspend began */
 static struct timespec timekeeping_suspend_time;
 
@@ -637,6 +639,7 @@ static int __init timekeeping_init_device(void)
 }
 
 device_initcall(timekeeping_init_device);
+#endif	/* CONFIG_SYSFS && CONFIG_PM */
 
 /*
  * If the error is already larger, we look ahead even further

@@ -217,6 +217,7 @@ spurious_8259A_irq:
 	}
 }
 
+#if defined(CONFIG_SYSFS) && defined(CONFIG_PM)
 static int i8259A_resume(struct sys_device *dev)
 {
 	if (i8259A_auto_eoi >= 0)
@@ -257,6 +258,7 @@ static int __init i8259A_init_sysfs(void)
 }
 
 device_initcall(i8259A_init_sysfs);
+#endif /* CONFIG_SYSFS && CONFIG_PM */
 
 static void init_8259A(int auto_eoi)
 {
