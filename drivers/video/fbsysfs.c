@@ -489,7 +489,7 @@ static ssize_t show_bl_curve(struct device *device,
 /* When cmap is added back in it should be a binary attribute
  * not a text one. Consideration should also be given to converting
  * fbdev to use configfs instead of sysfs */
-static struct device_attribute device_attrs[] = {
+static struct device_attribute device_attrs[] __maybe_unused = {
 	__ATTR(bits_per_pixel, S_IRUGO|S_IWUSR, show_bpp, store_bpp),
 	__ATTR(blank, S_IRUGO|S_IWUSR, show_blank, store_blank),
 	__ATTR(console, S_IRUGO|S_IWUSR, show_console, store_console),
@@ -516,7 +516,7 @@ int fb_init_device(struct fb_info *fb_info)
 	fb_info->class_flag |= FB_SYSFS_FLAG_ATTR;
 
 	for (i = 0; i < ARRAY_SIZE(device_attrs); i++) {
-		error = device_create_file(fb_info->dev, &device_attrs[i]);
+		error = device_create_file(fb_info->dev, __sysfs_p(&device_attrs[i]));
 
 		if (error)
 			break;
@@ -524,7 +524,7 @@ int fb_init_device(struct fb_info *fb_info)
 
 	if (error) {
 		while (--i >= 0)
-			device_remove_file(fb_info->dev, &device_attrs[i]);
+			device_remove_file(fb_info->dev, __sysfs_p(&device_attrs[i]));
 		fb_info->class_flag &= ~FB_SYSFS_FLAG_ATTR;
 	}
 
@@ -537,7 +537,7 @@ void fb_cleanup_device(struct fb_info *fb_info)
 
 	if (fb_info->class_flag & FB_SYSFS_FLAG_ATTR) {
 		for (i = 0; i < ARRAY_SIZE(device_attrs); i++)
-			device_remove_file(fb_info->dev, &device_attrs[i]);
+			device_remove_file(fb_info->dev, __sysfs_p(&device_attrs[i]));
 
 		fb_info->class_flag &= ~FB_SYSFS_FLAG_ATTR;
 	}
