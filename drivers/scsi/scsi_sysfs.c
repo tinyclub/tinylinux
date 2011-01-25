@@ -255,7 +255,7 @@ shost_rd_attr(prot_capabilities, "%u\n");
 shost_rd_attr(prot_guard_type, "%hd\n");
 shost_rd_attr2(proc_name, hostt->proc_name, "%s\n");
 
-static struct attribute *scsi_sysfs_shost_attrs[] = {
+static struct attribute *scsi_sysfs_shost_attrs[] __maybe_unused = {
 	&dev_attr_unique_id.attr,
 	&dev_attr_host_busy.attr,
 	&dev_attr_cmd_per_lun.attr,
@@ -272,12 +272,12 @@ static struct attribute *scsi_sysfs_shost_attrs[] = {
 	NULL
 };
 
-struct attribute_group scsi_shost_attr_group = {
-	.attrs =	scsi_sysfs_shost_attrs,
+struct attribute_group scsi_shost_attr_group __maybe_unused = {
+	.attrs =	__sysfs_p(scsi_sysfs_shost_attrs),
 };
 
 const struct attribute_group *scsi_sysfs_shost_attr_groups[] = {
-	&scsi_shost_attr_group,
+	__sysfs_p(&scsi_shost_attr_group),
 	NULL
 };
 
@@ -722,7 +722,7 @@ sdev_store_evt_##name(struct device *dev, struct device_attribute *attr,\
 DECLARE_EVT(media_change, MEDIA_CHANGE)
 
 /* Default template for device attributes.  May NOT be modified */
-static struct attribute *scsi_sdev_attrs[] = {
+static struct attribute *scsi_sdev_attrs[] __maybe_unused = {
 	&dev_attr_device_blocked.attr,
 	&dev_attr_type.attr,
 	&dev_attr_scsi_level.attr,
@@ -742,11 +742,11 @@ static struct attribute *scsi_sdev_attrs[] = {
 	NULL
 };
 
-static struct attribute_group scsi_sdev_attr_group = {
+static struct attribute_group scsi_sdev_attr_group __maybe_unused = {
 	.attrs =	scsi_sdev_attrs,
 };
 
-static const struct attribute_group *scsi_sdev_attr_groups[] = {
+static const struct attribute_group *scsi_sdev_attr_groups[] __maybe_unused = {
 	&scsi_sdev_attr_group,
 	NULL
 };
@@ -777,7 +777,7 @@ sdev_store_queue_depth_rw(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 
-static struct device_attribute sdev_attr_queue_depth_rw =
+static struct device_attribute sdev_attr_queue_depth_rw __maybe_unused =
 	__ATTR(queue_depth, S_IRUGO | S_IWUSR, sdev_show_queue_depth,
 	       sdev_store_queue_depth_rw);
 
@@ -807,7 +807,7 @@ sdev_store_queue_ramp_up_period(struct device *dev,
 	return period;
 }
 
-static struct device_attribute sdev_attr_queue_ramp_up_period =
+static struct device_attribute sdev_attr_queue_ramp_up_period __maybe_unused =
 	__ATTR(queue_ramp_up_period, S_IRUGO | S_IWUSR,
 	       sdev_show_queue_ramp_up_period,
 	       sdev_store_queue_ramp_up_period);
@@ -861,7 +861,7 @@ static int scsi_target_add(struct scsi_target *starget)
 	return 0;
 }
 
-static struct device_attribute sdev_attr_queue_type_rw =
+static struct device_attribute sdev_attr_queue_type_rw __maybe_unused =
 	__ATTR(queue_type, S_IRUGO | S_IWUSR, show_queue_type_field,
 	       sdev_store_queue_type_rw);
 
@@ -906,19 +906,19 @@ int scsi_sysfs_add_sdev(struct scsi_device *sdev)
 	/* create queue files, which may be writable, depending on the host */
 	if (sdev->host->hostt->change_queue_depth) {
 		error = device_create_file(&sdev->sdev_gendev,
-					   &sdev_attr_queue_depth_rw);
+					   __sysfs_p(&sdev_attr_queue_depth_rw));
 		error = device_create_file(&sdev->sdev_gendev,
-					   &sdev_attr_queue_ramp_up_period);
+					   __sysfs_p(&sdev_attr_queue_ramp_up_period));
 	}
 	else
-		error = device_create_file(&sdev->sdev_gendev, &dev_attr_queue_depth);
+		error = device_create_file(&sdev->sdev_gendev, __sysfs_p(&dev_attr_queue_depth));
 	if (error)
 		return error;
 
 	if (sdev->host->hostt->change_queue_type)
-		error = device_create_file(&sdev->sdev_gendev, &sdev_attr_queue_type_rw);
+		error = device_create_file(&sdev->sdev_gendev, __sysfs_p(&sdev_attr_queue_type_rw));
 	else
-		error = device_create_file(&sdev->sdev_gendev, &dev_attr_queue_type);
+		error = device_create_file(&sdev->sdev_gendev, __sysfs_p(&dev_attr_queue_type));
 	if (error)
 		return error;
 
@@ -934,7 +934,7 @@ int scsi_sysfs_add_sdev(struct scsi_device *sdev)
 	if (sdev->host->hostt->sdev_attrs) {
 		for (i = 0; sdev->host->hostt->sdev_attrs[i]; i++) {
 			error = device_create_file(&sdev->sdev_gendev,
-					sdev->host->hostt->sdev_attrs[i]);
+					__sysfs_p(sdev->host->hostt->sdev_attrs[i]));
 			if (error)
 				return error;
 		}
@@ -1060,7 +1060,7 @@ int scsi_sysfs_add_host(struct Scsi_Host *shost)
 	if (shost->hostt->shost_attrs) {
 		for (i = 0; shost->hostt->shost_attrs[i]; i++) {
 			error = device_create_file(&shost->shost_dev,
-					shost->hostt->shost_attrs[i]);
+					__sysfs_p(shost->hostt->shost_attrs[i]));
 			if (error)
 				return error;
 		}
@@ -1074,7 +1074,7 @@ int scsi_sysfs_add_host(struct Scsi_Host *shost)
 static struct device_type scsi_dev_type = {
 	.name =		"scsi_device",
 	.release =	scsi_device_dev_release,
-	.groups =	scsi_sdev_attr_groups,
+	.groups =	__sysfs_p(scsi_sdev_attr_groups),
 };
 
 void scsi_sysfs_device_initialize(struct scsi_device *sdev)
