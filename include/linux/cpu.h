@@ -30,7 +30,11 @@ struct cpu {
 	struct sys_device sysdev;
 };
 
+#ifdef CONFIG_SYSFS
 extern int register_cpu(struct cpu *cpu, int num);
+#else
+#define register_cpu(cpu, num) (0)
+#endif
 extern struct sys_device *get_cpu_sysdev(unsigned cpu);
 
 extern int cpu_add_sysdev_attr(struct sysdev_attribute *attr);
