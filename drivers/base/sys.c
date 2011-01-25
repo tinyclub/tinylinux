@@ -59,7 +59,7 @@ static const struct sysfs_ops sysfs_ops = {
 };
 
 static struct kobj_type ktype_sysdev = {
-	.sysfs_ops	= &sysfs_ops,
+	.sysfs_ops	= __sysfs_p(&sysfs_ops),
 };
 
 

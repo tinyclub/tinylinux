@@ -85,7 +85,7 @@ static void driver_release(struct kobject *kobj)
 }
 
 static struct kobj_type driver_ktype = {
-	.sysfs_ops	= &driver_sysfs_ops,
+	.sysfs_ops	= __sysfs_p(&driver_sysfs_ops),
 	.release	= driver_release,
 };
 

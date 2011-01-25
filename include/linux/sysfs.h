@@ -184,7 +184,11 @@ void sysfs_exit_ns(enum kobj_ns_type type, const void *tag);
 
 int __must_check sysfs_init(void);
 
+#define __sysfs_p(x) x
+
 #else /* CONFIG_SYSFS */
+
+#define __sysfs_p(x) NULL
 
 static inline int sysfs_schedule_callback(struct kobject *kobj,
 		void (*func)(void *), void *data, struct module *owner)

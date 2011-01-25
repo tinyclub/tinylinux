@@ -144,7 +144,7 @@ static const void *device_namespace(struct kobject *kobj)
 
 static struct kobj_type device_ktype = {
 	.release	= device_release,
-	.sysfs_ops	= &dev_sysfs_ops,
+	.sysfs_ops	= __sysfs_p(&dev_sysfs_ops),
 	.namespace	= device_namespace,
 };
 

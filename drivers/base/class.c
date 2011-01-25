@@ -77,7 +77,7 @@ static const struct sysfs_ops class_sysfs_ops = {
 };
 
 static struct kobj_type class_ktype = {
-	.sysfs_ops	= &class_sysfs_ops,
+	.sysfs_ops	= __sysfs_p(&class_sysfs_ops),
 	.release	= class_release,
 	.child_ns_type	= class_child_ns_type,
 };
