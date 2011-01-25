@@ -137,6 +137,8 @@ static __init int set_mminit_loglevel(char *str)
 early_param("mminit_loglevel", set_mminit_loglevel);
 #endif /* CONFIG_DEBUG_MEMORY_INIT */
 
+#ifdef CONFIG_SYSFS
+
 struct kobject *mm_kobj;
 EXPORT_SYMBOL_GPL(mm_kobj);
 
@@ -150,3 +152,5 @@ static int __init mm_sysfs_init(void)
 }
 
 __initcall(mm_sysfs_init);
+
+#endif /* CONFIG_SYSFS */
