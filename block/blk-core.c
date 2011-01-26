@@ -522,7 +522,7 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
 	INIT_LIST_HEAD(&q->timeout_list);
 	INIT_WORK(&q->unplug_work, blk_unplug_work);
 
-	kobject_init(&q->kobj, &blk_queue_ktype);
+	kobject_init(&q->kobj, __sysfs_p(&blk_queue_ktype));
 
 	mutex_init(&q->sysfs_lock);
 	spin_lock_init(&q->__queue_lock);
