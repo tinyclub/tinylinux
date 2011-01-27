@@ -59,7 +59,7 @@ EXPORT_SYMBOL(mips_machtype);
 struct boot_mem_map boot_mem_map;
 
 static char __initdata command_line[COMMAND_LINE_SIZE];
-char __initdata arcs_cmdline[COMMAND_LINE_SIZE];
+char __initdata arcs_cmdline[COMMAND_LINE_SIZE] = "";
 
 #ifdef CONFIG_CMDLINE_BOOL
 static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
