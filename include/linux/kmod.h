@@ -66,6 +66,7 @@ struct subprocess_info {
 	void *data;
 };
 
+#ifdef CONFIG_USER_MODE_HELPER
 /* Allocate a subprocess_info structure */
 struct subprocess_info *call_usermodehelper_setup(char *path, char **argv,
 						  char **envp, gfp_t gfp_mask);
@@ -113,5 +114,15 @@ extern void usermodehelper_init(void);
 
 extern int usermodehelper_disable(void);
 extern void usermodehelper_enable(void);
+#else
+#define call_usermodehelper_setup(path, argv, envp, gfp_mask) NULL
+#define call_usermodehelper_setfns(info, init, cleanup, data)
+#define call_usermodehelper_exec(info, wait) (0)
+
+/* Actually execute the sub-process */
+#define usermodehelper_init()
+#define usermodehelper_disable() (0)
+#define usermodehelper_enable()
+#endif /* CONFIG_USER_MODE_HELPER */
 
 #endif /* __LINUX_KMOD_H__ */

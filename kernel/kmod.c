@@ -126,6 +126,7 @@ int __request_module(bool wait, const char *fmt, ...)
 EXPORT_SYMBOL(__request_module);
 #endif /* CONFIG_MODULES */
 
+#ifdef CONFIG_USER_MODE_HELPER
 /*
  * This is the task which runs the usermode application
  */
@@ -421,3 +422,5 @@ void __init usermodehelper_init(void)
 	khelper_wq = create_singlethread_workqueue("khelper");
 	BUG_ON(!khelper_wq);
 }
+
+#endif /* CONFIG_USER_MODE_HELPER */
