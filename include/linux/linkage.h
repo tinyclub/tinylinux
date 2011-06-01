@@ -63,6 +63,7 @@
 
 #ifndef ENTRY
 #define ENTRY(name) \
+  .section	.text.asm.name;	\
   .globl name; \
   ALIGN; \
   name:
@@ -71,6 +72,7 @@
 
 #ifndef WEAK
 #define WEAK(name)	   \
+  	.section	.text.asm.name;	\
 	.weak name;	   \
 	name:
 #endif
