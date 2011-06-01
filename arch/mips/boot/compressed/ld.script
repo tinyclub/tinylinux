@@ -15,7 +15,9 @@ SECTIONS
 	.text	: {
 		_ftext = . ;
 		*(.text)
+		*(.text.[A-Za-z0-9_$^]*)
 		*(.rodata)
+		*(.rodata.[A-Za-z0-9_$^]*)
 	} = 0
 	_etext = .;	/* End of text section */
 
@@ -23,6 +25,7 @@ SECTIONS
 	.data	: {	/* Data */
 		_fdata = . ;
 		*(.data)
+		*(.data.[A-Za-z0-9_$^]*)
 		/* Put the compressed image here, so bss is on the end. */
 		__image_begin = .;
 		*(.image)
@@ -40,6 +43,7 @@ SECTIONS
 	.bss	: {
 		*(.dynbss)
 		*(.bss)
+		*(.bss.[A-Za-z0-9_$^]*)
 		*(COMMON)
 	}
 	.  = ALIGN(4);
