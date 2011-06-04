@@ -2932,6 +2932,8 @@ static void *cache_free_debugcheck(struct kmem_cache *cachep, void *objp,
 
 	BUG_ON(virt_to_cache(objp) != cachep);
 
+	cache_free_account(objp, cachep->obj_size);
+
 	objp -= obj_offset(cachep);
 	kfree_debugcheck(objp);
 	page = virt_to_head_page(objp);
@@ -3107,7 +3109,8 @@ static inline void cache_alloc_debugcheck_before(struct kmem_cache *cachep,
 
 #if DEBUG
 static void *cache_alloc_debugcheck_after(struct kmem_cache *cachep,
-				gfp_t flags, void *objp, void *caller)
+				gfp_t flags, void *objp, void *caller,
+				int req_size)
 {
 	if (!objp)
 		return objp;
@@ -3158,10 +3161,11 @@ static void *cache_alloc_debugcheck_after(struct kmem_cache *cachep,
 		       objp, ARCH_SLAB_MINALIGN);
 	}
 #endif
+	cache_alloc_account(caller, objp, cachep->obj_size, req_size);
 	return objp;
 }
 #else
-#define cache_alloc_debugcheck_after(a,b,objp,d) (objp)
+#define cache_alloc_debugcheck_after(a, b, objp, d, e) (objp)
 #endif
 
 static bool slab_should_failslab(struct kmem_cache *cachep, gfp_t flags)
@@ -3385,7 +3389,7 @@ done:
  */
 static __always_inline void *
 __cache_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid,
-		   void *caller)
+		   void *caller, int size)
 {
 	unsigned long save_flags;
 	void *ptr;
@@ -3425,7 +3429,7 @@ __cache_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid,
 	ptr = ____cache_alloc_node(cachep, flags, nodeid);
   out:
 	local_irq_restore(save_flags);
-	ptr = cache_alloc_debugcheck_after(cachep, flags, ptr, caller);
+	ptr = cache_alloc_debugcheck_after(cachep, flags, ptr, caller, size);
 	kmemleak_alloc_recursive(ptr, obj_size(cachep), 1, cachep->flags,
 				 flags);
 
@@ -3471,7 +3475,8 @@ __do_cache_alloc(struct kmem_cache *cachep, gfp_t flags)
 #endif /* CONFIG_NUMA */
 
 static __always_inline void *
-__cache_alloc(struct kmem_cache *cachep, gfp_t flags, void *caller)
+__cache_alloc(struct kmem_cache *cachep, gfp_t flags, void *caller,
+		size_t size)
 {
 	unsigned long save_flags;
 	void *objp;
@@ -3487,7 +3492,7 @@ __cache_alloc(struct kmem_cache *cachep, gfp_t flags, void *caller)
 	local_irq_save(save_flags);
 	objp = __do_cache_alloc(cachep, flags);
 	local_irq_restore(save_flags);
-	objp = cache_alloc_debugcheck_after(cachep, flags, objp, caller);
+	objp = cache_alloc_debugcheck_after(cachep, flags, objp, caller, size);
 	kmemleak_alloc_recursive(objp, obj_size(cachep), 1, cachep->flags,
 				 flags);
 	prefetchw(objp);
@@ -3644,7 +3649,7 @@ static inline void __cache_free(struct kmem_cache *cachep, void *objp)
  */
 void *kmem_cache_alloc(struct kmem_cache *cachep, gfp_t flags)
 {
-	void *ret = __cache_alloc(cachep, flags, __builtin_return_address(0));
+	void *ret = __cache_alloc(cachep, flags, __builtin_return_address(0), -1);
 
 	trace_kmem_cache_alloc(_RET_IP_, ret,
 			       obj_size(cachep), cachep->buffer_size, flags);
@@ -3656,7 +3661,7 @@ EXPORT_SYMBOL(kmem_cache_alloc);
 #ifdef CONFIG_TRACING
 void *kmem_cache_alloc_notrace(struct kmem_cache *cachep, gfp_t flags)
 {
-	return __cache_alloc(cachep, flags, __builtin_return_address(0));
+	return __cache_alloc(cachep, flags, __builtin_return_address(0), -1);
 }
 EXPORT_SYMBOL(kmem_cache_alloc_notrace);
 #endif
@@ -3695,7 +3700,7 @@ out:
 void *kmem_cache_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid)
 {
 	void *ret = __cache_alloc_node(cachep, flags, nodeid,
-				       __builtin_return_address(0));
+				       __builtin_return_address(0), -1);
 
 	trace_kmem_cache_alloc_node(_RET_IP_, ret,
 				    obj_size(cachep), cachep->buffer_size,
@@ -3725,7 +3730,7 @@ __do_kmalloc_node(size_t size, gfp_t flags, int node, void *caller)
 	cachep = kmem_find_general_cachep(size, flags);
 	if (unlikely(ZERO_OR_NULL_PTR(cachep)))
 		return cachep;
-	ret = kmem_cache_alloc_node_notrace(cachep, flags, node);
+	ret = kmem_cache_alloc_node_notrace(cachep, flags, node, size);
 
 	trace_kmalloc_node((unsigned long) caller, ret,
 			   size, cachep->buffer_size, flags, node);
@@ -3776,7 +3781,7 @@ static __always_inline void *__do_kmalloc(size_t size, gfp_t flags,
 	cachep = __find_general_cachep(size, flags);
 	if (unlikely(ZERO_OR_NULL_PTR(cachep)))
 		return cachep;
-	ret = __cache_alloc(cachep, flags, caller);
+	ret = __cache_alloc(cachep, flags, caller, size);
 
 	trace_kmalloc((unsigned long) caller, ret,
 		      size, cachep->buffer_size, flags);
@@ -3845,8 +3850,11 @@ void kfree(const void *objp)
 
 	trace_kfree(_RET_IP_, objp);
 
-	if (unlikely(ZERO_OR_NULL_PTR(objp)))
+	if (unlikely(ZERO_OR_NULL_PTR(objp))) {
+		cache_free_account(objp, 0);
 		return;
+	}
+
 	local_irq_save(flags);
 	kfree_debugcheck(objp);
 	c = virt_to_cache(objp);

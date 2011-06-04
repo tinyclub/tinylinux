@@ -98,6 +98,24 @@
 void __init kmem_cache_init(void);
 int slab_is_available(void);
 
+#ifdef CONFIG_DEBUG_SLAB_ACCOUNT
+void __cache_alloc_account(const void *, const void *, int, int);
+void __cache_free_account(const void *, int);
+
+static inline void cache_alloc_account(void *caller, const void *addr, int size, int req)
+{
+	__cache_alloc_account(caller, addr, size, req);
+}
+
+static inline void cache_free_account(const void *addr, int size)
+{
+	__cache_free_account(addr, size);
+}
+#else
+#define cache_alloc_account(a, b, c, d)
+#define cache_free_account(a, b)
+#endif
+
 struct kmem_cache *kmem_cache_create(const char *, size_t, size_t,
 			unsigned long,
 			void (*)(void *));

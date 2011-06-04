@@ -400,6 +400,14 @@ config DEBUG_KMEMLEAK_TEST
 
 	  If unsure, say N.
 
+config DEBUG_SLAB_ACCOUNT
+	default n
+	bool "Enabled accounting of slab allocations"
+	depends on DEBUG_SLAB
+	help
+	  This option records slab cache activity and reports it via
+	  /proc/slabaccount.
+
 config DEBUG_PREEMPT
 	bool "Debug preemptible kernel"
 	depends on DEBUG_KERNEL && PREEMPT && TRACE_IRQFLAGS_SUPPORT

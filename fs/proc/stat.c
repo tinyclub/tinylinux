@@ -170,9 +170,31 @@ static const struct file_operations proc_stat_operations = {
 	.release	= single_release,
 };
 
+#ifdef CONFIG_DEBUG_SLAB_ACCOUNT
+
+extern const struct seq_operations slab_account_op;
+
+static int slab_account_open(struct inode *inode, struct file *file)
+{
+	return seq_open(file, &slab_account_op);
+}
+
+static const struct file_operations proc_slab_account_operations = {
+	.open		= slab_account_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= seq_release,
+};
+
+#endif
+
+
 static int __init proc_stat_init(void)
 {
 	proc_create("stat", 0, NULL, &proc_stat_operations);
+#ifdef CONFIG_DEBUG_SLAB_ACCOUNT
+	proc_create("slab_account", 0, NULL, &proc_slab_account_operations);
+#endif
 	return 0;
 }
 module_init(proc_stat_init);
