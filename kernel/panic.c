@@ -74,10 +74,15 @@ static void panic_blink_one_second(void)
  *
  *	This function never returns.
  */
+#ifdef CONFIG_FULL_PANIC
 NORET_TYPE void panic(const char * fmt, ...)
 {
 	static char buf[1024];
 	va_list args;
+#else
+NORET_TYPE void tiny_panic(int a, ...)
+{
+#endif
 	long i;
 
 	/*
@@ -89,10 +94,15 @@ NORET_TYPE void panic(const char * fmt, ...)
 
 	console_verbose();
 	bust_spinlocks(1);
+#ifdef CONFIG_FULL_PANIC
 	va_start(args, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, args);
 	va_end(args);
 	printk(KERN_EMERG "Kernel panic - not syncing: %s\n",buf);
+#else
+	printk(KERN_EMERG "Kernel panic - not syncing\n");
+#endif
+
 #ifdef CONFIG_DEBUG_BUGVERBOSE
 	dump_stack();
 #endif
@@ -113,7 +123,11 @@ NORET_TYPE void panic(const char * fmt, ...)
 	 */
 	smp_send_stop();
 
+#ifdef CONFIG_FULL_PANIC
 	atomic_notifier_call_chain(&panic_notifier_list, 0, buf);
+#else
+	atomic_notifier_call_chain(&panic_notifier_list, 0, "");
+#endif
 
 	bust_spinlocks(0);
 
@@ -158,7 +172,11 @@ NORET_TYPE void panic(const char * fmt, ...)
 	}
 }
 
+#ifdef CONFIG_FULL_PANIC
 EXPORT_SYMBOL(panic);
+#else
+EXPORT_SYMBOL(tiny_panic);
+#endif
 
 
 struct tnt {
