@@ -909,6 +909,13 @@ config FUTEX
 	  support for "fast userspace mutexes".  The resulting kernel may not
 	  run glibc-based applications correctly.
 
+config PTRACE
+	bool "Enable ptrace support" if EMBEDDED
+	default y
+	help
+	  Disabling this option will cause the kernel to be built without
+	  support for ptrace family of system support.
+
 config EPOLL
 	bool "Enable eventpoll support" if EMBEDDED
 	default y

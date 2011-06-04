@@ -167,6 +167,7 @@ work_notifysig:				# deal with pending signals and
 FEXPORT(syscall_exit_work_partial)
 	SAVE_STATIC
 syscall_exit_work:
+#ifdef CONFIG_PTRACE
 	li	t0, _TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT
 	and	t0, a2			# a2 is preloaded with TI_FLAGS
 	beqz	t0, work_pending	# trace bit set?
@@ -175,6 +176,9 @@ syscall_exit_work:
 	move	a0, sp
 	li	a1, 1
 	jal	do_syscall_trace
+#else
+	b	work_pending
+#endif
 	b	resume_userspace
 
 #if defined(CONFIG_CPU_MIPSR2) || defined(CONFIG_MIPS_MT)

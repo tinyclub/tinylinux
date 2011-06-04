@@ -53,12 +53,12 @@ NESTED(handle_sys64, PT_SIZE, sp)
 					# syscall routine
 
 	sd	a3, PT_R26(sp)		# save a3 for syscall restarting
-
+#ifdef CONFIG_PTRACE
 	li	t1, _TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT
 	LONG_L	t0, TI_FLAGS($28)	# syscall tracing enabled?
 	and	t0, t1, t0
 	bnez	t0, syscall_trace_entry
-
+#endif
 	jalr	t2			# Do The Real Thing (TM)
 
 	li	t0, -EMAXERRNO - 1	# error?
@@ -86,7 +86,7 @@ n64_syscall_exit_work:
 	j	syscall_exit_work_partial
 
 /* ------------------------------------------------------------------------ */
-
+#ifdef CONFIG_PTRACE
 syscall_trace_entry:
 	SAVE_STATIC
 	move	s0, t2
@@ -114,6 +114,7 @@ syscall_trace_entry:
 1:	sd	v0, PT_R2(sp)		# result
 
 	j	syscall_exit
+#endif
 
 illegal_syscall:
 	/* This also isn't a 64-bit syscall, throw an error.  */

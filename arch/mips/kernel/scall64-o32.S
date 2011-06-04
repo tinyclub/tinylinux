@@ -81,10 +81,12 @@ NESTED(handle_sys, PT_SIZE, sp)
 	PTR	4b, bad_stack
 	.previous
 
+#ifdef CONFIG_PTRACE
 	li	t1, _TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT
 	LONG_L	t0, TI_FLAGS($28)	# syscall tracing enabled?
 	and	t0, t1, t0
 	bnez	t0, trace_a_syscall
+#endif
 
 	jalr	t2			# Do The Real Thing (TM)
 
@@ -113,6 +115,7 @@ o32_syscall_exit_work:
 
 /* ------------------------------------------------------------------------ */
 
+#ifdef CONFIG_PTRACE
 trace_a_syscall:
 	SAVE_STATIC
 	sd	a4, PT_R8(sp)		# Save argument registers
@@ -147,7 +150,7 @@ trace_a_syscall:
 1:	sd	v0, PT_R2(sp)		# result
 
 	j	syscall_exit
-
+#endif /* CONFIG_PTRACE */
 /* ------------------------------------------------------------------------ */
 
 	/*

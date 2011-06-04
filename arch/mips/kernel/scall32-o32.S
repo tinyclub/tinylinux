@@ -51,11 +51,12 @@ NESTED(handle_sys, PT_SIZE, sp)
 	bgez	t3, stackargs
 
 stack_done:
+#ifdef CONFIG_PTRACE
 	lw	t0, TI_FLAGS($28)	# syscall tracing enabled?
 	li	t1, _TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT
 	and	t0, t1
 	bnez	t0, syscall_trace_entry	# -> yes
-
+#endif
 	jalr	t2			# Do The Real Thing (TM)
 
 	li	t0, -EMAXERRNO - 1	# error?
@@ -84,6 +85,7 @@ o32_syscall_exit_work:
 
 /* ------------------------------------------------------------------------ */
 
+#ifdef CONFIG_PTRACE
 syscall_trace_entry:
 	SAVE_STATIC
 	move	s0, t2
@@ -110,7 +112,7 @@ syscall_trace_entry:
 1:	sw	v0, PT_R2(sp)		# result
 
 	j	syscall_exit
-
+#endif
 /* ------------------------------------------------------------------------ */
 
 	/*

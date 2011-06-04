@@ -53,11 +53,12 @@ NESTED(handle_sysn32, PT_SIZE, sp)
 
 	sd	a3, PT_R26(sp)		# save a3 for syscall restarting
 
+#ifdef CONFIG_PTRACE
 	li	t1, _TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT
 	LONG_L	t0, TI_FLAGS($28)	# syscall tracing enabled?
 	and	t0, t1, t0
 	bnez	t0, n32_syscall_trace_entry
-
+#endif
 	jalr	t2			# Do The Real Thing (TM)
 
 	li	t0, -EMAXERRNO - 1	# error?
@@ -83,7 +84,7 @@ n32_syscall_exit_work:
 	j	syscall_exit_work_partial
 
 /* ------------------------------------------------------------------------ */
-
+#ifdef CONFIG_PTRACE
 n32_syscall_trace_entry:
 	SAVE_STATIC
 	move	s0, t2
@@ -111,7 +112,7 @@ n32_syscall_trace_entry:
 1:	sd	v0, PT_R2(sp)		# result
 
 	j	syscall_exit
-
+#endif /* CONFIG_PTRACE */
 not_n32_scall:
 	/* This is not an n32 compatibility syscall, pass it on to
 	   the n64 syscall handlers.  */
