@@ -16,6 +16,11 @@
  *	01Mar01 Andrew Morton
  */
 
+/*
+ * have kernel.h produce real declarations, depending on configuration
+ */
+#define DO_PRINTK 1
+
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/tty.h>
@@ -139,7 +144,7 @@ EXPORT_SYMBOL(console_set_on_cmdline);
 /* Flag: console code may call schedule() */
 static int console_may_schedule;
 
-#ifdef CONFIG_PRINTK
+#ifdef CONFIG_PRINTK_FUNC
 
 static char __log_buf[__LOG_BUF_LEN];
 static char *log_buf = __log_buf;
@@ -821,13 +826,13 @@ out_restore_irqs:
 EXPORT_SYMBOL(printk);
 EXPORT_SYMBOL(vprintk);
 
-#else
+#else /* !CONFIG_PRINTK_FUNC */
 
 static void call_console_drivers(unsigned start, unsigned end)
 {
 }
 
-#endif
+#endif /* !CONFIG_PRINTK_FUNC */
 
 static int __add_preferred_console(char *name, int idx, char *options,
 				   char *brl_options)

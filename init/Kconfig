@@ -858,15 +858,33 @@ config HOTPLUG
 	  disabling this option for embedded systems that do not use modules, a
 	  dynamic /dev tree, or dynamic device discovery.  Just say Y.
 
+config PRINTK_FUNC
+	default y
+	bool "Enable printk function in the kernel" if EMBEDDED
+	help
+	  This option controls whether the printk function is compiled
+	  into the kernel or not. Removing it eliminates a small amount of
+	  code size from the kernel, which is OK if it is not being used.
+	  See CONFIG_PRINTK to disable the function calls to printk(),
+	  which is where the big win comes in reducing kernel size.
+
 config PRINTK
 	default y
-	bool "Enable support for printk" if EMBEDDED
+	bool "Enable support for printk messages" if EMBEDDED
+	depends on PRINTK_FUNC
 	help
 	  This option enables normal printk support. Removing it
 	  eliminates most of the message strings from the kernel image
 	  and makes the kernel more or less silent. As this makes it
-	  very difficult to diagnose system problems, saying N here is
-	  strongly discouraged.
+	  very difficult to diagnose system problems, saying N here on
+	  non-embedded systems is strongly discouraged.
+
+	  With this set to 'N', if the printk function is still enabled,
+	  (see CONFIG_PRINTK_FUNC) you can enable printk messages from
+	  a single file, by putting "#define DO_PRINTK 1" at the top of
+	  the file.  This must appear before any #include lines.
+ 	  This makes it possible to have fine-grained control over
+	  which printk messages to include in the kernel.
 
 config BUG
 	bool "BUG() support" if EMBEDDED
