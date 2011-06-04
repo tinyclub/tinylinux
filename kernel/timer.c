@@ -1311,6 +1311,7 @@ void do_timer(unsigned long ticks)
 	calc_global_load(ticks);
 }
 
+#ifdef CONFIG_ITIMER
 #ifdef __ARCH_WANT_SYS_ALARM
 
 /*
@@ -1323,6 +1324,7 @@ SYSCALL_DEFINE1(alarm, unsigned int, seconds)
 }
 
 #endif
+#endif /* CONFIG_ITIMER */
 
 #ifndef __alpha__
 
