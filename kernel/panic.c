@@ -40,6 +40,8 @@ EXPORT_SYMBOL(panic_notifier_list);
 long (*panic_blink)(long time);
 EXPORT_SYMBOL(panic_blink);
 
+#ifdef CONFIG_PANIC
+
 static void panic_blink_one_second(void)
 {
 	static long i = 0, end;
@@ -176,6 +178,7 @@ NORET_TYPE void tiny_panic(int a, ...)
 EXPORT_SYMBOL(panic);
 #else
 EXPORT_SYMBOL(tiny_panic);
+#endif
 #endif
 
 

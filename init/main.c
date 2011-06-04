@@ -861,6 +861,8 @@ static noinline int init_post(void)
 
 	panic("No init found.  Try passing init= option to kernel. "
 	      "See Linux Documentation/init.txt for guidance.");
+
+	return 0;
 }
 
 static int __init kernel_init(void * unused)

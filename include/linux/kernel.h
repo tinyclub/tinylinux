@@ -173,13 +173,19 @@ static inline void might_fault(void)
 
 extern struct atomic_notifier_head panic_notifier_list;
 extern long (*panic_blink)(long time);
+#ifndef CONFIG_PANIC
+NORET_TYPE static inline void panic(const char *fmt, ...) {}
+#else
+
 #ifdef CONFIG_FULL_PANIC
-NORET_TYPE void panic(const char * fmt, ...)
+NORET_TYPE void panic(const char *fmt, ...)
 	__attribute__ ((NORET_AND format (printf, 1, 2))) __cold;
 #else
 #define panic(fmt, ...) tiny_panic(0, ## __VA_ARGS__)
 NORET_TYPE void tiny_panic(int a, ...) ATTRIB_NORET;
 #endif
+
+#endif /* CONFIG_PANIC */
 extern void oops_enter(void);
 extern void oops_exit(void);
 extern int oops_may_print(void);
