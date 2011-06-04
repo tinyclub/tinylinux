@@ -174,7 +174,7 @@ static inline void might_fault(void)
 extern struct atomic_notifier_head panic_notifier_list;
 extern long (*panic_blink)(long time);
 #ifndef CONFIG_PANIC
-NORET_TYPE static inline void panic(const char *fmt, ...) {}
+NORET_TYPE static inline void panic(const char *fmt, ...) { unreachable(); }
 #else
 
 #ifdef CONFIG_FULL_PANIC
