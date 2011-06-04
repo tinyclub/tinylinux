@@ -77,6 +77,7 @@ static inline void *load_pointer(struct sk_buff *skb, int k,
  * be accepted or -EPERM if the packet should be tossed.
  *
  */
+#ifdef CONFIG_NET_SK_FILTER
 int sk_filter(struct sock *sk, struct sk_buff *skb)
 {
 	int err;
@@ -587,6 +588,7 @@ int sk_chk_filter(struct sock_filter *filter, int flen)
 		}
 }
 EXPORT_SYMBOL(sk_chk_filter);
+#endif /* CONFIG_NET_SK_FILTER */
 
 /**
  * 	sk_filter_release_rcu - Release a socket filter by rcu_head

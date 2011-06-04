@@ -1100,6 +1100,14 @@ config INETPEER
 	  This allows storing various information about network peers.
 	  Disabling saves about 2k.
 
+config NET_SK_FILTER
+	depends on NET
+	default y
+	bool "Enable network socket filter" if EMBEDDED
+	help
+	  This enables the basic kernel level socket filtering, not to
+	  be confused with netfilter. Required by PPP.
+
 config CC_FUNIT_AT_A_TIME
        bool "add -funit-at-a-time to gcc option" if EMBEDDED
        default n

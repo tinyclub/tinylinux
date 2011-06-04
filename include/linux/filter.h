@@ -190,6 +190,7 @@ static inline unsigned int sk_filter_len(const struct sk_filter *fp)
 	return fp->len * sizeof(struct sock_filter) + sizeof(*fp);
 }
 
+#ifdef CONFIG_NET_SK_FILTER
 struct sk_buff;
 struct sock;
 
@@ -199,6 +200,15 @@ extern unsigned int sk_run_filter(struct sk_buff *skb,
 extern int sk_attach_filter(struct sock_fprog *fprog, struct sock *sk);
 extern int sk_detach_filter(struct sock *sk);
 extern int sk_chk_filter(struct sock_filter *filter, int flen);
+#else
+#define sk_filter(a, b) (0)
+#define sk_run_filter(a, b, c) (0)
+#define sk_attach_filter(a, b) (-EINVAL)
+#define sk_detach_filter(a) (-EINVAL)
+#define sk_chk_filter(a, b) (-EINVAL)
+#endif /* NET_SK_FILTER */
+
+
 #endif /* __KERNEL__ */
 
 #endif /* __LINUX_FILTER_H__ */

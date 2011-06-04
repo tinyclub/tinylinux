@@ -702,6 +702,7 @@ set_rcvbuf:
 		ret = sock_set_timeout(&sk->sk_sndtimeo, optval, optlen);
 		break;
 
+#ifdef CONFIG_NET_SK_FILTER
 	case SO_ATTACH_FILTER:
 		ret = -EINVAL;
 		if (optlen == sizeof(struct sock_fprog)) {
@@ -731,7 +732,7 @@ set_rcvbuf:
 		else
 			sk->sk_mark = val;
 		break;
-
+#endif
 		/* We implement the SO_SNDLOWAT etc to
 		   not be settable (1003.1g 5.3) */
 	case SO_RXQ_OVFL:
@@ -1115,17 +1116,21 @@ EXPORT_SYMBOL(sk_alloc);
 
 static void __sk_free(struct sock *sk)
 {
+#ifdef CONFIG_NET_SK_FILTER
 	struct sk_filter *filter;
+#endif
 
 	if (sk->sk_destruct)
 		sk->sk_destruct(sk);
 
+#ifdef CONFIG_NET_SK_FILTER
 	filter = rcu_dereference_check(sk->sk_filter,
 				       atomic_read(&sk->sk_wmem_alloc) == 0);
 	if (filter) {
 		sk_filter_uncharge(sk, filter);
 		rcu_assign_pointer(sk->sk_filter, NULL);
 	}
+#endif
 
 	sock_disable_timestamp(sk, SOCK_TIMESTAMP);
 	sock_disable_timestamp(sk, SOCK_TIMESTAMPING_RX_SOFTWARE);
@@ -1176,8 +1181,9 @@ struct sock *sk_clone(const struct sock *sk, const gfp_t priority)
 
 	newsk = sk_prot_alloc(sk->sk_prot, priority, sk->sk_family);
 	if (newsk != NULL) {
+#ifdef CONFIG_NET_SK_FILTER
 		struct sk_filter *filter;
-
+#endif
 		sock_copy(newsk, sk);
 
 		/* SANITY */
@@ -1215,10 +1221,11 @@ struct sock *sk_clone(const struct sock *sk, const gfp_t priority)
 		sock_reset_flag(newsk, SOCK_DONE);
 		skb_queue_head_init(&newsk->sk_error_queue);
 
+#ifdef CONFIG_NET_SK_FILTER
 		filter = newsk->sk_filter;
 		if (filter != NULL)
 			sk_filter_charge(newsk, filter);
-
+#endif
 		if (unlikely(xfrm_sk_clone_policy(newsk))) {
 			/* It is still raw copy of parent, so invalidate
 			 * destructor and make plain sk_free() */
