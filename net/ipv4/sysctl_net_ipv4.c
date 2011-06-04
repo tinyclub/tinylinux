@@ -316,6 +316,7 @@ static struct ctl_table ipv4_table[] = {
 	},
 
 #endif
+#ifdef CONFIG_INETPEER
 	{
 		.procname	= "igmp_max_msf",
 		.data		= &sysctl_igmp_max_msf,
@@ -358,6 +359,7 @@ static struct ctl_table ipv4_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
+#endif	/* CONFIG_INETPEER */
 	{
 		.procname	= "tcp_orphan_retries",
 		.data		= &sysctl_tcp_orphan_retries,
