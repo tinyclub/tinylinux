@@ -284,6 +284,9 @@ no_80w:
 }
 
 static const char *nien_quirk_list[] = {
+#ifdef CONFIG_EMBEDDED
+#warning "Does your harddrive has IRQ related problems?"
+#else
 	"QUANTUM FIREBALLlct08 08",
 	"QUANTUM FIREBALLP KA6.4",
 	"QUANTUM FIREBALLP KA9.1",
@@ -293,6 +296,7 @@ static const char *nien_quirk_list[] = {
 	"QUANTUM FIREBALLP LM20.4",
 	"QUANTUM FIREBALLP LM20.5",
 	"FUJITSU MHZ2160BH G2",
+#endif
 	NULL
 };
 
