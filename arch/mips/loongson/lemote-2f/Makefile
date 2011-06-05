@@ -2,7 +2,11 @@
 # Makefile for lemote loongson2f family machines
 #
 
-obj-y += machtype.o irq.o reset.o ec_kb3310b.o
+obj-y += irq.o reset.o ec_kb3310b.o
+
+ifndef CONFIG_EMBEDDED
+obj-y += machtype.o
+endif
 
 #
 # Suspend Support

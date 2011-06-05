@@ -12,6 +12,7 @@
 #include <asm/bootinfo.h>
 
 #include <loongson.h>
+#include <machine.h>
 
 /* ioremapped */
 unsigned long _loongson_uart_base;
