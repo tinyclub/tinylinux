@@ -40,7 +40,11 @@
 
 /* These are for everybody (although not all archs will actually
    discard it in modules) */
+#ifdef CONFIG_MEASURE_PARAMS
 #define __init		__section(.init.text) __cold notrace
+#else
+#define __init		__section(.init.text) __cold notrace __maybe_unused
+#endif
 #define __initdata	__section(.init.data)
 #define __initconst	__section(.init.rodata)
 #define __exitdata	__section(.exit.data)
@@ -227,13 +231,17 @@ struct obs_kernel_param {
  * Force the alignment so the compiler doesn't space elements of the
  * obs_kernel_param "array" too far apart in .init.setup.
  */
-#define __setup_param(str, unique_id, fn, early)			\
+#if defined(DO_SETUP_PARAM) || defined(CONFIG_SETUP_PARAM)
+#define __setup_param(str, unique_id, fn, early)		\
 	static const char __setup_str_##unique_id[] __initconst	\
 		__aligned(1) = str; \
 	static struct obs_kernel_param __setup_##unique_id	\
 		__used __section(.init.setup)			\
 		__attribute__((aligned((sizeof(long)))))	\
 		= { __setup_str_##unique_id, fn, early }
+#else
+#define __setup_param(str, unique_id, fn, early) /* nothing */
+#endif
 
 #define __setup(str, fn)					\
 	__setup_param(str, fn, fn, 0)

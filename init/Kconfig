@@ -868,6 +868,34 @@ config PRINTK
 	  very difficult to diagnose system problems, saying N here is
 	  strongly discouraged.
 
+config SETUP_PARAM
+	default y
+	bool "Enable kernel parameters setup" if EMBEDDED
+	help
+	  This option enables normal kernel paramters support. Removing it
+	  eliminates most of the functions, strings, variables from the kernel
+	  image and makes the kernel more or less smaller. As this makes it
+	  very difficult to set the kernel run-time action, saying N here on
+	  non-embedded systems is strongly discouraged.
+
+	  With this set to 'N', you can still enable some necessary parameters
+	  from a single file, by putting "#define DO_SETUP_PARAM 1" at the top
+	  of the file.  This must appear before any #include lines.  This makes
+	  it possible to have fine-grained control over which parameters to
+	  setup in the kernel.
+
+config MEASURE_PARAMS
+	default n
+	depends on !SETUP_PARAM
+	select MIPS_DISABLE_WERROR if MIPS
+	select PPC_DISABLE_WERROR if PPC
+	bool "Enable kernel parameters measurement" if EMBEDDED
+	help
+	  This causes a kernel compile to spew information about the location
+	  of each param setup.  With some post-processing, this can be used to
+	  generate counts and footprints. Say N unless you want a very noisy
+	  build.
+
 config BUG
 	bool "BUG() support" if EMBEDDED
 	default y

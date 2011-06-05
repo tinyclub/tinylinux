@@ -1,3 +1,5 @@
+#define DO_SETUP_PARAM
+
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/ctype.h>

@@ -16,6 +16,8 @@
  *	01Mar01 Andrew Morton
  */
 
+#define DO_SETUP_PARAM
+
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/tty.h>
