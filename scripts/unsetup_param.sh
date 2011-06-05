@@ -1,5 +1,5 @@
 #!/bin/bash
-# setup_param.sh -- setup a specific parameter with __raw_setup()
+# unsetup_param.sh -- unsetup a specific parameter with the new empty __setup()
 
 param=$1
 
@@ -13,7 +13,7 @@ for d in "init kernel mm drivers fs sound arch net block crypto ipc lib security
 do
 	for f in `find $d -name "*.c"`
 	do
-		ret=`grep -m 1 -l __setup\(\"$param=\" $f`
+		ret=`grep -m 1 -l __raw_setup\(\"$param=\" $f`
 		if [ -n "$ret" ]; then
 			file=$ret
 			break;
@@ -26,9 +26,9 @@ done
 
 echo "The param is found in $file."
 
-# Use __raw_setup() to setup a specific parameter
-line=`grep -m 1 -n __setup\(\"$param=\" $file | cut -d':' -f1`
-sed -i -e "$line s/__setup/__raw_setup/g" $file
+# Use __setup() to unsetup a specific parameter
+line=`grep -m 1 -n __raw_setup\(\"$param=\" $file | cut -d':' -f1`
+sed -i -e "$line s/__raw_setup/__setup/g" $file
 
 # Prompt
-echo "The param $param is setup with __raw_setup() in $file"
+echo "The param $param is unsetup with the empty __setup() in $file"

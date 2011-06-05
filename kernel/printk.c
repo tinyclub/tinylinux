@@ -16,8 +16,6 @@
  *	01Mar01 Andrew Morton
  */
 
-#define DO_SETUP_PARAM
-
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/tty.h>
@@ -913,7 +911,7 @@ static int __init console_setup(char *str)
 	console_set_on_cmdline = 1;
 	return 1;
 }
-__setup("console=", console_setup);
+__raw_setup("console=", console_setup);
 
 /**
  * add_preferred_console - add a device to the list of preferred consoles.

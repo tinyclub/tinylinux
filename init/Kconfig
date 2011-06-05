@@ -879,10 +879,7 @@ config SETUP_PARAM
 	  non-embedded systems is strongly discouraged.
 
 	  With this set to 'N', you can still enable some necessary parameters
-	  from a single file, by putting "#define DO_SETUP_PARAM 1" at the top
-	  of the file.  This must appear before any #include lines.  This makes
-	  it possible to have fine-grained control over which parameters to
-	  setup in the kernel.
+	  from a single file, by using __raw_setup() instead of __setup().
 
 config MEASURE_PARAMS
 	default n

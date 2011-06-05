@@ -1,5 +1,3 @@
-#define DO_SETUP_PARAM
-
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/ctype.h>
@@ -153,7 +151,7 @@ static int __init root_dev_setup(char *line)
 	return 1;
 }
 
-__setup("root=", root_dev_setup);
+__raw_setup("root=", root_dev_setup);
 
 static int __init rootwait_setup(char *str)
 {
