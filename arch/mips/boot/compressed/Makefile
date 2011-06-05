@@ -61,10 +61,24 @@ $(obj)/piggy.o: $(obj)/vmlinux.$(suffix_y) $(obj)/dummy.o
 		--set-section-flags=.image=contents,alloc,load,readonly,data \
 		$(obj)/dummy.o $@
 
+quiet_cmd_strip = STRIP   $@
+       cmd_strip = $(STRIP) -s $@
+ifdef CONFIG_EMBEDDED
+quiet_cmd_sstrip = SSTRIP  $@
+      cmd_sstrip = $(srctree)/scripts/sstrip.sh $@
+endif
+
 LDFLAGS_vmlinuz := $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T
 vmlinuz: $(src)/ld.script $(obj-y) $(obj)/piggy.o
 	$(call if_changed,ld)
 	$(Q)$(OBJCOPY) $(OBJCOPYFLAGS) $@
+	$(call cmd,strip)
+	$(call cmd,sstrip)
+
+vmlinuz.unsstrip: $(src)/ld.script $(obj-y) $(obj)/piggy.o
+	$(call if_changed,ld)
+	$(Q)$(OBJCOPY) $(OBJCOPYFLAGS) $@
+	$(call cmd,strip)
 
 #
 # Some DECstations need all possible sections of an ECOFF executable
@@ -78,12 +92,12 @@ endif
 # elf2ecoff can only handle 32bit image
 
 ifdef CONFIG_32BIT
-	VMLINUZ = vmlinuz
+	VMLINUZ = vmlinuz.unsstrip
 else
 	VMLINUZ = vmlinuz.32
 endif
 
-vmlinuz.32: vmlinuz
+vmlinuz.32: vmlinuz.unsstrip
 	$(Q)$(OBJCOPY) -O $(32bit-bfd) $(OBJCOPYFLAGS) $< $@
 
 vmlinuz.ecoff: $(obj)/../elf2ecoff $(VMLINUZ)
@@ -93,11 +107,11 @@ $(obj)/../elf2ecoff: $(src)/../elf2ecoff.c
 	$(Q)$(HOSTCC) -o $@ $^
 
 OBJCOPYFLAGS_vmlinuz.bin := $(OBJCOPYFLAGS) -O binary
-vmlinuz.bin: vmlinuz
+vmlinuz.bin: vmlinuz.unsstrip
 	$(call if_changed,objcopy)
 
 OBJCOPYFLAGS_vmlinuz.srec := $(OBJCOPYFLAGS) -S -O srec
-vmlinuz.srec: vmlinuz
+vmlinuz.srec: vmlinuz.unsstrip
 	$(call if_changed,objcopy)
 
 clean:
