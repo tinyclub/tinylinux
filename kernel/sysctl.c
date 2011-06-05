@@ -614,11 +614,13 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+#ifdef CONFIG_RANDOM
 	{
 		.procname	= "random",
 		.mode		= 0555,
 		.child		= random_table,
 	},
+#endif
 	{
 		.procname	= "overflowuid",
 		.data		= &overflowuid,

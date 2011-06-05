@@ -97,6 +97,12 @@ config DEVKMEM
 	  kind of kernel debugging operations.
 	  When in doubt, say "N".
 
+config RANDOM
+	bool "/dev/{random, urandom} virtual device support" if EMBEDDED
+	default y
+	help
+	  Say Y here if you want to support /dev/random and /dev/urandom.
+
 config BFIN_JTAG_COMM
 	tristate "Blackfin JTAG Communication"
 	depends on BLACKFIN

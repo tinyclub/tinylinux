@@ -48,15 +48,14 @@ struct rnd_state {
 
 #ifdef __KERNEL__
 
+#ifdef CONFIG_RANDOM
 extern void rand_initialize_irq(int irq);
-
 extern void add_input_randomness(unsigned int type, unsigned int code,
-				 unsigned int value);
+			 unsigned int value);
 extern void add_interrupt_randomness(int irq);
 
 extern void get_random_bytes(void *buf, int nbytes);
 void generate_random_uuid(unsigned char uuid_out[16]);
-
 extern __u32 secure_ip_id(__be32 daddr);
 extern u32 secure_ipv4_port_ephemeral(__be32 saddr, __be32 daddr, __be16 dport);
 extern u32 secure_ipv6_port_ephemeral(const __be32 *saddr, const __be32 *daddr,
@@ -67,18 +66,36 @@ extern __u32 secure_tcpv6_sequence_number(__be32 *saddr, __be32 *daddr,
 					  __be16 sport, __be16 dport);
 extern u64 secure_dccp_sequence_number(__be32 saddr, __be32 daddr,
 				       __be16 sport, __be16 dport);
+#else
+#define rand_initialize_irq(irq)
+#define add_input_randomness(type, code, value)
+#define add_interrupt_randomness(irq)
+#define get_random_bytes(buf, nbytes)
+#define generate_random_uuid()
+#define secure_ip_id(daddr) (0)
+#define secure_ipv4_port_ephemeral(saddr, daddr, dport) (0)
+#define secure_ipv6_port_ephemeral(saddr, daddr, dport) (0)
+#define secure_tcp_sequence_number(saddr, daddr, sport, dport) (0)
+#define secure_tcpv6_sequence_number(saddr, daddr, sport, dport) (0)
+#define secure_dccp_sequence_number(saddr, daddr, sport, dport) (0)
+#endif
 
 #ifndef MODULE
 extern const struct file_operations random_fops, urandom_fops;
 #endif
 
+#ifdef CONFIG_RANDOM
 unsigned int get_random_int(void);
-unsigned long randomize_range(unsigned long start, unsigned long end, unsigned long len);
-
 u32 random32(void);
 void srandom32(u32 seed);
-
 u32 prandom32(struct rnd_state *);
+#else
+#define get_random_int() (0)
+#define random32() (0)
+#define srandom32(seed) do { } while (0)
+#define prandom32(rnd_state_p) (0)
+#endif
+unsigned long randomize_range(unsigned long start, unsigned long end, unsigned long len);
 
 /*
  * Handle minimum values for seeds

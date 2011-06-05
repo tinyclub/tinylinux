@@ -361,8 +361,13 @@ static inline int get_disk_ro(struct gendisk *disk)
 }
 
 /* drivers/char/random.c */
+#ifdef CONFIG_RANDOM
 extern void add_disk_randomness(struct gendisk *disk);
 extern void rand_initialize_disk(struct gendisk *disk);
+#else
+#define add_disk_randomness(disk)
+#define rand_initialize_disk(disk)
+#endif
 
 static inline sector_t get_start_sect(struct block_device *bdev)
 {
