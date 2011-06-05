@@ -83,6 +83,7 @@ struct kparam_array
    parameters.  perm sets the visibility in sysfs: 000 means it's
    not there, read bits mean it's readable, write bits mean it's
    writable. */
+#ifdef CONFIG_MODULE_PARAM
 #define __module_param_call(prefix, name, set, get, arg, isbool, perm)	\
 	/* Default value instead of permissions? */			\
 	static int __param_perm_check_##name __attribute__((unused)) =	\
@@ -94,22 +95,37 @@ struct kparam_array
     __attribute__ ((unused,__section__ ("__param"),aligned(sizeof(void *)))) \
 	= { __param_str_##name, perm, isbool ? KPARAM_ISBOOL : 0,	\
 	    set, get, { arg } }
+#else
+#define __module_param_call(prefix, name, ops, arg, isbool, perm)
+#endif
 
+#ifdef CONFIG_MODULE_PARAM
 #define module_param_call(name, set, get, arg, perm)			      \
 	__module_param_call(MODULE_PARAM_PREFIX,			      \
 			    name, set, get, arg,			      \
 			    __same_type(*(arg), bool), perm)
+#else
+#define module_param_call(name, set, get, arg, perm)
+#endif
 
 /* Helper functions: type is byte, short, ushort, int, uint, long,
    ulong, charp, bool or invbool, or XXX if you define param_get_XXX,
    param_set_XXX and param_check_XXX. */
+#ifdef CONFIG_MODULE_PARAM
 #define module_param_named(name, value, type, perm)			   \
 	param_check_##type(name, &(value));				   \
 	module_param_call(name, param_set_##type, param_get_##type, &value, perm); \
 	__MODULE_PARM_TYPE(name, #type)
+#else
+#define module_param_named(name, value, type, perm)
+#endif
 
+#ifdef CONFIG_MODULE_PARAM
 #define module_param(name, type, perm)				\
 	module_param_named(name, name, type, perm)
+#else
+#define module_param(name, type, perm)
+#endif
 
 #ifndef MODULE
 /**
@@ -124,13 +140,18 @@ struct kparam_array
  * with __setup(), and it makes sense as truly core parameters aren't
  * tied to the particular file they're in.
  */
+#ifdef CONFIG_MODULE_PARAM
 #define core_param(name, var, type, perm)				\
 	param_check_##type(name, &(var));				\
 	__module_param_call("", name, param_set_##type, param_get_##type, \
 			    &var, __same_type(var, bool), perm)
+#else
+#define core_param(name, var, type, perm)
+#endif
 #endif /* !MODULE */
 
 /* Actually copy string: maxlen param is usually sizeof(string). */
+#ifdef CONFIG_MODULE_PARAM
 #define module_param_string(name, string, len, perm)			\
 	static const struct kparam_string __param_string_##name		\
 		= { len, string };					\
@@ -138,6 +159,9 @@ struct kparam_array
 			    param_set_copystring, param_get_string,	\
 			    .str = &__param_string_##name, 0, perm);	\
 	__MODULE_PARM_TYPE(name, "string")
+#else
+#define module_param_string(name, string, len, perm)
+#endif
 
 /* Called on module insert or kernel boot */
 extern int parse_args(const char *name,
@@ -210,6 +234,7 @@ extern int param_get_invbool(char *buffer, struct kernel_param *kp);
 #define param_check_invbool(name, p) __param_check(name, p, bool)
 
 /* Comma-separated array: *nump is set to number they actually specified. */
+#ifdef CONFIG_MODULE_PARAM
 #define module_param_array_named(name, array, type, nump, perm)		\
 	static const struct kparam_array __param_arr_##name		\
 	= { ARRAY_SIZE(array), nump, param_set_##type, param_get_##type,\
@@ -219,9 +244,16 @@ extern int param_get_invbool(char *buffer, struct kernel_param *kp);
 			    .arr = &__param_arr_##name,			\
 			    __same_type(array[0], bool), perm);		\
 	__MODULE_PARM_TYPE(name, "array of " #type)
+#else
+#define module_param_array_named(name, array, type, nump, perm)
+#endif
 
+#ifdef CONFIG_MODULE_PARAM
 #define module_param_array(name, type, nump, perm)		\
 	module_param_array_named(name, name, type, nump, perm)
+#else
+#define module_param_array(name, type, nump, perm)
+#endif
 
 extern int param_array_set(const char *val, struct kernel_param *kp);
 extern int param_array_get(char *buffer, struct kernel_param *kp);
