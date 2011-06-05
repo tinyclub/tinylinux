@@ -7,6 +7,9 @@
 # Copyright (C) 2004  Maciej W. Rozycki
 #
 
+# Disable GCOV in odd or sensitive code
+GCOV_PROFILE := n
+
 #
 # Some DECstations need all possible sections of an ECOFF executable
 #

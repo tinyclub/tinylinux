@@ -13,6 +13,11 @@ CFLAGS_REMOVE_ftrace.o = -pg
 CFLAGS_REMOVE_early_printk.o = -pg
 endif
 
+# Disable GCOV in odd or sensitive code
+GCOV_PROFILE_ftrace.o := n
+GCOV_PROFILE_machine_kexec.o := n
+GCOV_PROFILE_kprobes.o := n
+
 obj-$(CONFIG_CEVT_BCM1480)	+= cevt-bcm1480.o
 obj-$(CONFIG_CEVT_R4K_LIB)	+= cevt-r4k.o
 obj-$(CONFIG_MIPS_MT_SMTC)	+= cevt-smtc.o
