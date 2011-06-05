@@ -151,7 +151,7 @@ static int log_buf_len = __LOG_BUF_LEN;
 static unsigned logged_chars; /* Number of chars produced since last read+clear operation */
 static int saved_console_loglevel = -1;
 
-#ifdef CONFIG_KEXEC
+#ifdef CONFIG_KEXEC_CRASH
 /*
  * This appends the listed symbols to /proc/vmcoreinfo
  *

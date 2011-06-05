@@ -2066,6 +2066,14 @@ config KEXEC
 	  support.  As of this writing the exact hardware interface is
 	  strongly in flux, so no good recommendation can be made.
 
+config KEXEC_CRASH
+	bool "Enable Kexec on Crash support (EXPERIMENTAL)" if EMBEDDED
+	default y
+	depends on KEXEC
+	help
+	  Enable this if you want kexec on crash, otherwise, say N to save some
+	  bytes.
+
 config SECCOMP
 	bool "Enable seccomp to safely compute untrusted bytecode"
 	depends on PROC_FS
