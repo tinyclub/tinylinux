@@ -119,7 +119,7 @@ void __init bcm1480_setup(void)
 	uint64_t sys_rev;
 	int plldiv;
 
-	sb1_pass = read_c0_prid() & 0xff;
+	sb1_pass = cpu_prid_rev();
 	sys_rev = __raw_readq(IOADDR(A_SCD_SYSTEM_REVISION));
 	soc_type = SYS_SOC_TYPE(sys_rev);
 	part_type = G_SYS_PART(sys_rev);

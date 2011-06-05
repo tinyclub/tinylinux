@@ -46,7 +46,7 @@ void __init plat_mem_setup(void)
 	est_freq = au1xxx_calc_clock();
 	est_freq += 5000;    /* round */
 	est_freq -= est_freq % 10000;
-	printk(KERN_INFO "(PRId %08x) @ %lu.%02lu MHz\n", read_c0_prid(),
+	pr_info("(PRId %08x) @ %lu.%02lu MHz\n", current_cpu_prid(),
 	       est_freq / 1000000, ((est_freq % 1000000) * 100) / 1000000);
 
 	/* this is faster than wasting cycles trying to approximate it */

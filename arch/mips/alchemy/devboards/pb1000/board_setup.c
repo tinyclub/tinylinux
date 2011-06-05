@@ -56,7 +56,6 @@ void __init board_setup(void)
 {
 	u32 pin_func, static_cfg0;
 	u32 sys_freqctrl, sys_clksrc;
-	u32 prid = read_c0_prid();
 
 	sys_freqctrl = 0;
 	sys_clksrc = 0;
@@ -85,7 +84,7 @@ void __init board_setup(void)
 	sys_clksrc &= ~(SYS_CS_CUD | SYS_CS_DUD | SYS_CS_MUD_MASK |
 		        SYS_CS_CUH | SYS_CS_DUH | SYS_CS_MUH_MASK);
 
-	switch (prid & 0x000000FF) {
+	switch (cpu_prid_rev()) {
 	case 0x00: /* DA */
 	case 0x01: /* HA */
 	case 0x02: /* HB */
@@ -174,7 +173,7 @@ void __init board_setup(void)
 	 * Enable Au1000 BCLK switching - note: sed1356 must not use
 	 * its BCLK (Au1000 LCLK) for any timings
 	 */
-	switch (prid & 0x000000FF) {
+	switch (cpu_prid_rev()) {
 	case 0x00: /* DA */
 	case 0x01: /* HA */
 	case 0x02: /* HB */

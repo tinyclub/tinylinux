@@ -69,9 +69,6 @@ UASM_L_LA(_copy_pref_store)
 static struct uasm_label __cpuinitdata labels[5];
 static struct uasm_reloc __cpuinitdata relocs[5];
 
-#define cpu_is_r4600_v1_x()	((read_c0_prid() & 0xfffffff0) == 0x00002010)
-#define cpu_is_r4600_v2_x()	((read_c0_prid() & 0xfffffff0) == 0x00002020)
-
 /*
  * Maximum sizes:
  *
@@ -212,7 +209,7 @@ static void __cpuinit set_prefetch_parameters(void)
 			 * hints are broken.
 			 */
 			if (current_cpu_type() == CPU_SB1 &&
-			    (current_cpu_data.processor_id & 0xff) < 0x02) {
+			    cpu_prid_rev() < 0x02) {
 				pref_src_mode = Pref_Load;
 				pref_dst_mode = Pref_Store;
 			} else {

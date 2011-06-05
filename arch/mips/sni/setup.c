@@ -172,7 +172,7 @@ void __init plat_mem_setup(void)
 		system_type = "RM300-Cxx";
 		break;
 	case SNI_BRD_PCI_DESKTOP:
-		switch (read_c0_prid() & 0xff00) {
+		switch (cpu_prid_imp()) {
 		case PRID_IMP_R4600:
 		case PRID_IMP_R4700:
 			system_type = "RM200-C20";

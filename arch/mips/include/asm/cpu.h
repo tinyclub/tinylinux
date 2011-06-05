@@ -22,6 +22,7 @@
    that bits 16-23 have been 0 for all MIPS processors before the MIPS32/64
    spec.
 */
+#define PRID_COPT_MASK		0xff000000
 
 #define PRID_COMP_LEGACY	0x000000
 #define PRID_COMP_MIPS		0x010000
@@ -35,6 +36,8 @@
 #define PRID_COMP_LEXRA		0x0b0000
 #define PRID_COMP_CAVIUM	0x0d0000
 
+
+#define PRID_COMP_MASK		0xff0000
 
 /*
  * Assigned values for the product ID register.  In order to detect a
@@ -73,6 +76,7 @@
 #define PRID_IMP_LOONGSON2	0x6300
 
 #define PRID_IMP_UNKNOWN	0xff00
+#define PRID_IMP_MASK		0xff00
 
 /*
  * These are the PRID's for when 23:16 == PRID_COMP_MIPS
@@ -156,6 +160,15 @@
 #define PRID_REV_34K_V1_0_2	0x0022
 #define PRID_REV_LOONGSON2E	0x0002
 #define PRID_REV_LOONGSON2F	0x0003
+
+#define cpu_prid_copt()		(current_cpu_prid() & PRID_COPT_MASK)
+#define cpu_prid_comp()		(current_cpu_prid() & PRID_COMP_MASK)
+#define cpu_prid_imp()		(current_cpu_prid() & PRID_IMP_MASK)
+#define cpu_prid_rev()		(current_cpu_prid() & PRID_REV_MASK)
+
+#define cpu_prid_encode(comp, imp, rev)	((comp) | (imp) | (rev))
+#define cpu_prid_encode_copt(copt, comp, imp, rev) \
+	((copt) | cpu_prid_encode(comp, imp, rev))
 
 /*
  * Older processors used to encode processor version and revision in two
@@ -285,5 +298,9 @@ enum cpu_type_enum {
 #define MIPS_ASE_DSP		0x00000010 /* Signal Processing ASE */
 #define MIPS_ASE_MIPSMT		0x00000020 /* CPU supports MIPS MT */
 
+#define cpu_is_r4600_v1_x()	\
+	((current_cpu_prid() & 0xfffffff0) == 0x00002010)
+#define cpu_is_r4600_v2_x()	\
+	((current_cpu_prid() & 0xfffffff0) == 0x00002020)
 
 #endif /* _ASM_CPU_H */

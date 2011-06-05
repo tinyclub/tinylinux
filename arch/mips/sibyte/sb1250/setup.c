@@ -182,7 +182,7 @@ void __init sb1250_setup(void)
 	int plldiv;
 	int bad_config = 0;
 
-	sb1_pass = read_c0_prid() & 0xff;
+	sb1_pass = cpu_prid_rev();
 	sys_rev = __raw_readq(IOADDR(A_SCD_SYSTEM_REVISION));
 	soc_type = SYS_SOC_TYPE(sys_rev);
 	soc_pass = G_SYS_REVISION(sys_rev);

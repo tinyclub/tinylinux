@@ -349,7 +349,7 @@ static int __init mipsxx_init(void)
 		break;
 
 	case CPU_R10000:
-		if ((current_cpu_data.processor_id & 0xff) == 0x20)
+		if (cpu_prid_rev() == 0x20)
 			op_model_mipsxx_ops.cpu_type = "mips/r10000-v2.x";
 		else
 			op_model_mipsxx_ops.cpu_type = "mips/r10000";

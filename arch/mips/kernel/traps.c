@@ -322,7 +322,7 @@ static void __show_regs(const struct pt_regs *regs)
 	if (1 <= cause && cause <= 5)
 		printk("BadVA : %0*lx\n", field, regs->cp0_badvaddr);
 
-	printk("PrId  : %08x (%s)\n", read_c0_prid(),
+	pr_info("PrId  : %08x (%s)\n", current_cpu_prid(),
 	       cpu_name_string());
 }
 

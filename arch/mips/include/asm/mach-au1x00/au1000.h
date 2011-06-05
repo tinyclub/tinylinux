@@ -94,7 +94,7 @@ static inline u32 au_readl(unsigned long reg)
 /* Early Au1000 have a write-only SYS_CPUPLL register. */
 static inline int au1xxx_cpu_has_pll_wo(void)
 {
-	switch (read_c0_prid()) {
+	switch (current_cpu_prid()) {
 	case 0x00030100:	/* Au1000 DA */
 	case 0x00030201:	/* Au1000 HA */
 	case 0x00030202:	/* Au1000 HB */
@@ -111,7 +111,7 @@ static inline int au1xxx_cpu_needs_config_od(void)
 	 * early revisions of Alchemy SOCs.  It disables the bus trans-
 	 * action overlapping and needs to be set to fix various errata.
 	 */
-	switch (read_c0_prid()) {
+	switch (current_cpu_prid()) {
 	case 0x00030100: /* Au1000 DA */
 	case 0x00030201: /* Au1000 HA */
 	case 0x00030202: /* Au1000 HB */
@@ -139,7 +139,7 @@ static inline int au1xxx_cpu_needs_config_od(void)
 
 static inline int alchemy_get_cputype(void)
 {
-	switch (read_c0_prid() & 0xffff0000) {
+	switch (cpu_prid_copt() | cpu_prid_comp()) {
 	case 0x00030000:
 		return ALCHEMY_CPU_AU1000;
 		break;

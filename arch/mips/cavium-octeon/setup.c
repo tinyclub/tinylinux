@@ -265,7 +265,7 @@ const char *octeon_board_type_string(void)
 	static char name[80];
 	sprintf(name, "%s (%s)",
 		cvmx_board_type_to_string(octeon_bootinfo->board_type),
-		octeon_model_get_string(read_c0_prid()));
+		octeon_model_get_string(current_cpu_prid()));
 	return name;
 }
 

@@ -119,7 +119,7 @@ void nmi_cpu_eframe_save(nasid_t nasid, int slice)
 	printk("\n");
 
 	printk("Cause : %08lx\n", nr->cause);
-	printk("PrId  : %08x\n", read_c0_prid());
+	printk("PrId  : %08x\n", current_cpu_prid());
 	printk("BadVA : %016lx\n", nr->badva);
 	printk("CErr  : %016lx\n", nr->cache_err);
 	printk("NMI_SR: %016lx\n", nr->nmi_sr);

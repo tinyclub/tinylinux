@@ -147,7 +147,7 @@ static int __init vr41xx_pciu_init(void)
 		pciu_write(PCICLKSELREG, EQUAL_VTCLOCK);
 	else if ((vtclock / 2) < pci_clock_max)
 		pciu_write(PCICLKSELREG, HALF_VTCLOCK);
-	else if (current_cpu_data.processor_id >= PRID_VR4131_REV2_1 &&
+	else if (current_cpu_prid() >= PRID_VR4131_REV2_1 &&
 	         (vtclock / 3) < pci_clock_max)
 		pciu_write(PCICLKSELREG, ONE_THIRD_VTCLOCK);
 	else if ((vtclock / 4) < pci_clock_max)

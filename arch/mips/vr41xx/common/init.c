@@ -43,8 +43,8 @@ void __init plat_time_init(void)
 	vr41xx_calculate_clock_frequency();
 
 	tclock = vr41xx_get_tclock_frequency();
-	if (current_cpu_data.processor_id == PRID_VR4131_REV2_0 ||
-	    current_cpu_data.processor_id == PRID_VR4131_REV2_1)
+	if (current_cpu_prid() == PRID_VR4131_REV2_0 ||
+	    current_cpu_prid() == PRID_VR4131_REV2_1)
 		mips_hpt_frequency = tclock / 2;
 	else
 		mips_hpt_frequency = tclock / 4;

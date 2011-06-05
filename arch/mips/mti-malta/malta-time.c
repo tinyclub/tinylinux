@@ -65,7 +65,7 @@ static void mips_perf_dispatch(void)
  */
 static unsigned int __init estimate_cpu_frequency(void)
 {
-	unsigned int prid = read_c0_prid() & 0xffff00;
+	unsigned int prid = cpu_prid_comp() | cpu_prid_imp();
 	unsigned int count;
 
 	unsigned long flags;

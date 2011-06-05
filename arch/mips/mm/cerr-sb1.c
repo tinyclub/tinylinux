@@ -191,7 +191,7 @@ asmlinkage void sb1_cache_error(void)
 #endif
 
 	printk("Cache error exception on CPU %x:\n",
-	       (read_c0_prid() >> 25) & 0x7);
+	       (current_cpu_prid() >> 25) & 0x7);
 
 	__asm__ __volatile__ (
 	"	.set	push\n\t"

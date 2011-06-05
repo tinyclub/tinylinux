@@ -82,9 +82,6 @@ static struct bcache_ops no_sc_ops = {
 
 struct bcache_ops *bcops = &no_sc_ops;
 
-#define cpu_is_r4600_v1_x()	((read_c0_prid() & 0xfffffff0) == 0x00002010)
-#define cpu_is_r4600_v2_x()	((read_c0_prid() & 0xfffffff0) == 0x00002020)
-
 #define R4600_HIT_CACHEOP_WAR_IMPL					\
 do {									\
 	if (R4600_V2_HIT_CACHEOP_WAR && cpu_is_r4600_v2_x())		\
@@ -759,7 +756,6 @@ static void __cpuinit probe_pcache(void)
 {
 	struct cpuinfo_mips *c = &current_cpu_data;
 	unsigned int config = read_c0_config();
-	unsigned int prid = read_c0_prid();
 	unsigned long config1;
 	unsigned int lsize;
 
@@ -851,10 +847,11 @@ static void __cpuinit probe_pcache(void)
 		write_c0_config(config & ~VR41_CONF_P4K);
 	case CPU_VR4131:
 		/* Workaround for cache instruction bug of VR4131 */
-		if (c->processor_id == 0x0c80U || c->processor_id == 0x0c81U ||
-		    c->processor_id == 0x0c82U) {
+		if (current_cpu_prid() == 0x0c80U ||
+		    current_cpu_prid() == 0x0c81U ||
+		    current_cpu_prid() == 0x0c82U) {
 			config |= 0x00400000U;
-			if (c->processor_id == 0x0c80U)
+			if (current_cpu_prid() == 0x0c80U)
 				config |= VR41_CONF_BP;
 			write_c0_config(config);
 		} else
@@ -913,7 +910,7 @@ static void __cpuinit probe_pcache(void)
 	case CPU_LOONGSON2:
 		icache_size = 1 << (12 + ((config & CONF_IC) >> 9));
 		c->icache.linesz = 16 << ((config & CONF_IB) >> 5);
-		if (prid & 0x3)
+		if (current_cpu_prid() & 0x3)
 			c->icache.ways = 4;
 		else
 			c->icache.ways = 2;
@@ -921,7 +918,7 @@ static void __cpuinit probe_pcache(void)
 
 		dcache_size = 1 << (12 + ((config & CONF_DC) >> 6));
 		c->dcache.linesz = 16 << ((config & CONF_DB) >> 4);
-		if (prid & 0x3)
+		if (current_cpu_prid() & 0x3)
 			c->dcache.ways = 4;
 		else
 			c->dcache.ways = 2;
@@ -982,7 +979,7 @@ static void __cpuinit probe_pcache(void)
 	 * presumably no vendor is shipping his hardware in the "bad"
 	 * configuration.
 	 */
-	if ((prid & 0xff00) == PRID_IMP_R4000 && (prid & 0xff) < 0x40 &&
+	if (cpu_prid_imp() == PRID_IMP_R4000 && cpu_prid_rev() < 0x40 &&
 	    !(config & CONF_SC) && c->icache.linesz != 16 &&
 	    PAGE_SIZE <= 0x8000)
 		panic("Improper R4000SC processor configuration detected");
@@ -1243,7 +1240,7 @@ void au1x00_fixup_config_od(void)
 	 * on the early revisions of Alchemy SOCs.  It disables the bus
 	 * transaction overlapping and needs to be set to fix various errata.
 	 */
-	switch (read_c0_prid()) {
+	switch (current_cpu_prid()) {
 	case 0x00030100: /* Au1000 DA */
 	case 0x00030201: /* Au1000 HA */
 	case 0x00030202: /* Au1000 HB */

@@ -16,6 +16,20 @@
 #ifndef __ASM_MACH_LOONGSON_CPU_FEATURE_OVERRIDES_H
 #define __ASM_MACH_LOONGSON_CPU_FEATURE_OVERRIDES_H
 
+#ifdef CONFIG_CPU_LOONGSON2
+#define cpu_prid_loongson2() \
+	cpu_prid_encode(PRID_COMP_LEGACY, PRID_IMP_LOONGSON2, 0)
+
+#ifdef CONFIG_CPU_LOONGSON2F
+#define current_cpu_prid() (cpu_prid_loongson2() | PRID_REV_LOONGSON2F)
+#endif
+
+#ifdef CONFIG_CPU_LOONGSON2E
+#define current_cpu_prid() (cpu_prid_loongson2() | PRID_REV_LOONGSON2E)
+#endif
+
+#endif /* CONFIG_CPU_LOONGSON2 */
+
 #define cpu_dcache_line_size()	32
 #define cpu_icache_line_size()	32
 #define cpu_scache_line_size()	32
