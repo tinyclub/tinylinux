@@ -231,6 +231,7 @@ struct obs_kernel_param {
  * Force the alignment so the compiler doesn't space elements of the
  * obs_kernel_param "array" too far apart in .init.setup.
  */
+#ifdef CONFIG_PARAM
 #define __setup_param(str, unique_id, fn, early)		\
 	static const char __setup_str_##unique_id[] __initconst	\
 		__aligned(1) = str; \
@@ -238,6 +239,9 @@ struct obs_kernel_param {
 		__used __section(.init.setup)			\
 		__attribute__((aligned((sizeof(long)))))	\
 		= { __setup_str_##unique_id, fn, early }
+#else
+#define __setup_param(str, unique_id, fn, early)
+#endif
 
 #ifdef CONFIG_SETUP_PARAM
 #define __setup(str, fn)					\
@@ -263,8 +267,14 @@ struct obs_kernel_param {
 #endif
 
 /* Relies on boot_command_line being set */
+#ifdef CONFIG_PARAM
 void __init parse_early_param(void);
 void __init parse_early_options(char *cmdline);
+#else
+#define parse_early_param()
+#define parse_early_options(cmdline)
+#endif
+
 #endif /* __ASSEMBLY__ */
 
 /**

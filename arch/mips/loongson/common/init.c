@@ -26,7 +26,9 @@ void __init prom_init(void)
 		ioremap(LOONGSON_ADDRWINCFG_BASE, LOONGSON_ADDRWINCFG_SIZE);
 #endif
 
+#ifdef CONFIG_PARAM
 	prom_init_cmdline();
+#endif
 	prom_init_env();
 	prom_init_memory();
 

@@ -27,7 +27,11 @@ int __initdata rd_doload;	/* 1 = load RAM disk, 0 = don't load */
 
 int root_mountflags = MS_RDONLY | MS_SILENT;
 static char * __initdata root_device_name;
+#ifdef CONFIG_PARAM
 static char __initdata saved_root_name[64];
+#else
+static char __initdata saved_root_name[] = CONFIG_ROOT_DEV;
+#endif
 static int __initdata root_wait;
 
 dev_t ROOT_DEV;
@@ -150,7 +154,6 @@ static int __init root_dev_setup(char *line)
 	strlcpy(saved_root_name, line, sizeof(saved_root_name));
 	return 1;
 }
-
 __raw_setup("root=", root_dev_setup);
 
 static int __init rootwait_setup(char *str)

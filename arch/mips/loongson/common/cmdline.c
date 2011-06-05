@@ -21,6 +21,7 @@
 
 #include <loongson.h>
 
+#ifdef CONFIG_PARAM
 void __init prom_init_cmdline(void)
 {
 	int prom_argc;
@@ -51,3 +52,4 @@ void __init prom_init_cmdline(void)
 
 	prom_init_machtype();
 }
+#endif /* CONFIG_PARAM */

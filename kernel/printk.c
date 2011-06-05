@@ -130,7 +130,11 @@ struct console_cmdline
 
 #define MAX_CMDLINECONSOLES 8
 
+#ifdef CONFIG_PARAM
 static struct console_cmdline console_cmdline[MAX_CMDLINECONSOLES];
+#else
+static struct console_cmdline console_cmdline[MAX_CMDLINECONSOLES] = {{CONFIG_CONSOLE, 0, NULL}, };
+#endif
 static int selected_console = -1;
 static int preferred_console = -1;
 int console_set_on_cmdline;

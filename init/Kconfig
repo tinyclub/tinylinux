@@ -868,8 +868,50 @@ config PRINTK
 	  very difficult to diagnose system problems, saying N here is
 	  strongly discouraged.
 
+config PARAM
+	bool "Enable kernel parameter" if EMBEDDED
+	default y
+	help
+	  This option ensures the param parsing support is compiled, otherwise,
+	  you will not be able to pass the kernel parameters from bootloader or
+	  even can not configure it via CONFIG_CMDLINE.
+
+	  If unsure, say Y.
+
+config CONSOLE
+	string "Set the default console parameter" if EMBEDDED
+	default "tty"
+	depends on !PARAM
+	help
+	  This option set the default console you want to use. every change
+	  needs to recompile the kernel.
+
+config INIT
+	string "Set the default init parameter" if EMBEDDED
+	default "/bin/bash"
+	depends on !PARAM
+	help
+	  This option set the default init program you want to run. every
+	  change needs to recompile the kernel.
+
+config ROOT_DEV
+	string "Set the default root parameter" if EMBEDDED
+	default "08:05" if !SYSFS
+	default "/dev/sda5" if SYSFS
+	depends on !PARAM
+	help
+	  This option set the default root device your want to load. every
+	  change needs to recompile the kernel.
+
+	  If sysfs is disabled, please use <major>:<minor> instead of
+	  /dev/[hs]d[a-z][0-9]. Please refer to Documentation/devices.txt to
+	  get the major and minor number of your device.
+
+	  For ramfs, no need to set this option.
+
 config SETUP_PARAM
 	default y
+	depends on PARAM
 	bool "Enable kernel parameters setup" if EMBEDDED
 	help
 	  This option enables normal kernel paramters support. Removing it
@@ -884,6 +926,7 @@ config SETUP_PARAM
 config PARAM_LIST
 	default "console init root"
 	depends on !SETUP_PARAM
+	depends on PARAM
 	string "List the parameters need to be setup" if EMBEDDED
 	help
 	  This option allows users to list some parameters which are needed the
@@ -908,6 +951,7 @@ config MEASURE_PARAMS
 
 config MODULE_PARAM
         default y
+        depends on PARAM
         bool "Enable built-in module parameters" if EMBEDDED
         help
           Enable built-in module parameters, If no module parameters will be

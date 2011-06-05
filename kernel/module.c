@@ -2541,9 +2541,11 @@ static noinline struct module *load_module(void __user *umod,
 	list_add_rcu(&mod->list, &modules);
 	mutex_unlock(&module_mutex);
 
+#ifdef CONFIG_MODULE_PARAM
 	err = parse_args(mod->name, mod->args, mod->kp, mod->num_kp, NULL);
 	if (err < 0)
 		goto unlink;
+#endif
 
 	err = mod_sysfs_setup(mod, mod->kp, mod->num_kp);
 	if (err < 0)

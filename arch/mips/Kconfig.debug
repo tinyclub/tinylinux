@@ -22,6 +22,7 @@ config EARLY_PRINTK
 
 config CMDLINE_BOOL
 	bool "Built-in kernel command line"
+	depends on PARAM
 	default n
 	help
 	  For most systems, it is firmware or second stage bootloader that
