@@ -906,6 +906,13 @@ config MEASURE_PARAMS
 	  generate counts and footprints. Say N unless you want a very noisy
 	  build.
 
+config MODULE_PARAM
+        default y
+        bool "Enable built-in module parameters" if EMBEDDED
+        help
+          Enable built-in module parameters, If no module parameters will be
+          used, this can be disabled to save kernel image size.
+
 config BUG
 	bool "BUG() support" if EMBEDDED
 	default y

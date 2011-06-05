@@ -146,6 +146,20 @@
 #define TRACE_SYSCALLS()
 #endif
 
+#ifdef CONFIG_MODULE_PARAM
+#define MODULE_PARAM(align)						\
+	/* Built-in module parameters. */				\
+	__param : AT(ADDR(__param) - LOAD_OFFSET) {			\
+		VMLINUX_SYMBOL(__start___param) = .;			\
+		KEEP(*(__param))					\
+		VMLINUX_SYMBOL(__stop___param) = .;			\
+		. = ALIGN((align));					\
+		VMLINUX_SYMBOL(__end_rodata) = .;			\
+	}
+#else
+#define MODULE_PARAM(align)
+#endif
+
 /* .data section */
 #define DATA_DATA							\
 	*(.data)							\
@@ -350,15 +364,8 @@
 		MEM_KEEP(init.rodata)					\
 		MEM_KEEP(exit.rodata)					\
 	}								\
-									\
 	/* Built-in module parameters. */				\
-	__param : AT(ADDR(__param) - LOAD_OFFSET) {			\
-		VMLINUX_SYMBOL(__start___param) = .;			\
-		*(__param)						\
-		VMLINUX_SYMBOL(__stop___param) = .;			\
-		. = ALIGN((align));					\
-		VMLINUX_SYMBOL(__end_rodata) = .;			\
-	}								\
+	MODULE_PARAM(align)						\
 	. = ALIGN((align));
 
 /* RODATA & RO_DATA provided for backward compatibility.
