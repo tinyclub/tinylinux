@@ -304,7 +304,7 @@ static inline unsigned long cpu_get_fpu_id(void)
 /*
  * Check the CPU has an FPU the official way.
  */
-#ifdef CONFIG_SW_FPU
+#ifndef CONFIG_HW_FPU
 #define __cpu_has_fpu()	0
 #else
 static inline int __cpu_has_fpu(void)

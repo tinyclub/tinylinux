@@ -42,7 +42,7 @@
 #define cpu_has_octeon_cache	0
 #endif
 
-#ifdef CONFIG_SW_FPU
+#ifndef CONFIG_HW_FPU
 #undef cpu_has_fpu
 #define cpu_has_fpu 0
 #endif

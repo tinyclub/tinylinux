@@ -19,6 +19,8 @@
 #include <asm/asm-offsets.h>
 #include <asm/regdef.h>
 
+#ifdef CONFIG_HW_FPU
+
 	.macro	EX insn, reg, src
 	.set	push
 	.set	nomacro
@@ -186,3 +188,5 @@ LEAF(_restore_fp_context32)
 fault:	li	v0, -EFAULT				# failure
 	jr	ra
 	.end	fault
+
+#endif /* CONFIG_HW_FPU */

@@ -36,20 +36,26 @@
 
 #include "signal-common.h"
 
+#ifndef CONFIG_NO_FPU
 static int (*save_fp_context)(struct sigcontext __user *sc);
 static int (*restore_fp_context)(struct sigcontext __user *sc);
 
-#ifdef CONFIG_HW_FPU
+#ifdef CONFIG_SW_FPU
+extern asmlinkage int fpu_emulator_save_context(struct sigcontext __user *sc);
+extern asmlinkage int fpu_emulator_restore_context(struct sigcontext __user *sc);
+#else
 static asmlinkage int fpu_emulator_save_context(struct sigcontext __user *sc) { return 0; }
 static asmlinkage int fpu_emulator_restore_context(struct sigcontext __user *sc) { return 0; }
+#endif
+
+#ifdef CONFIG_HW_FPU
 extern asmlinkage int _save_fp_context(struct sigcontext __user *sc);
 extern asmlinkage int _restore_fp_context(struct sigcontext __user *sc);
 #else
 static asmlinkage inline int _save_fp_context(struct sigcontext __user *sc) { return 0; }
 static asmlinkage inline int _restore_fp_context(struct sigcontext __user *sc) { return 0; }
-extern asmlinkage int fpu_emulator_save_context(struct sigcontext __user *sc);
-extern asmlinkage int fpu_emulator_restore_context(struct sigcontext __user *sc);
 #endif
+#endif /* CONFIG_NO_FPU */
 
 struct sigframe {
 	u32 sf_ass[4];		/* argument save space for o32 */
@@ -65,6 +71,7 @@ struct rt_sigframe {
 	struct ucontext rs_uc;
 };
 
+#ifndef CONFIG_NO_FPU
 /*
  * Helper routines
  */
@@ -107,12 +114,13 @@ static int protected_restore_fp_context(struct sigcontext __user *sc)
 	}
 	return err;
 }
+#endif /* CONFIG_NO_FPU */
 
 int setup_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
 {
 	int err = 0;
 	int i;
-	unsigned int used_math;
+	unsigned int __maybe_unused used_math;
 
 	err |= __put_user(regs->cp0_epc, &sc->sc_pc);
 
@@ -135,6 +143,7 @@ int setup_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
 		err |= __put_user(rddsp(DSP_MASK), &sc->sc_dsp);
 	}
 
+#ifndef CONFIG_NO_FPU
 	used_math = !!used_math();
 	err |= __put_user(used_math, &sc->sc_used_math);
 
@@ -145,9 +154,11 @@ int setup_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
 		 */
 		err |= protected_save_fp_context(sc);
 	}
+#endif
 	return err;
 }
 
+#ifndef CONFIG_NO_FPU
 int fpcsr_pending(unsigned int __user *fpcsr)
 {
 	int err, sig = 0;
@@ -178,10 +189,11 @@ check_and_restore_fp_context(struct sigcontext __user *sc)
 	err |= protected_restore_fp_context(sc);
 	return err ?: sig;
 }
+#endif
 
 int restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
 {
-	unsigned int used_math;
+	unsigned int __maybe_unused used_math;
 	unsigned long treg;
 	int err = 0;
 	int i;
@@ -209,6 +221,7 @@ int restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
 	for (i = 1; i < 32; i++)
 		err |= __get_user(regs->regs[i], &sc->sc_regs[i]);
 
+#ifndef CONFIG_NO_FPU
 	err |= __get_user(used_math, &sc->sc_used_math);
 	conditional_used_math(used_math);
 
@@ -220,6 +233,7 @@ int restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
 		/* signal handler may have used FPU.  Give it up. */
 		lose_fpu(0);
 	}
+#endif
 
 	return err;
 }
@@ -677,7 +691,7 @@ asmlinkage void do_notify_resume(struct pt_regs *regs, void *unused,
 	}
 }
 
-#ifdef CONFIG_SMP
+#if defined(CONFIG_SMP) && !defined(CONFIG_NO_FPU) 
 static int smp_save_fp_context(struct sigcontext __user *sc)
 {
 	return raw_cpu_has_fpu
@@ -695,6 +709,7 @@ static int smp_restore_fp_context(struct sigcontext __user *sc)
 
 static int signal_setup(void)
 {
+#ifndef CONFIG_NO_FPU
 #ifdef CONFIG_SMP
 	/* For now just do the cpu_has_fpu check when the functions are invoked */
 	save_fp_context = smp_save_fp_context;
@@ -708,7 +723,7 @@ static int signal_setup(void)
 		restore_fp_context = fpu_emulator_restore_context;
 	}
 #endif
-
+#endif /* CONFIG_NO_FPU */
 	return 0;
 }
 

@@ -643,6 +643,7 @@ asmlinkage void do_ov(struct pt_regs *regs)
 	force_sig_info(SIGFPE, &info, current);
 }
 
+#ifndef CONFIG_NO_FPU
 /*
  * XXX Delayed fp exceptions when doing a lazy ctx switch XXX
  */
@@ -713,6 +714,7 @@ asmlinkage void do_fpe(struct pt_regs *regs, unsigned long fcr31)
 	info.si_addr = (void __user *) regs->cp0_epc;
 	force_sig_info(SIGFPE, &info, current);
 }
+#endif
 
 static void do_trap_or_bp(struct pt_regs *regs, unsigned int code,
 	const char *str)
@@ -969,6 +971,7 @@ asmlinkage void do_cpu(struct pt_regs *regs)
 		return;
 
 	case 1:
+#ifndef CONFIG_NO_FPU
 		if (used_math())	/* Using the FPU again.  */
 			own_fpu(1);
 		else {			/* First time FPU user.  */
@@ -987,7 +990,7 @@ asmlinkage void do_cpu(struct pt_regs *regs)
 				mt_ase_fp_affinity();
 		}
 #endif
-
+#endif /* CONFIG_NO_FPU */
 		return;
 
 	case 2:

@@ -1599,8 +1599,25 @@ config SIBYTE_DMA_PAGEOPS
 config CPU_HAS_PREFETCH
 	bool
 
+config NO_FPU
+	bool "Disable fpu support"
+	default n if EMBEDDED
+	help
+	  Disable all of the fpu support if you can ensure your target system
+	  doesn't need this feature, otherwise, don't disable fpu support.
+
+	  If unsure, say N.
+
+config BOTH_FPU
+	bool "Enable hardware and software fpu support"
+	depends on !NO_FPU
+	default y if EMBEDDED
+	help
+	  Enable both of the fpu support.
+
 config DISABLE_HW_FPU
-	bool "Disable kernel support for hardware fpu"
+	bool "Disable hardware fpu support"
+	depends on !BOTH_FPU && !NO_FPU
 	default y if EMBEDDED
 	help
 	  This option disables the kernel support for the hardware fpu, which
@@ -1611,10 +1628,14 @@ config DISABLE_HW_FPU
 
 config HW_FPU
 	bool
+	default y if BOTH_FPU
+	default n if NO_FPU
 	default !DISABLE_HW_FPU
 
 config SW_FPU
 	bool
+	default y if BOTH_FPU
+	default n if NO_FPU
 	default !HW_FPU
 
 choice

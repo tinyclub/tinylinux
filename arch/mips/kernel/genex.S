@@ -455,7 +455,9 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	BUILD_HANDLER cpu cpu sti silent		/* #11 */
 	BUILD_HANDLER ov ov sti silent			/* #12 */
 	BUILD_HANDLER tr tr sti silent			/* #13 */
+#ifndef CONFIG_NO_FPU
 	BUILD_HANDLER fpe fpe fpe silent		/* #15 */
+#endif
 	BUILD_HANDLER mdmx mdmx sti silent		/* #22 */
 #ifdef 	CONFIG_HARDWARE_WATCHPOINTS
 	/*

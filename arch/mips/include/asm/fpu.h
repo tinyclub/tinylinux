@@ -30,10 +30,14 @@ struct sigcontext32;
 
 #ifdef CONFIG_SW_FPU
 extern void fpu_emulator_init_fpu(void);
-#define _init_fpu()
 #else
-extern void _init_fpu(void);
 #define fpu_emulator_init_fpu()
+#endif
+
+#ifdef CONFIG_HW_FPU
+extern void _init_fpu(void);
+#else
+#define _init_fpu()
 #endif
 
 extern void _save_fp(struct task_struct *);

@@ -13,6 +13,20 @@
 #include <asm/fpregdef.h>
 #include <asm/mipsregs.h>
 
+#ifndef CONFIG_HW_FPU
+	.macro	fpu_save_16even thread tmp=t0
+	.endm
+	.macro	fpu_save_16odd thread
+	.endm
+	.macro	fpu_save_double thread status tmp
+	.endm
+	.macro	fpu_restore_16even thread tmp=t0
+	.endm
+	.macro	fpu_restore_16odd thread
+	.endm
+	.macro	fpu_restore_double thread status tmp
+	.endm
+#else
 	.macro	fpu_save_16even thread tmp=t0
 	cfc1	\tmp, fcr31
 	sdc1	$f0,  THREAD_FPR0(\thread)
@@ -108,6 +122,7 @@
 	fpu_restore_16odd \thread
 1:	fpu_restore_16even \thread \tmp
 	.endm
+#endif
 
 	.macro	cpu_save_nonscratch thread
 	LONG_S	s0, THREAD_REG16(\thread)

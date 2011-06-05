@@ -36,20 +36,26 @@
 
 #include "signal-common.h"
 
+#ifndef CONFIG_NO_FPU
 static int (*save_fp_context32)(struct sigcontext32 __user *sc);
 static int (*restore_fp_context32)(struct sigcontext32 __user *sc);
 
-#ifdef CONFIG_HW_FPU
+#ifdef CONFIG_SW_FPU
+extern asmlinkage int fpu_emulator_save_context32(struct sigcontext32 __user *sc);
+extern asmlinkage int fpu_emulator_restore_context32(struct sigcontext32 __user *sc);
+#else
 static asmlinkage int fpu_emulator_save_context32(struct sigcontext32 __user *sc) { return 0; }
 static asmlinkage int fpu_emulator_restore_context32(struct sigcontext32 __user *sc) { return 0; }
+#endif
+
+#ifdef CONFIG_HW_FPU
 extern asmlinkage int _save_fp_context32(struct sigcontext32 __user *sc);
 extern asmlinkage int _restore_fp_context32(struct sigcontext32 __user *sc);
 #else
 static asmlinkage inline int _save_fp_context32(struct sigcontext32 __user *sc) { return 0; }
 static asmlinkage inline int _restore_fp_context32(struct sigcontext32 __user *sc) { return 0; }
-extern asmlinkage int fpu_emulator_save_context32(struct sigcontext32 __user *sc);
-extern asmlinkage int fpu_emulator_restore_context32(struct sigcontext32 __user *sc);
 #endif
+#endif /* CONFIG_NO_FPU */
 
 /*
  * Including <asm/unistd.h> would give use the 64-bit syscall numbers ...
@@ -96,6 +102,7 @@ struct rt_sigframe32 {
 	struct ucontext32 rs_uc;
 };
 
+#ifndef CONFIG_NO_FPU
 /*
  * sigcontext handlers
  */
@@ -138,13 +145,14 @@ static int protected_restore_fp_context32(struct sigcontext32 __user *sc)
 	}
 	return err;
 }
+#endif /* CONFIG_NO_FPU */
 
 static int setup_sigcontext32(struct pt_regs *regs,
 			      struct sigcontext32 __user *sc)
 {
 	int err = 0;
 	int i;
-	u32 used_math;
+	u32 __maybe_unused used_math;
 
 	err |= __put_user(regs->cp0_epc, &sc->sc_pc);
 
@@ -164,6 +172,7 @@ static int setup_sigcontext32(struct pt_regs *regs,
 		err |= __put_user(mflo3(), &sc->sc_lo3);
 	}
 
+#ifndef CONFIG_NO_FPU
 	used_math = !!used_math();
 	err |= __put_user(used_math, &sc->sc_used_math);
 
@@ -174,9 +183,11 @@ static int setup_sigcontext32(struct pt_regs *regs,
 		 */
 		err |= protected_save_fp_context32(sc);
 	}
+#endif
 	return err;
 }
 
+#ifndef CONFIG_NO_FPU
 static int
 check_and_restore_fp_context32(struct sigcontext32 __user *sc)
 {
@@ -188,11 +199,12 @@ check_and_restore_fp_context32(struct sigcontext32 __user *sc)
 	err |= protected_restore_fp_context32(sc);
 	return err ?: sig;
 }
+#endif
 
 static int restore_sigcontext32(struct pt_regs *regs,
 				struct sigcontext32 __user *sc)
 {
-	u32 used_math;
+	u32 __maybe_unused used_math;
 	int err = 0;
 	s32 treg;
 	int i;
@@ -219,6 +231,7 @@ static int restore_sigcontext32(struct pt_regs *regs,
 	err |= __get_user(used_math, &sc->sc_used_math);
 	conditional_used_math(used_math);
 
+#ifndef CONFIG_NO_FPU
 	if (used_math) {
 		/* restore fpu context if we have used it before */
 		if (!err)
@@ -227,6 +240,7 @@ static int restore_sigcontext32(struct pt_regs *regs,
 		/* signal handler may have used FPU.  Give it up. */
 		lose_fpu(0);
 	}
+#endif
 
 	return err;
 }
@@ -819,6 +833,7 @@ SYSCALL_DEFINE5(32_waitid, int, which, compat_pid_t, pid,
 
 static int signal32_init(void)
 {
+#ifndef CONFIG_NO_FPU
 	if (cpu_has_fpu) {
 		save_fp_context32 = _save_fp_context32;
 		restore_fp_context32 = _restore_fp_context32;
@@ -826,6 +841,7 @@ static int signal32_init(void)
 		save_fp_context32 = fpu_emulator_save_context32;
 		restore_fp_context32 = fpu_emulator_restore_context32;
 	}
+#endif
 
 	return 0;
 }

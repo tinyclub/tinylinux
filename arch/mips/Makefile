@@ -706,7 +706,8 @@ head-y := arch/mips/kernel/head.o arch/mips/kernel/init_task.o
 
 libs-y			+= arch/mips/lib/
 
-core-y			+= arch/mips/kernel/ arch/mips/mm/ arch/mips/math-emu/
+core-y			+= arch/mips/kernel/ arch/mips/mm/
+core-$(CONFIG_SW_FPU)	+= arch/mips/math-emu/
 
 drivers-$(CONFIG_OPROFILE)	+= arch/mips/oprofile/
 

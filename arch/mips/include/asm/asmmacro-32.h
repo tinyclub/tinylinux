@@ -12,6 +12,16 @@
 #include <asm/fpregdef.h>
 #include <asm/mipsregs.h>
 
+#ifndef CONFIG_HW_FPU
+	.macro	fpu_save_double thread status tmp1=t0
+	.endm
+	.macro	fpu_save_single thread tmp=t0
+	.endm
+	.macro	fpu_restore_double thread status tmp=t0
+	.endm
+	.macro	fpu_restore_single thread tmp=t0
+	.endm
+#else
 	.macro	fpu_save_double thread status tmp1=t0
 	cfc1	\tmp1,  fcr31
 	sdc1	$f0,  THREAD_FPR0(\thread)
@@ -127,6 +137,7 @@
 	lwc1	$f31, THREAD_FPR31(\thread)
 	ctc1	\tmp, fcr31
 	.endm
+#endif
 
 	.macro	cpu_save_nonscratch thread
 	LONG_S	s0, THREAD_REG16(\thread)
