@@ -486,7 +486,7 @@ int platform_driver_register(struct platform_driver *drv)
 	if (drv->probe)
 		drv->driver.probe = platform_drv_probe;
 	if (drv->remove)
-		drv->driver.remove = platform_drv_remove;
+		drv->driver.remove = __devexit_p(platform_drv_remove);
 	if (drv->shutdown)
 		drv->driver.shutdown = platform_drv_shutdown;
 
@@ -988,6 +988,7 @@ int __weak platform_pm_runtime_idle(struct device *dev)
 
 #endif /* !CONFIG_PM_RUNTIME */
 
+#ifdef CONFIG_PM
 static const struct dev_pm_ops platform_dev_pm_ops = {
 	.prepare = platform_pm_prepare,
 	.complete = platform_pm_complete,
@@ -1007,13 +1008,16 @@ static const struct dev_pm_ops platform_dev_pm_ops = {
 	.runtime_resume = platform_pm_runtime_resume,
 	.runtime_idle = platform_pm_runtime_idle,
 };
+#endif
 
 struct bus_type platform_bus_type = {
 	.name		= "platform",
-	.dev_attrs	= platform_dev_attrs,
+	.dev_attrs	= __sysfs_p(platform_dev_attrs),
 	.match		= platform_match,
-	.uevent		= platform_uevent,
+	.uevent		= __sysfs_p(platform_uevent),
+#ifdef CONFIG_PM
 	.pm		= &platform_dev_pm_ops,
+#endif
 };
 EXPORT_SYMBOL_GPL(platform_bus_type);
 

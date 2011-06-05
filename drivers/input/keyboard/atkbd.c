@@ -289,7 +289,7 @@ static struct attribute *atkbd_attributes[] = {
 };
 
 static struct attribute_group atkbd_attribute_group = {
-	.attrs	= atkbd_attributes,
+	.attrs	= __sysfs_p(atkbd_attributes),
 };
 
 static const unsigned int xl_table[] = {
@@ -855,7 +855,7 @@ static void atkbd_disconnect(struct serio *serio)
 {
 	struct atkbd *atkbd = serio_get_drvdata(serio);
 
-	sysfs_remove_group(&serio->dev.kobj, &atkbd_attribute_group);
+	sysfs_remove_group(&serio->dev.kobj, __sysfs_p(&atkbd_attribute_group));
 
 	atkbd_disable(atkbd);
 
@@ -1150,7 +1150,7 @@ static int atkbd_connect(struct serio *serio, struct serio_driver *drv)
 	atkbd_set_keycode_table(atkbd);
 	atkbd_set_device_attrs(atkbd);
 
-	err = sysfs_create_group(&serio->dev.kobj, &atkbd_attribute_group);
+	err = sysfs_create_group(&serio->dev.kobj, __sysfs_p(&atkbd_attribute_group));
 	if (err)
 		goto fail3;
 
@@ -1162,7 +1162,7 @@ static int atkbd_connect(struct serio *serio, struct serio_driver *drv)
 
 	return 0;
 
- fail4: sysfs_remove_group(&serio->dev.kobj, &atkbd_attribute_group);
+ fail4: sysfs_remove_group(&serio->dev.kobj, __sysfs_p(&atkbd_attribute_group));
  fail3:	serio_close(serio);
  fail2:	serio_set_drvdata(serio, NULL);
  fail1:	input_free_device(dev);

@@ -63,6 +63,7 @@ static void isa_bus_shutdown(struct device *dev)
 		isa_driver->shutdown(dev, to_isa_dev(dev)->id);
 }
 
+#ifdef CONFIG_PM
 static int isa_bus_suspend(struct device *dev, pm_message_t state)
 {
 	struct isa_driver *isa_driver = dev->platform_data;
@@ -82,15 +83,18 @@ static int isa_bus_resume(struct device *dev)
 
 	return 0;
 }
+#endif
 
 static struct bus_type isa_bus_type = {
 	.name		= "isa",
 	.match		= isa_bus_match,
 	.probe		= isa_bus_probe,
-	.remove		= isa_bus_remove,
+	.remove		= __devexit_p(isa_bus_remove),
 	.shutdown	= isa_bus_shutdown,
+#ifdef CONFIG_PM
 	.suspend	= isa_bus_suspend,
 	.resume		= isa_bus_resume
+#endif
 };
 
 static void isa_dev_release(struct device *dev)

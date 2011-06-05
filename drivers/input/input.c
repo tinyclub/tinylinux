@@ -1165,7 +1165,7 @@ static struct attribute *input_dev_attrs[] = {
 };
 
 static struct attribute_group input_dev_attr_group = {
-	.attrs	= input_dev_attrs,
+	.attrs	= __sysfs_p(input_dev_attrs),
 };
 
 #define INPUT_DEV_ID_ATTR(name)						\
@@ -1263,13 +1263,13 @@ static struct attribute *input_dev_caps_attrs[] = {
 
 static struct attribute_group input_dev_caps_attr_group = {
 	.name	= "capabilities",
-	.attrs	= input_dev_caps_attrs,
+	.attrs	= __sysfs_p(input_dev_caps_attrs),
 };
 
 static const struct attribute_group *input_dev_attr_groups[] = {
-	&input_dev_attr_group,
-	&input_dev_id_attr_group,
-	&input_dev_caps_attr_group,
+	__sysfs_p(&input_dev_attr_group),
+	__sysfs_p(&input_dev_id_attr_group),
+	__sysfs_p(&input_dev_caps_attr_group),
 	NULL
 };
 
@@ -1447,9 +1447,9 @@ static const struct dev_pm_ops input_dev_pm_ops = {
 #endif /* CONFIG_PM */
 
 static struct device_type input_dev_type = {
-	.groups		= input_dev_attr_groups,
+	.groups		= __sysfs_p(input_dev_attr_groups),
 	.release	= input_dev_release,
-	.uevent		= input_dev_uevent,
+	.uevent		= __sysfs_p(input_dev_uevent),
 #ifdef CONFIG_PM
 	.pm		= &input_dev_pm_ops,
 #endif

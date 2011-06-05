@@ -178,7 +178,7 @@ struct dma_pool *dma_pool_create(const char *name, struct device *dev,
 
 		mutex_lock(&pools_lock);
 		if (list_empty(&dev->dma_pools))
-			ret = device_create_file(dev, &dev_attr_pools);
+			ret = device_create_file(dev, __sysfs_p(&dev_attr_pools));
 		else
 			ret = 0;
 		/* note:  not currently insisting "name" be unique */
@@ -266,7 +266,7 @@ void dma_pool_destroy(struct dma_pool *pool)
 	mutex_lock(&pools_lock);
 	list_del(&pool->pools);
 	if (pool->dev && list_empty(&pool->dev->dma_pools))
-		device_remove_file(pool->dev, &dev_attr_pools);
+		device_remove_file(pool->dev, __sysfs_p(&dev_attr_pools));
 	mutex_unlock(&pools_lock);
 
 	while (!list_empty(&pool->page_list)) {

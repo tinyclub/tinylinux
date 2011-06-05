@@ -909,7 +909,7 @@ static const struct sysfs_ops elv_sysfs_ops = {
 };
 
 static struct kobj_type elv_ktype = {
-	.sysfs_ops	= &elv_sysfs_ops,
+	.sysfs_ops	= __sysfs_p(&elv_sysfs_ops),
 	.release	= elevator_release,
 };
 

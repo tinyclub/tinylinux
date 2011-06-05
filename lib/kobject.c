@@ -605,7 +605,7 @@ static void dynamic_kobj_release(struct kobject *kobj)
 
 static struct kobj_type dynamic_kobj_ktype = {
 	.release	= dynamic_kobj_release,
-	.sysfs_ops	= &kobj_sysfs_ops,
+	.sysfs_ops	= __sysfs_p(&kobj_sysfs_ops),
 };
 
 /**
@@ -769,7 +769,7 @@ static void kset_release(struct kobject *kobj)
 }
 
 static struct kobj_type kset_ktype = {
-	.sysfs_ops	= &kobj_sysfs_ops,
+	.sysfs_ops	= __sysfs_p(&kobj_sysfs_ops),
 	.release = kset_release,
 };
 
@@ -803,7 +803,7 @@ static struct kset *kset_create(const char *name,
 		kfree(kset);
 		return NULL;
 	}
-	kset->uevent_ops = uevent_ops;
+	kset->uevent_ops = __sysfs_p(uevent_ops);
 	kset->kobj.parent = parent_kobj;
 
 	/*
@@ -838,7 +838,7 @@ struct kset *kset_create_and_add(const char *name,
 	struct kset *kset;
 	int error;
 
-	kset = kset_create(name, uevent_ops, parent_kobj);
+	kset = kset_create(name, __sysfs_p(uevent_ops), parent_kobj);
 	if (!kset)
 		return NULL;
 	error = kset_register(kset);

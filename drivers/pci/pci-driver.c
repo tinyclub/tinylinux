@@ -1217,12 +1217,12 @@ int pci_uevent(struct device *dev, struct kobj_uevent_env *env)
 struct bus_type pci_bus_type = {
 	.name		= "pci",
 	.match		= pci_bus_match,
-	.uevent		= pci_uevent,
+	.uevent		= __sysfs_p(pci_uevent),
 	.probe		= pci_device_probe,
-	.remove		= pci_device_remove,
+	.remove		= __devexit_p(pci_device_remove),
 	.shutdown	= pci_device_shutdown,
-	.dev_attrs	= pci_dev_attrs,
-	.bus_attrs	= pci_bus_attrs,
+	.dev_attrs	= __sysfs_p(pci_dev_attrs),
+	.bus_attrs	= __sysfs_p(pci_bus_attrs),
 	.pm		= PCI_PM_OPS_PTR,
 };
 

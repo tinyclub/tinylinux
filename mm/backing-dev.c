@@ -235,7 +235,7 @@ static __init int bdi_class_init(void)
 	if (IS_ERR(bdi_class))
 		return PTR_ERR(bdi_class);
 
-	bdi_class->dev_attrs = bdi_dev_attrs;
+	bdi_class->dev_attrs = __sysfs_p(bdi_dev_attrs);
 	bdi_debug_init();
 	return 0;
 }

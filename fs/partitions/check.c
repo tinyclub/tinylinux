@@ -323,13 +323,13 @@ static struct attribute *part_attrs[] = {
 };
 
 static struct attribute_group part_attr_group = {
-	.attrs = part_attrs,
+	.attrs = __sysfs_p(part_attrs),
 };
 
 static const struct attribute_group *part_attr_groups[] = {
-	&part_attr_group,
+	__sysfs_p(&part_attr_group),
 #ifdef CONFIG_BLK_DEV_IO_TRACE
-	&blk_trace_attr_group,
+	__sysfs_p(&blk_trace_attr_group),
 #endif
 	NULL
 };

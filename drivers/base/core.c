@@ -990,7 +990,7 @@ int device_add(struct device *dev)
 		goto attrError;
 
 	if (MAJOR(dev->devt)) {
-		error = device_create_file(dev, &devt_attr);
+		error = device_create_file(dev, __sysfs_p(&devt_attr));
 		if (error)
 			goto ueventattrError;
 
@@ -1057,9 +1057,9 @@ done:
 		device_remove_sys_dev_entry(dev);
  devtattrError:
 	if (MAJOR(dev->devt))
-		device_remove_file(dev, &devt_attr);
+		device_remove_file(dev, __sysfs_p(&devt_attr));
  ueventattrError:
-	device_remove_file(dev, &uevent_attr);
+	device_remove_file(dev, __sysfs_p(&uevent_attr));
  attrError:
 	kobject_uevent(&dev->kobj, KOBJ_REMOVE);
 	kobject_del(&dev->kobj);
@@ -1149,7 +1149,7 @@ void device_del(struct device *dev)
 	if (MAJOR(dev->devt)) {
 		devtmpfs_delete_node(dev);
 		device_remove_sys_dev_entry(dev);
-		device_remove_file(dev, &devt_attr);
+		device_remove_file(dev, __sysfs_p(&devt_attr));
 	}
 	if (dev->class) {
 		device_remove_class_symlinks(dev);
@@ -1164,7 +1164,7 @@ void device_del(struct device *dev)
 		klist_del(&dev->knode_class);
 		mutex_unlock(&dev->class->p->class_mutex);
 	}
-	device_remove_file(dev, &uevent_attr);
+	device_remove_file(dev, __sysfs_p(&uevent_attr));
 	device_remove_attrs(dev);
 	bus_remove_device(dev);
 
@@ -1323,7 +1323,7 @@ struct device *device_find_child(struct device *parent, void *data,
 
 int __init devices_init(void)
 {
-	devices_kset = kset_create_and_add("devices", &device_uevent_ops, NULL);
+	devices_kset = kset_create_and_add("devices", __sysfs_p(&device_uevent_ops), NULL);
 	if (!devices_kset)
 		return -ENOMEM;
 	dev_kobj = kobject_create_and_add("dev", NULL);

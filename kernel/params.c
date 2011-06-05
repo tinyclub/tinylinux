@@ -745,7 +745,7 @@ struct kset *module_kset;
 int module_sysfs_initialized;
 
 struct kobj_type module_ktype = {
-	.sysfs_ops =	&module_sysfs_ops,
+	.sysfs_ops =	__sysfs_p(&module_sysfs_ops),
 };
 
 /*
@@ -753,7 +753,7 @@ struct kobj_type module_ktype = {
  */
 static int __init param_sysfs_init(void)
 {
-	module_kset = kset_create_and_add("module", &module_uevent_ops, NULL);
+	module_kset = kset_create_and_add("module", __sysfs_p(&module_uevent_ops), NULL);
 	if (!module_kset) {
 		printk(KERN_WARNING "%s (%d): error creating kset\n",
 			__FILE__, __LINE__);

@@ -175,7 +175,7 @@ static struct attribute * kernel_attrs[] = {
 };
 
 static struct attribute_group kernel_attr_group = {
-	.attrs = kernel_attrs,
+	.attrs = __sysfs_p(kernel_attrs),
 };
 
 static int __init ksysfs_init(void)
@@ -187,13 +187,13 @@ static int __init ksysfs_init(void)
 		error = -ENOMEM;
 		goto exit;
 	}
-	error = sysfs_create_group(kernel_kobj, &kernel_attr_group);
+	error = sysfs_create_group(kernel_kobj, __sysfs_p(&kernel_attr_group));
 	if (error)
 		goto kset_exit;
 
 	if (notes_size > 0) {
 		notes_attr.size = notes_size;
-		error = sysfs_create_bin_file(kernel_kobj, &notes_attr);
+		error = sysfs_create_bin_file(kernel_kobj, __sysfs_p(&notes_attr));
 		if (error)
 			goto group_exit;
 	}
@@ -201,7 +201,7 @@ static int __init ksysfs_init(void)
 	return 0;
 
 group_exit:
-	sysfs_remove_group(kernel_kobj, &kernel_attr_group);
+	sysfs_remove_group(kernel_kobj, __sysfs_p(&kernel_attr_group));
 kset_exit:
 	kobject_put(kernel_kobj);
 exit:

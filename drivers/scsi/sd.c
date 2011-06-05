@@ -293,7 +293,7 @@ static struct class sd_disk_class = {
 	.name		= "scsi_disk",
 	.owner		= THIS_MODULE,
 	.dev_release	= scsi_disk_release,
-	.dev_attrs	= sd_disk_attrs,
+	.dev_attrs	= __sysfs_p(sd_disk_attrs),
 };
 
 static struct scsi_driver sd_template = {
@@ -301,9 +301,11 @@ static struct scsi_driver sd_template = {
 	.gendrv = {
 		.name		= "sd",
 		.probe		= sd_probe,
-		.remove		= sd_remove,
+		.remove		= __devexit_p(sd_remove),
+#ifdef CONFIG_PM
 		.suspend	= sd_suspend,
 		.resume		= sd_resume,
+#endif
 		.shutdown	= sd_shutdown,
 	},
 	.rescan			= sd_rescan,
@@ -2463,6 +2465,7 @@ static void sd_shutdown(struct device *dev)
 	scsi_disk_put(sdkp);
 }
 
+#ifdef CONFIG_PM
 static int sd_suspend(struct device *dev, pm_message_t mesg)
 {
 	struct scsi_disk *sdkp = scsi_disk_get_from_dev(dev);
@@ -2503,6 +2506,7 @@ done:
 	scsi_disk_put(sdkp);
 	return ret;
 }
+#endif /* CONFIG_PM */
 
 /**
  *	init_sd - entry point for this driver (both when built in or when

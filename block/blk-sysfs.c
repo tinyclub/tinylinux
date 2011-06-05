@@ -482,8 +482,8 @@ static const struct sysfs_ops queue_sysfs_ops = {
 };
 
 struct kobj_type blk_queue_ktype = {
-	.sysfs_ops	= &queue_sysfs_ops,
-	.default_attrs	= default_attrs,
+	.sysfs_ops	= __sysfs_p(&queue_sysfs_ops),
+	.default_attrs	= __sysfs_p(default_attrs),
 	.release	= blk_release_queue,
 };
 

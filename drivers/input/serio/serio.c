@@ -428,11 +428,11 @@ static struct attribute *serio_device_id_attrs[] = {
 
 static struct attribute_group serio_id_attr_group = {
 	.name	= "id",
-	.attrs	= serio_device_id_attrs,
+	.attrs	= __sysfs_p(serio_device_id_attrs),
 };
 
 static const struct attribute_group *serio_device_attr_groups[] = {
-	&serio_id_attr_group,
+	__sysfs_p(&serio_id_attr_group),
 	NULL
 };
 
@@ -523,7 +523,7 @@ static void serio_init_port(struct serio *serio)
 			(long)atomic_inc_return(&serio_no) - 1);
 	serio->dev.bus = &serio_bus;
 	serio->dev.release = serio_release_port;
-	serio->dev.groups = serio_device_attr_groups;
+	serio->dev.groups = __sysfs_p(serio_device_attr_groups);
 	if (serio->parent) {
 		serio->dev.parent = &serio->parent->dev;
 		serio->depth = serio->parent->depth + 1;
@@ -981,12 +981,12 @@ EXPORT_SYMBOL(serio_interrupt);
 
 static struct bus_type serio_bus = {
 	.name		= "serio",
-	.dev_attrs	= serio_device_attrs,
-	.drv_attrs	= serio_driver_attrs,
+	.dev_attrs	= __sysfs_p(serio_device_attrs),
+	.drv_attrs	= __sysfs_p(serio_driver_attrs),
 	.match		= serio_bus_match,
-	.uevent		= serio_uevent,
+	.uevent		= __sysfs_p(serio_uevent),
 	.probe		= serio_driver_probe,
-	.remove		= serio_driver_remove,
+	.remove		= __devexit_p(serio_driver_remove),
 	.shutdown	= serio_shutdown,
 #ifdef CONFIG_PM
 	.pm		= &serio_pm_ops,

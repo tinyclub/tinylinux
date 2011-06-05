@@ -1092,7 +1092,7 @@ int __must_check pci_create_sysfs_dev_files (struct pci_dev *pdev)
 	}
 
 	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA) {
-		retval = device_create_file(&pdev->dev, &vga_attr);
+		retval = device_create_file(&pdev->dev, __sysfs_p(&vga_attr));
 		if (retval)
 			goto err_rom_file;
 	}
@@ -1111,7 +1111,7 @@ int __must_check pci_create_sysfs_dev_files (struct pci_dev *pdev)
 
 err_vga_file:
 	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
-		device_remove_file(&pdev->dev, &vga_attr);
+		device_remove_file(&pdev->dev, __sysfs_p(&vga_attr));
 err_rom_file:
 	if (rom_size) {
 		sysfs_remove_bin_file(&pdev->dev.kobj, pdev->rom_attr);

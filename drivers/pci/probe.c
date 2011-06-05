@@ -1443,7 +1443,7 @@ struct pci_bus * pci_create_bus(struct device *parent,
 	error = device_register(&b->dev);
 	if (error)
 		goto class_dev_reg_err;
-	error = device_create_file(&b->dev, &dev_attr_cpuaffinity);
+	error = device_create_file(&b->dev, __sysfs_p(&dev_attr_cpuaffinity));
 	if (error)
 		goto dev_create_file_err;
 

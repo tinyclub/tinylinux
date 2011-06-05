@@ -915,11 +915,11 @@ static struct attribute *disk_attrs[] = {
 };
 
 static struct attribute_group disk_attr_group = {
-	.attrs = disk_attrs,
+	.attrs = __sysfs_p(disk_attrs),
 };
 
 static const struct attribute_group *disk_attr_groups[] = {
-	&disk_attr_group,
+	__sysfs_p(&disk_attr_group),
 	NULL
 };
 
@@ -1023,7 +1023,7 @@ static char *block_devnode(struct device *dev, mode_t *mode)
 
 static struct device_type disk_type = {
 	.name		= "disk",
-	.groups		= disk_attr_groups,
+	.groups		= __sysfs_p(disk_attr_groups),
 	.release	= disk_release,
 	.devnode	= block_devnode,
 };

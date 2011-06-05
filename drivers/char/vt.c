@@ -3364,14 +3364,14 @@ static int vtconsole_init_device(struct con_driver *con)
 	con->flag |= CON_DRIVER_FLAG_ATTR;
 	dev_set_drvdata(con->dev, con);
 	for (i = 0; i < ARRAY_SIZE(device_attrs); i++) {
-		error = device_create_file(con->dev, &device_attrs[i]);
+		error = device_create_file(con->dev, __sysfs_p(&device_attrs[i]));
 		if (error)
 			break;
 	}
 
 	if (error) {
 		while (--i >= 0)
-			device_remove_file(con->dev, &device_attrs[i]);
+			device_remove_file(con->dev, __sysfs_p(&device_attrs[i]));
 		con->flag &= ~CON_DRIVER_FLAG_ATTR;
 	}
 
@@ -3384,7 +3384,7 @@ static void vtconsole_deinit_device(struct con_driver *con)
 
 	if (con->flag & CON_DRIVER_FLAG_ATTR) {
 		for (i = 0; i < ARRAY_SIZE(device_attrs); i++)
-			device_remove_file(con->dev, &device_attrs[i]);
+			device_remove_file(con->dev, __sysfs_p(&device_attrs[i]));
 		con->flag &= ~CON_DRIVER_FLAG_ATTR;
 	}
 }
