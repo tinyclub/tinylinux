@@ -982,6 +982,15 @@ config MAX_NR_CONSOLES
 
 	  For a normal desktop machine, 8 should be a preferred value.
 
+config VT_BUF_VRAM_ONLY
+	bool "Use VRAM Buffer Only" if EMBEDDED
+	default !FB
+	help
+	  This doesn't work with the real console, but works well if only need
+	  X session. For the X session doesn't need output to the console.
+
+	  If unsure, Say N.
+
 config HAVE_PERF_EVENTS
 	bool
 	help
