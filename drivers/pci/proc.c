@@ -247,6 +247,24 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
 }
 
 #ifdef HAVE_PCI_MMAP
+static int pci_mmap_fits(struct pci_dev *pdev, int resno, struct vm_area_struct *vma,
+		  enum pci_mmap_api mmap_api)
+{
+	unsigned long nr, start, size, pci_start;
+
+	if (pci_resource_len(pdev, resno) == 0)
+		return 0;
+	nr = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+	start = vma->vm_pgoff;
+	size = ((pci_resource_len(pdev, resno) - 1) >> PAGE_SHIFT) + 1;
+	pci_start = (mmap_api == PCI_MMAP_PROCFS) ?
+			pci_resource_start(pdev, resno) >> PAGE_SHIFT : 0;
+	if (start >= pci_start && start < pci_start + size &&
+			start + nr <= pci_start + size)
+		return 1;
+	return 0;
+}
+
 static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
