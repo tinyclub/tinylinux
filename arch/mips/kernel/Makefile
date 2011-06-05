@@ -34,9 +34,7 @@ obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
 
 ifdef CONFIG_CPU_LOONGSON2
 obj-y	+= r4k_switch.o
-ifndef CONFIG_DISABLE_HW_FPU
-obj-y	+= r4k_fpu.o
-endif
+obj-$(CONFIG_HW_FPU)	+= r4k_fpu.o
 endif
 
 obj-$(CONFIG_CPU_MIPS32)	+= r4k_fpu.o r4k_switch.o

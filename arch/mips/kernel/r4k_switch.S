@@ -152,7 +152,7 @@ LEAF(_restore_fp)
 
 #define FPU_DEFAULT  0x00000000
 
-#ifndef CONFIG_DISABLE_HW_FPU
+#ifdef CONFIG_HW_FPU
 LEAF(_init_fpu)
 #ifdef CONFIG_MIPS_MT_SMTC
 	/* Rather than manipulate per-VPE Status, set per-TC bit in TCStatus */

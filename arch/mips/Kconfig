@@ -1600,11 +1600,22 @@ config CPU_HAS_PREFETCH
 	bool
 
 config DISABLE_HW_FPU
-	bool "Disable the kernel support for hardware fpu"
+	bool "Disable kernel support for hardware fpu"
 	default y if EMBEDDED
 	help
 	  This option disables the kernel support for the hardware fpu, which
-	  may save several kb.
+	  may save about 20 kb.
+
+	  If the processor doesn't support hardware fpu, this option must be
+	  selected to add the software fpu support.
+
+config HW_FPU
+	bool
+	default !DISABLE_HW_FPU
+
+config SW_FPU
+	bool
+	default !HW_FPU
 
 choice
 	prompt "MIPS MT options"

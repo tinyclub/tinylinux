@@ -656,6 +656,14 @@ asmlinkage void do_fpe(struct pt_regs *regs, unsigned long fcr31)
 	die_if_kernel("FP exception in kernel code", regs);
 
 	if (fcr31 & FPU_CSR_UNI_X) {
+#ifdef CONFIG_SW_FPU
+		/*
+		 * Note: Simply remove this may be wrong for this may be needed
+		 * by some hardware fpu to emulate some instructions they don't
+		 * implements. This will break some system which has used the
+		 * fpu instructions not supported by the hardware fpu.
+		 */
+
 		int sig;
 
 		/*
@@ -686,7 +694,7 @@ asmlinkage void do_fpe(struct pt_regs *regs, unsigned long fcr31)
 		/* If something went wrong, signal */
 		if (sig)
 			force_sig(sig, current);
-
+#endif /* CONFIG_SW_FPU */
 		return;
 	} else if (fcr31 & FPU_CSR_INV_X)
 		info.si_code = FPE_FLTINV;
@@ -744,6 +752,7 @@ static void do_trap_or_bp(struct pt_regs *regs, unsigned int code,
 		die_if_kernel("Kernel bug detected", regs);
 		force_sig(SIGTRAP, current);
 		break;
+#ifdef CONFIG_SW_FPU
 	case BRK_MEMU:
 		/*
 		 * Address errors may be deliberately induced by the FPU
@@ -759,6 +768,7 @@ static void do_trap_or_bp(struct pt_regs *regs, unsigned int code,
 		die_if_kernel("Math emu break/trap", regs);
 		force_sig(SIGTRAP, current);
 		break;
+#endif /* CONFIG_SW_FPU */
 	default:
 		scnprintf(b, sizeof(b), "%s instruction in kernel code", str);
 		die_if_kernel(b, regs);
@@ -845,6 +855,8 @@ asmlinkage void do_ri(struct pt_regs *regs)
 	}
 }
 
+#ifdef CONFIG_SW_FPU
+
 /*
  * MIPS MT processors may have fewer FPU contexts than CPU threads. If we've
  * emulated more than some threshold number of instructions, force migration to
@@ -873,6 +885,8 @@ static void mt_ase_fp_affinity(void)
 	}
 #endif /* CONFIG_MIPS_MT_FPAFF */
 }
+
+#endif /* CONFIG_SW_FPU */
 
 /*
  * No lock; only written during early bootup by CPU 0.
@@ -962,6 +976,7 @@ asmlinkage void do_cpu(struct pt_regs *regs)
 			set_used_math();
 		}
 
+#ifdef CONFIG_SW_FPU
 		if (!raw_cpu_has_fpu) {
 			int sig;
 			sig = fpu_emulator_cop1Handler(regs,
@@ -971,6 +986,7 @@ asmlinkage void do_cpu(struct pt_regs *regs)
 			else
 				mt_ase_fp_affinity();
 		}
+#endif
 
 		return;
 

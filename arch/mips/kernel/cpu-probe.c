@@ -304,10 +304,14 @@ static inline unsigned long cpu_get_fpu_id(void)
 /*
  * Check the CPU has an FPU the official way.
  */
+#ifdef CONFIG_SW_FPU
+#define __cpu_has_fpu()	0
+#else
 static inline int __cpu_has_fpu(void)
 {
 	return ((cpu_get_fpu_id() & 0xff00) != FPIR_IMP_NONE);
 }
+#endif
 
 static inline void cpu_probe_vmbits(struct cpuinfo_mips *c)
 {
