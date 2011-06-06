@@ -33,9 +33,8 @@ void __init prom_init_cmdline(void)
 	prom_argc = fw_arg0;
 	_prom_argv = (int *)fw_arg1;
 
-	/* arg[0] is "g", the rest is boot parameters */
 	arcs_cmdline[0] = '\0';
-	for (i = 1; i < prom_argc; i++) {
+	for (i = 0; i < prom_argc; i++) {
 		l = (long)_prom_argv[i];
 		if (strlen(arcs_cmdline) + strlen(((char *)l) + 1)
 		    >= sizeof(arcs_cmdline))
