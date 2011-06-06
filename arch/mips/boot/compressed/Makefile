@@ -12,6 +12,8 @@
 # Author: Wu Zhangjin <wuzhangjin@gmail.com>
 #
 
+GCOV_PROFILE := n
+
 LDFLAGS_vmlinuz += --gc-sections
 
 ifeq ($(KBUILD_VERBOSE),1)
