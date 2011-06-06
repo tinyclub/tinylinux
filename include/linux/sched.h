@@ -399,9 +399,13 @@ extern void arch_unmap_area_topdown(struct mm_struct *, unsigned long);
 static inline void arch_pick_mmap_layout(struct mm_struct *mm) {}
 #endif
 
-
+#ifdef CONFIG_CORE_DUMP
 extern void set_dumpable(struct mm_struct *mm, int value);
 extern int get_dumpable(struct mm_struct *mm);
+#else
+#define get_dumpable(mm) (0)
+#define set_dumpable(mm, value)
+#endif
 
 /* mm flags */
 /* dumpable bits */
