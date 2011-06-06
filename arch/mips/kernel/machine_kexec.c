@@ -162,6 +162,7 @@ machine_shutdown(void)
 		_machine_kexec_shutdown();
 }
 
+#ifdef CONFIG_KEXEC_CRASH
 void
 machine_crash_shutdown(struct pt_regs *regs)
 {
@@ -170,6 +171,7 @@ machine_crash_shutdown(struct pt_regs *regs)
 	else
 		default_machine_crash_shutdown(regs);
 }
+#endif
 
 typedef void (*noretfun_t)(void) __attribute__((noreturn));
 

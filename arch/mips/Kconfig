@@ -2066,9 +2066,17 @@ config KEXEC
 	  support.  As of this writing the exact hardware interface is
 	  strongly in flux, so no good recommendation can be made.
 
+config KEXEC_CRASH
+	bool "Enable Kexec on Crash support (EXPERIMENTAL)" if EMBEDDED
+	default y
+	depends on KEXEC
+	help
+	  Enable this if you want kexec on crash, otherwise, say N to save some
+	  bytes.
+
 config CRASH_DUMP
 	  bool "kernel crash dumps (EXPERIMENTAL)"
-	  depends on EXPERIMENTAL
+	  depends on KEXEC_CRASH && EXPERIMENTAL
 	  help
 	  Generate crash dump after being started by kexec.
 	  This should be normally only set in special crash dump kernels

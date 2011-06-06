@@ -488,7 +488,7 @@ static void __init arch_mem_init(char **cmdline_p)
 	}
 
 	bootmem_init();
-#ifdef CONFIG_KEXEC
+#ifdef CONFIG_KEXEC_CRASH
 	if (crashk_res.start != crashk_res.end)
 		reserve_bootmem(crashk_res.start,
 			crashk_res.end - crashk_res.start + 1,
@@ -506,7 +506,7 @@ static inline unsigned long long get_total_mem(void)
 	total = max_pfn - min_low_pfn;
 	return total << PAGE_SHIFT;
 }
-
+#ifdef CONFIG_KEXEC_CRASH
 static void __init mips_parse_crashkernel(void)
 {
 	unsigned long long total_mem;
@@ -534,14 +534,8 @@ static void __init request_crashkernel(struct resource *res)
 				crashk_res.start + 1) >> 20),
 			(unsigned long)(crashk_res.start  >> 20));
 }
-#else
-static void __init mips_parse_crashkernel(void)
-{
-}
-static void __init request_crashkernel(struct resource *res)
-{
-}
-#endif
+#endif /* CONFIG_KEXEC_CRASH */
+#endif /* CONFIG_KEXEC */
 
 static void __init resource_init(void)
 {
@@ -558,7 +552,9 @@ static void __init resource_init(void)
 	/*
 	 * Request address space for all standard RAM.
 	 */
+#ifdef CONFIG_KEXEC_CRASH
 	mips_parse_crashkernel();
+#endif
 
 	for (i = 0; i < boot_mem_map.nr_map; i++) {
 		struct resource *res;
@@ -595,7 +591,9 @@ static void __init resource_init(void)
 		 */
 		request_resource(res, &code_resource);
 		request_resource(res, &data_resource);
+#ifdef CONFIG_KEXEC_CRASH
 		request_crashkernel(res);
+#endif
 	}
 }
 

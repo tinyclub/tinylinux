@@ -93,6 +93,7 @@ static ssize_t kexec_loaded_show(struct kobject *kobj,
 }
 KERNEL_ATTR_RO(kexec_loaded);
 
+#ifdef CONFIG_KEXEC_CRASH
 static ssize_t kexec_crash_loaded_show(struct kobject *kobj,
 				       struct kobj_attribute *attr, char *buf)
 {
@@ -128,6 +129,7 @@ static ssize_t vmcoreinfo_show(struct kobject *kobj,
 		       (unsigned int)vmcoreinfo_max_size);
 }
 KERNEL_ATTR_RO(vmcoreinfo);
+#endif /* CONFIG_KEXEC_CRASH */
 
 #endif /* CONFIG_KEXEC */
 
@@ -167,9 +169,11 @@ static struct attribute * kernel_attrs[] = {
 #endif
 #ifdef CONFIG_KEXEC
 	&kexec_loaded_attr.attr,
+#ifdef CONFIG_KEXEC_CRASH
 	&kexec_crash_loaded_attr.attr,
 	&kexec_crash_size_attr.attr,
 	&vmcoreinfo_attr.attr,
+#endif
 #endif
 	NULL
 };

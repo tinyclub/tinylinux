@@ -489,14 +489,14 @@ extern char __initramfs_start[], __initramfs_end[];
 
 static void __init free_initrd(void)
 {
-#ifdef CONFIG_KEXEC
+#ifdef CONFIG_KEXEC_CRASH
 	unsigned long crashk_start = (unsigned long)__va(crashk_res.start);
 	unsigned long crashk_end   = (unsigned long)__va(crashk_res.end);
 #endif
 	if (do_retain_initrd)
 		goto skip;
 
-#ifdef CONFIG_KEXEC
+#ifdef CONFIG_KEXEC_CRASH
 	/*
 	 * If the initrd region is overlapped with crashkernel reserved region,
 	 * free only memory that is not part of crashkernel region.
