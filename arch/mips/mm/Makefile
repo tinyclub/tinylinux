@@ -1,6 +1,10 @@
 #
 # Makefile for the Linux/MIPS-specific parts of the memory manager.
 #
+# Fail on warnings - also for files referenced in subdirs
+# -Werror can be disabled for specific files using:
+# CFLAGS_<file.o> := -Wno-error
+subdir-ccflags-$(CONFIG_MIPS_WERROR) := -Werror
 
 obj-y				+= cache.o dma-default.o extable.o fault.o \
 				   init.o tlbex.o tlbex-fault.o uasm.o page.o

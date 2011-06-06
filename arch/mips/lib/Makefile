@@ -1,6 +1,11 @@
 #
 # Makefile for MIPS-specific library files..
 #
+# Fail on warnings - also for files referenced in subdirs
+# -Werror can be disabled for specific files using:
+# CFLAGS_<file.o> := -Wno-error
+subdir-ccflags-$(CONFIG_MIPS_WERROR) := -Werror
+
 
 lib-y	+= csum_partial.o delay.o memcpy.o memcpy-inatomic.o memset.o \
 	   strlen_user.o strncpy_user.o strnlen_user.o uncached.o

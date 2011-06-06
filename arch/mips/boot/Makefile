@@ -7,6 +7,11 @@
 # Copyright (C) 2004  Maciej W. Rozycki
 #
 
+# Fail on warnings - also for files referenced in subdirs
+# -Werror can be disabled for specific files using:
+# CFLAGS_<file.o> := -Wno-error
+subdir-ccflags-$(CONFIG_MIPS_WERROR) := -Werror
+
 #
 # Some DECstations need all possible sections of an ECOFF executable
 #

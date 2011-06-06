@@ -6,6 +6,23 @@ config TRACE_IRQFLAGS_SUPPORT
 
 source "lib/Kconfig.debug"
 
+config MIPS_DISABLE_WERROR
+	bool "Don't build arch/mips code with -Werror"
+	default n
+	help
+	  This option tells the compiler NOT to build the code under
+	  arch/mips with the -Werror flag (which means warnings
+	  are treated as errors).
+
+	  Only enable this if you are hitting a build failure in the
+	  arch/mips code caused by a warning, and you don't feel
+	  inclined to fix it.
+
+config MIPS_WERROR
+	bool
+	depends on !MIPS_DISABLE_WERROR
+	default y
+
 config EARLY_PRINTK
 	bool "Early printk" if EMBEDDED
 	depends on SYS_HAS_EARLY_PRINTK

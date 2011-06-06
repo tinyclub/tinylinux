@@ -11,6 +11,10 @@
 # Copyright (C) 2009 Lemote Inc. & DSLab, Lanzhou University
 # Author: Wu Zhangjin <wuzhangjin@gmail.com>
 #
+# Fail on warnings - also for files referenced in subdirs
+# -Werror can be disabled for specific files using:
+# CFLAGS_<file.o> := -Wno-error
+subdir-ccflags-$(CONFIG_MIPS_WERROR) := -Werror
 
 # compressed kernel load addr: VMLINUZ_LOAD_ADDRESS > VMLINUX_LOAD_ADDRESS + VMLINUX_SIZE
 VMLINUX_SIZE := $(shell wc -c $(objtree)/$(KBUILD_IMAGE) 2>/dev/null | cut -d' ' -f1)

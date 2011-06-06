@@ -2,6 +2,11 @@
 # Makefile for the Linux/MIPS kernel FPU emulation.
 #
 
+# Fail on warnings - also for files referenced in subdirs
+# -Werror can be disabled for specific files using:
+# CFLAGS_<file.o> := -Wno-error
+subdir-ccflags-$(CONFIG_MIPS_WERROR) := -Werror
+
 obj-y	:= cp1emu.o ieee754m.o ieee754d.o ieee754dp.o ieee754sp.o ieee754.o \
 	   ieee754xcpt.o dp_frexp.o dp_modf.o dp_div.o dp_mul.o dp_sub.o \
 	   dp_add.o dp_fsp.o dp_cmp.o dp_logb.o dp_scalb.o dp_simple.o \

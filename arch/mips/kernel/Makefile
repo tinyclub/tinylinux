@@ -1,6 +1,10 @@
 #
 # Makefile for the Linux/MIPS kernel.
 #
+# Fail on warnings - also for files referenced in subdirs
+# -Werror can be disabled for specific files using:
+# CFLAGS_<file.o> := -Wno-error
+subdir-ccflags-$(CONFIG_MIPS_WERROR) := -Werror
 
 extra-y		:= head.o init_task.o vmlinux.lds
 
