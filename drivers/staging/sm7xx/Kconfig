@@ -6,3 +6,12 @@ config FB_SM7XX
 	select FB_CFB_IMAGEBLIT
 	help
 	  Frame Buffer driver for the Silicon Motion SM7XX serial graphic card.
+
+config FB_SM712
+	tristate "Silicon Motion SM712 Frame Buffer Support" if LEMOTE_YEELOONG
+	depends on FB && !FB_SM7XX
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	help
+	  Frame Buffer driver for the Silicon Motion SM712 serial graphic card.

@@ -1,3 +1,2 @@
-obj-$(CONFIG_FB_SM7XX) += sm7xx.o
-
-sm7xx-y := smtcfb.o
+obj-$(CONFIG_FB_SM7XX) += smtcfb.o
+obj-$(CONFIG_FB_SM712) += sm712fb.o

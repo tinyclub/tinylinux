@@ -45,6 +45,7 @@ obj-$(CONFIG_WLAGS49_H25)	+= wlags49_h25/
 obj-$(CONFIG_BATMAN_ADV)	+= batman-adv/
 obj-$(CONFIG_SAMSUNG_LAPTOP)	+= samsung-laptop/
 obj-$(CONFIG_FB_SM7XX)		+= sm7xx/
+obj-$(CONFIG_FB_SM712)		+= sm7xx/
 obj-$(CONFIG_DT3155)		+= dt3155/
 obj-$(CONFIG_VIDEO_DT3155)	+= dt3155v4l/
 obj-$(CONFIG_CRYSTALHD)		+= crystalhd/
