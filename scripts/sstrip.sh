@@ -42,6 +42,13 @@ filesz=$((`${OBJDUMP} -p ${IMAGE} | grep -m1 filesz | tr -s ' ' | cut -d' ' -f3`
 # Truncate it via the dd tool
 dd if=/dev/null bs=1 of=${IMAGE} seek=${filesz} 2>/dev/null
 
+# Clear the section table information in the ELF header
+# The last 6 bytes of the ELF header are the section table information
+echo -ne "\x00\x00\x00\x00\x00\x00" | dd of=${IMAGE} bs=1 seek=$((0x3A)) count=6 conv=notrunc 2>/dev/null
+
+# Start of section headers should be zero 
+echo -ne "\x00\x00\x00\x00" | dd of=${IMAGE} bs=1 seek=$((0x28)) count=4 conv=notrunc 2>/dev/null
+
 # Debug
 if [ "x${V}" == "x1" ]; then
 	echo "----------------------------------------------------------------"

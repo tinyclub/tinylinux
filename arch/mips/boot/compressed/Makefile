@@ -63,9 +63,9 @@ $(obj)/piggy.o: $(obj)/vmlinux.$(suffix_y) $(obj)/dummy.o
 
 quiet_cmd_strip = STRIP   $@
        cmd_strip = $(STRIP) -s $@
-ifdef CONFIG_EMBEDDED
+ifdef CONFIG_SSTRIP
 quiet_cmd_sstrip = SSTRIP  $@
-      cmd_sstrip = $(srctree)/scripts/sstrip.sh $@
+      cmd_sstrip = $(srctree)/scripts/sstrip $@
 endif
 
 LDFLAGS_vmlinuz := $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T
