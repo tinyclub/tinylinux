@@ -13,23 +13,25 @@ SECTIONS
 	/* Text and read-only data */
 	/* . = VMLINUZ_LOAD_ADDRESS; */
 	.text : {
-		*(.text)
-		*(.text.[A-Za-z0-9_$^]*)
-		*(.rodata)
-		*(.rodata.[A-Za-z0-9_$^]*)
+		*(.text.asm.start)
 		/* Put the compressed image here */
 		__image_begin = .;
-		*(.image)
+		KEEP(*(.image))
 		__image_end = .;
-		. = ALIGN(16);
+		*(.text)
+		*(.text.*)
+		*(.text.[A-Za-z0-9_$^]*)
+		*(.rodata)
+		*(.rodata.*)
+		*(.rodata.[A-Za-z0-9_$^]*)
 	}
 
 	/* BSS */
 	.bss : {
 		__bss_begin = .;
 		*(.bss)
+		*(.bss.*)
 		*(.bss.[A-Za-z0-9_$^]*)
-		. = ALIGN(16);
 		__bss_end = .;
 	}
 

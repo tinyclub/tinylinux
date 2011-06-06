@@ -12,6 +12,12 @@
 # Author: Wu Zhangjin <wuzhangjin@gmail.com>
 #
 
+LDFLAGS_vmlinuz += --gc-sections
+
+ifeq ($(KBUILD_VERBOSE),1)
+LDFLAGS_vmlinuz += --print-gc-sections
+endif
+
 # Disable Function Tracer
 KBUILD_CFLAGS := $(shell echo $(KBUILD_CFLAGS) | sed -e "s/-pg//")
 
@@ -60,7 +66,7 @@ VMLINUZ_LOAD_ADDRESS = $(shell $(obj)/calc_vmlinuz_load_addr \
 vmlinuzobjs-y += $(obj)/piggy.o
 
 quiet_cmd_zld = LD      $@
-      cmd_zld = $(LD) $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T $< $(vmlinuzobjs-y) -o $@
+      cmd_zld = $(LD) $(LDFLAGS) $(LDFLAGS_vmlinuz) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T $< $(vmlinuzobjs-y) -o $@
 quiet_cmd_strip = STRIP   $@
       cmd_strip = $(STRIP) -s $@
 ifdef CONFIG_SSTRIP
