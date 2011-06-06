@@ -18,6 +18,7 @@
 #include <asm/bootinfo.h>
 
 #include <loongson.h>
+#include <machine.h>
 
 #include <cs5536/cs5536.h>
 #include "ec_kb3310b.h"

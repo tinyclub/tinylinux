@@ -52,9 +52,11 @@ EXPORT_SYMBOL(PCI_DMA_BUS_IS_PHYS);
  *
  * These are initialized so they are in the .data section
  */
+#if !(defined(CONFIG_EMBEDDED) && defined(CONFIG_CPU_LOONGSON2F))
 unsigned long mips_machtype __read_mostly = MACH_UNKNOWN;
 
 EXPORT_SYMBOL(mips_machtype);
+#endif
 
 struct boot_mem_map boot_mem_map;
 

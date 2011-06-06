@@ -15,12 +15,40 @@
 
 #define LOONGSON_MACHTYPE MACH_LEMOTE_FL2E
 
+#ifdef CONFIG_EMBEDDED
+#define mips_machtype MACH_LEMOTE_FL2E
+#endif
+
 #endif
 
 /* use fuloong2f as the default machine of LEMOTE_MACH2F */
 #ifdef CONFIG_LEMOTE_MACH2F
 
 #define LOONGSON_MACHTYPE MACH_LEMOTE_FL2F
+
+#ifdef CONFIG_EMBEDDED
+
+#ifdef CONFIG_LEMOTE_YEELOONG
+#define mips_machtype MACH_LEMOTE_YL2F89
+#endif
+
+#ifdef CONFIG_LEMOTE_FULOONG2F
+#define mips_machtype MACH_LEMOTE_FL2F
+#endif
+
+#ifdef CONFIG_LEMOTE_LYNLOONG
+#define mips_machtype MACH_LEMOTE_LL2F
+#endif
+
+#ifdef CONFIG_LEMOTE_UNAS
+#define mips_machtype MACH_LEMOTE_NAS
+#endif
+
+#ifdef CONFIG_LEMOTE_MENGLOONG
+#define mips_machtype MACH_LEMOTE_ML2F7
+#endif
+
+#endif /* CONFIG_EMBEDDED */
 
 #endif
 

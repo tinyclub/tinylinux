@@ -20,6 +20,7 @@
 #include <asm/bootinfo.h>
 
 #include <loongson.h>
+#include <machine.h>
 
 void __init prom_init_cmdline(void)
 {

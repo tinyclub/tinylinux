@@ -58,7 +58,33 @@ config LEMOTE_MACH2F
 
 	  These family machines include fuloong2f mini PC, yeeloong2f notebook,
 	  LingLoong allinone PC and so forth.
+
+if LEMOTE_MACH2F
+
+choice
+	prompt "Board Type"
+	depends on EMBEDDED
+
+config LEMOTE_YEELOONG
+	bool "Lemote YeeLoong laptop"
+
+config LEMOTE_FULOONG2F
+	bool "Lemote FuLoong2F PC"
+
+config LEMOTE_LYNLOONG
+	bool "Lemote LynLoong Allinone PC"
+
+config LEMOTE_UNAS
+	bool "Lemote Network Attached System"
+
+config LEMOTE_MENGLOONG
+	bool "Lemote MengLong laptop"
+
 endchoice
+
+endif # LEMOTE_MACH2F
+
+endchoice # Machine type
 
 config CS5536
 	select CS5536_IDE if (PATA_AMD || BLK_DEV_AMD74XX || PATA_CS5536)

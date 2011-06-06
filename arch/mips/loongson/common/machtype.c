@@ -18,6 +18,7 @@
 /* please ensure the length of the machtype string is less than 50 */
 #define MACHTYPE_LEN 50
 
+#ifndef CONFIG_EMBEDDED
 static const char *system_types[] = {
 	[MACH_LOONGSON_UNKNOWN]         "unknown loongson machine",
 	[MACH_LEMOTE_FL2E]              "lemote-fuloong-2e-box",
@@ -29,10 +30,32 @@ static const char *system_types[] = {
 	[MACH_LEMOTE_LL2F]              "lemote-lynloong-2f",
 	[MACH_LOONGSON_END]             NULL,
 };
+#endif
 
 const char *get_system_type(void)
 {
+#ifndef CONFIG_EMBEDDED
 	return system_types[mips_machtype];
+#else
+	switch (mips_machtype) {
+	case MACH_LEMOTE_FL2E:
+		return "lemote-fuloong-2e-box";
+	case MACH_LEMOTE_FL2F:
+		return "lemote-fuloong-2f-box";
+	case MACH_LEMOTE_ML2F7:
+		return "lemote-mengloong-2f-7inches";
+	case MACH_LEMOTE_YL2F89:
+		return "lemote-yeeloong-2f-8.9inches";
+	case MACH_DEXXON_GDIUM2F10:
+		return "dexxon-gdium-2f";
+	case MACH_LEMOTE_NAS:
+		return "lemote-nas-2f";
+	case MACH_LEMOTE_LL2F:
+		return "lemote-lynloong-2f";
+	default:
+		return "unknown loongson machine";
+	}
+#endif
 }
 
 void __weak __init mach_prom_init_machtype(void)
@@ -41,6 +64,7 @@ void __weak __init mach_prom_init_machtype(void)
 
 void __init prom_init_machtype(void)
 {
+#ifndef CONFIG_EMBEDDED
 	char *p, str[MACHTYPE_LEN];
 	int machtype = MACH_LEMOTE_FL2E;
 
@@ -62,4 +86,5 @@ void __init prom_init_machtype(void)
 			mips_machtype = machtype;
 			break;
 		}
+#endif /* CONFIG_EMBEDDED */
 }
