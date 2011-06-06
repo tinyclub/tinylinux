@@ -106,12 +106,12 @@ void decompress_kernel(unsigned long boot_heap_start)
 
 	/* Display standard Linux/MIPS boot prompt */
 	puts("Uncompressing Linux at load address ");
-	puthex(VMLINUX_LOAD_ADDRESS_ULL);
+	puthex(_ULL(VMLINUX_LOAD_ADDRESS));
 	puts("\n");
 
 	/* Decompress the kernel with according algorithm */
 	decompress((char *)zimage_start, zimage_size, 0, 0,
-		   (void *)VMLINUX_LOAD_ADDRESS_ULL, 0, error);
+		   (void *)_ULL(VMLINUX_LOAD_ADDRESS), 0, error);
 
 	/* FIXME: should we flush cache here? */
 	puts("Now, booting the kernel...\n");

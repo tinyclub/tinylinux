@@ -15,6 +15,12 @@
 
 #ifdef __KERNEL__
 
+#define __ULL(x) x ## ULL
+#define _ULL(x) __ULL(x)
+
+#define __UL(x) x ## UL
+#define _UL(x) __UL(x)
+
 typedef __u32 __kernel_dev_t;
 
 typedef __kernel_fd_set		fd_set;
