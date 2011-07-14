@@ -78,7 +78,6 @@ symbol:		.frame	sp, framesize, rpc
  * EXPORT - export definition of symbol
  */
 #define EXPORT(symbol)					\
-		.section	.data.asm.symbol;	\
 		.globl	symbol;                         \
 symbol:
 
