@@ -593,11 +593,15 @@
 		VMLINUX_SYMBOL(__stop_notes) = .;			\
 	}
 
+#ifdef CONFIG_PARAM
 #define INIT_SETUP(initsetup_align)					\
 		. = ALIGN(initsetup_align);				\
 		VMLINUX_SYMBOL(__setup_start) = .;			\
 		*(.init.setup)						\
 		VMLINUX_SYMBOL(__setup_end) = .;
+#else
+#define INIT_SETUP(initsetup_align)
+#endif
 
 #define INITCALLS							\
 	*(.initcallearly.init)						\
