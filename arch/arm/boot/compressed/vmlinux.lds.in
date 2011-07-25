@@ -28,9 +28,10 @@ SECTIONS
 
   .text : {
     _start = .;
-    *(.start)
-    *(.text)
+    KEEP(*(.start))
+    KEEP(*(.text))
     *(.text.*)
+    KEEP(*(.text.call_kernel))
     *(.fixup)
     *(.gnu.warning)
     *(.rodata)

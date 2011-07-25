@@ -32,13 +32,13 @@ SECTIONS
 			INIT_TEXT
 		_einittext = .;
 		__proc_info_begin = .;
-			*(.proc.info.init)
+			KEEP(*(.proc.info.init))
 		__proc_info_end = .;
 		__arch_info_begin = .;
-			*(.arch.info.init)
+			KEEP(*(.arch.info.init))
 		__arch_info_end = .;
 		__tagtable_begin = .;
-			*(.taglist.init)
+			KEEP(*(.taglist.init))
 		__tagtable_end = .;
 
 		INIT_SETUP(16)

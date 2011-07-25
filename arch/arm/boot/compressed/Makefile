@@ -80,12 +80,17 @@ KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
 endif
 
 EXTRA_CFLAGS  := -fpic -fno-builtin
-EXTRA_AFLAGS  := -Wa,-march=all
+EXTRA_AFLAGS  := -Wa,-march=all -ffunction-sections -fdata-sections
+
+LDFLAGS_vmlinux := --gc-sections
+ifeq ($(KBUILD_VERBOSE),1)
+LDFLAGS_vmlinux += --print-gc-sections
+endif
 
 # Supply ZRELADDR, INITRD_PHYS and PARAMS_PHYS to the decompressor via
 # linker symbols.  We only define initrd_phys and params_phys if the
 # machine class defined the corresponding makefile variable.
-LDFLAGS_vmlinux := --defsym zreladdr=$(ZRELADDR)
+LDFLAGS_vmlinux += --defsym zreladdr=$(ZRELADDR)
 ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
 LDFLAGS_vmlinux += --be8
 endif
