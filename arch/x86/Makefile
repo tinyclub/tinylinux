@@ -12,6 +12,11 @@ endif
 # e.g.: obj-y += foo_$(BITS).o
 export BITS
 
+ifndef CONFIG_FUNCTION_TRACER
+cflags-y := -ffunction-sections
+endif
+cflags-y += -fdata-sections
+
 ifeq ($(CONFIG_X86_32),y)
         BITS := 32
         UTS_MACHINE := i386
