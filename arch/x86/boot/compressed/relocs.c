@@ -37,6 +37,7 @@ static const char abs_sym_regex[] =
 	"^(xen_irq_disable_direct_reloc$|"
 	"xen_save_fl_direct_reloc$|"
 	"VDSO|"
+	"jiffies|"
 	"__crc_)";
 static regex_t abs_sym_regex_c;
 static int is_abs_reloc(const char *sym_name)
