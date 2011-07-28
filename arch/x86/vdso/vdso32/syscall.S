@@ -72,6 +72,6 @@ __kernel_vsyscall:
 	 * Pad out the segment to match the size of the sysenter.S version.
 	 */
 VDSO32_vsyscall_eh_frame_size = 0x40
-	.section .data,"aw",@progbits
+	__asm_section(.data),"aw",@progbits
 	.space VDSO32_vsyscall_eh_frame_size-(.LENDFDE1-.LSTARTFRAME), 0
 	.previous

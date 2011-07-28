@@ -195,13 +195,13 @@
 #define DATA_DATA							\
 	*(.data)							\
 	*(.data.[A-Za-z0-9_$^]*)					\
-	*(.ref.data)							\
-	DEV_KEEP(init.data)						\
-	DEV_KEEP(exit.data)						\
-	CPU_KEEP(init.data)						\
-	CPU_KEEP(exit.data)						\
-	MEM_KEEP(init.data)						\
-	MEM_KEEP(exit.data)						\
+	*(.ref.data*)							\
+	DEV_KEEP(init.data*)						\
+	DEV_KEEP(exit.data*)						\
+	CPU_KEEP(init.data*)						\
+	CPU_KEEP(exit.data*)						\
+	MEM_KEEP(init.data*)						\
+	MEM_KEEP(exit.data*)						\
 	. = ALIGN(8);							\
 	TRACE_MARKERS()							\
 	. = ALIGN(32);							\
@@ -225,25 +225,25 @@
 #define NOSAVE_DATA							\
 	. = ALIGN(PAGE_SIZE);						\
 	VMLINUX_SYMBOL(__nosave_begin) = .;				\
-	*(.data..nosave)						\
+	*(.data..nosave*)						\
 	. = ALIGN(PAGE_SIZE);						\
 	VMLINUX_SYMBOL(__nosave_end) = .;
 
 #define PAGE_ALIGNED_DATA(page_align)					\
 	. = ALIGN(page_align);						\
-	*(.data..page_aligned)
+	*(.data..page_aligned*)
 
 #define READ_MOSTLY_DATA(align)						\
 	. = ALIGN(align);						\
-	*(.data..read_mostly)
+	*(.data..read_mostly*)
 
 #define CACHELINE_ALIGNED_DATA(align)					\
 	. = ALIGN(align);						\
-	*(.data..cacheline_aligned)
+	*(.data..cacheline_aligned*)
 
 #define INIT_TASK_DATA(align)						\
 	. = ALIGN(align);						\
-	*(.data..init_task)
+	*(.data..init_task*)
 
 /*
  * Read only Data
@@ -268,32 +268,32 @@
 	/* PCI quirks */						\
 	.pci_fixup        : AT(ADDR(.pci_fixup) - LOAD_OFFSET) {	\
 		VMLINUX_SYMBOL(__start_pci_fixups_early) = .;		\
-		KEEP(*(.pci_fixup_early))				\
+		KEEP(*(.pci_fixup_early*))				\
 		VMLINUX_SYMBOL(__end_pci_fixups_early) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_header) = .;		\
-		KEEP(*(.pci_fixup_header))				\
+		KEEP(*(.pci_fixup_header*))				\
 		VMLINUX_SYMBOL(__end_pci_fixups_header) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_final) = .;		\
-		KEEP(*(.pci_fixup_final))				\
+		KEEP(*(.pci_fixup_final*))				\
 		VMLINUX_SYMBOL(__end_pci_fixups_final) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_enable) = .;		\
-		KEEP(*(.pci_fixup_enable))				\
+		KEEP(*(.pci_fixup_enable*))				\
 		VMLINUX_SYMBOL(__end_pci_fixups_enable) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_resume) = .;		\
-		KEEP(*(.pci_fixup_resume))				\
+		KEEP(*(.pci_fixup_resume*))				\
 		VMLINUX_SYMBOL(__end_pci_fixups_resume) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_resume_early) = .;	\
-		KEEP(*(.pci_fixup_resume_early))			\
+		KEEP(*(.pci_fixup_resume_early*))			\
 		VMLINUX_SYMBOL(__end_pci_fixups_resume_early) = .;	\
 		VMLINUX_SYMBOL(__start_pci_fixups_suspend) = .;		\
-		KEEP(*(.pci_fixup_suspend))				\
+		KEEP(*(.pci_fixup_suspend*))				\
 		VMLINUX_SYMBOL(__end_pci_fixups_suspend) = .;		\
 	}								\
 									\
 	/* Built-in firmware blobs */					\
 	.builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {	\
 		VMLINUX_SYMBOL(__start_builtin_fw) = .;			\
-		*(.builtin_fw)						\
+		*(.builtin_fw*)						\
 		VMLINUX_SYMBOL(__end_builtin_fw) = .;			\
 	}								\
 									\
@@ -383,19 +383,19 @@
 									\
 	/* __*init sections */						\
 	__init_rodata : AT(ADDR(__init_rodata) - LOAD_OFFSET) {		\
-		*(.ref.rodata)						\
-		DEV_KEEP(init.rodata)					\
-		DEV_KEEP(exit.rodata)					\
-		CPU_KEEP(init.rodata)					\
-		CPU_KEEP(exit.rodata)					\
-		MEM_KEEP(init.rodata)					\
-		MEM_KEEP(exit.rodata)					\
+		*(.ref.rodata*)						\
+		DEV_KEEP(init.rodata*)					\
+		DEV_KEEP(exit.rodata*)					\
+		CPU_KEEP(init.rodata*)					\
+		CPU_KEEP(exit.rodata*)					\
+		MEM_KEEP(init.rodata*)					\
+		MEM_KEEP(exit.rodata*)					\
 	}								\
 									\
 	/* Built-in module parameters. */				\
 	__param : AT(ADDR(__param) - LOAD_OFFSET) {			\
 		VMLINUX_SYMBOL(__start___param) = .;			\
-		KEEP(*(__param))					\
+		KEEP(*(__param*))					\
 		VMLINUX_SYMBOL(__stop___param) = .;			\
 		. = ALIGN((align));					\
 		VMLINUX_SYMBOL(__end_rodata) = .;			\
@@ -410,7 +410,7 @@
 #define SECURITY_INIT							\
 	.security_initcall.init : AT(ADDR(.security_initcall.init) - LOAD_OFFSET) { \
 		VMLINUX_SYMBOL(__security_initcall_start) = .;		\
-		KEEP(*(.security_initcall.init))			\
+		KEEP(*(.security_initcall.init*))			\
 		VMLINUX_SYMBOL(__security_initcall_end) = .;		\
 	}
 
@@ -421,14 +421,14 @@
 		*(.text.hot)						\
 		*(.text)						\
 		*(.text.[A-Za-z0-9_$^]*)				\
-		*(.ref.text)						\
-	DEV_KEEP(init.text)						\
-	DEV_KEEP(exit.text)						\
-	CPU_KEEP(init.text)						\
-	CPU_KEEP(exit.text)						\
-	MEM_KEEP(init.text)						\
-	MEM_KEEP(exit.text)						\
-		*(.text.unlikely)
+		*(.ref.text*)						\
+	DEV_KEEP(init.text*)						\
+	DEV_KEEP(exit.text*)						\
+	CPU_KEEP(init.text*)						\
+	CPU_KEEP(exit.text*)						\
+	MEM_KEEP(init.text*)						\
+	MEM_KEEP(exit.text*)						\
+		*(.text.unlikely*)
 
 
 /* sched.text is aling to function alignment to secure we have same
@@ -436,7 +436,7 @@
 #define SCHED_TEXT							\
 		ALIGN_FUNCTION();					\
 		VMLINUX_SYMBOL(__sched_text_start) = .;			\
-		*(.sched.text)						\
+		*(.sched.text*)						\
 		VMLINUX_SYMBOL(__sched_text_end) = .;
 
 /* spinlock.text is aling to function alignment to secure we have same
@@ -450,21 +450,21 @@
 #define KPROBES_TEXT							\
 		ALIGN_FUNCTION();					\
 		VMLINUX_SYMBOL(__kprobes_text_start) = .;		\
-		*(.kprobes.text)					\
+		*(.kprobes.text*)					\
 		VMLINUX_SYMBOL(__kprobes_text_end) = .;
 
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
 #define IRQENTRY_TEXT							\
 		ALIGN_FUNCTION();					\
 		VMLINUX_SYMBOL(__irqentry_text_start) = .;		\
-		*(.irqentry.text)					\
+		KEEP(*(.irqentry.text*))				\
 		VMLINUX_SYMBOL(__irqentry_text_end) = .;
 #else
 #define IRQENTRY_TEXT
 #endif
 
 /* Section used for early init (in .S files) */
-#define HEAD_TEXT  KEEP(*(.head.text))
+#define HEAD_TEXT  KEEP(*(.head.text*))
 
 #define HEAD_TEXT_SECTION							\
 	.head.text : AT(ADDR(.head.text) - LOAD_OFFSET) {		\
@@ -478,7 +478,7 @@
 	. = ALIGN(align);						\
 	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {		\
 		VMLINUX_SYMBOL(__start___ex_table) = .;			\
-		KEEP(*(__ex_table))					\
+		KEEP(*(__ex_table*))					\
 		VMLINUX_SYMBOL(__stop___ex_table) = .;			\
 	}
 
@@ -502,40 +502,40 @@
 
 /* init and exit section handling */
 #define INIT_DATA							\
-	*(.init.data)							\
-	DEV_DISCARD(init.data)						\
-	CPU_DISCARD(init.data)						\
-	MEM_DISCARD(init.data)						\
+	*(.init.data*)							\
+	DEV_DISCARD(init.data*)						\
+	CPU_DISCARD(init.data*)						\
+	MEM_DISCARD(init.data*)						\
 	KERNEL_CTORS()							\
-	*(.init.rodata)							\
+	*(.init.rodata*)						\
 	MCOUNT_REC()							\
-	DEV_DISCARD(init.rodata)					\
-	CPU_DISCARD(init.rodata)					\
-	MEM_DISCARD(init.rodata)
+	DEV_DISCARD(init.rodata*)					\
+	CPU_DISCARD(init.rodata*)					\
+	MEM_DISCARD(init.rodata*)
 
 #define INIT_TEXT							\
-	*(.init.text)							\
-	DEV_DISCARD(init.text)						\
-	CPU_DISCARD(init.text)						\
-	MEM_DISCARD(init.text)
+	*(.init.text*)							\
+	DEV_DISCARD(init.text*)						\
+	CPU_DISCARD(init.text*)						\
+	MEM_DISCARD(init.text*)
 
 #define EXIT_DATA							\
-	*(.exit.data)							\
-	DEV_DISCARD(exit.data)						\
-	DEV_DISCARD(exit.rodata)					\
-	CPU_DISCARD(exit.data)						\
-	CPU_DISCARD(exit.rodata)					\
-	MEM_DISCARD(exit.data)						\
-	MEM_DISCARD(exit.rodata)
+	*(.exit.data*)							\
+	DEV_DISCARD(exit.data*)						\
+	DEV_DISCARD(exit.rodata*)					\
+	CPU_DISCARD(exit.data*)						\
+	CPU_DISCARD(exit.rodata*)					\
+	MEM_DISCARD(exit.data*)						\
+	MEM_DISCARD(exit.rodata*)
 
 #define EXIT_TEXT							\
-	*(.exit.text)							\
-	DEV_DISCARD(exit.text)						\
-	CPU_DISCARD(exit.text)						\
-	MEM_DISCARD(exit.text)
+	*(.exit.text*)							\
+	DEV_DISCARD(exit.text*)						\
+	CPU_DISCARD(exit.text*)						\
+	MEM_DISCARD(exit.text*)
 
 #define EXIT_CALL							\
-	*(.exitcall.exit)
+	*(.exitcall.exit*)
 
 /*
  * bss (Block Started by Symbol) - uninitialized data
@@ -551,7 +551,7 @@
 #define BSS(bss_align)							\
 	. = ALIGN(bss_align);						\
 	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {				\
-		*(.bss..page_aligned)					\
+		*(.bss..page_aligned*)					\
 		*(.dynbss)						\
 		*(.bss)							\
 		*(.bss.[A-Za-z0-9_$^]*)					\
@@ -632,29 +632,29 @@
 #define INIT_SETUP(initsetup_align)					\
 		. = ALIGN(initsetup_align);				\
 		VMLINUX_SYMBOL(__setup_start) = .;			\
-		KEEP(*(.init.setup))					\
+		KEEP(*(.init.setup*))					\
 		VMLINUX_SYMBOL(__setup_end) = .;
 
 #define INITCALLS							\
-	KEEP(*(.initcallearly.init))					\
+	KEEP(*(.initcallearly.init*))					\
 	VMLINUX_SYMBOL(__early_initcall_end) = .;			\
-	KEEP(*(.initcall0.init))					\
-	KEEP(*(.initcall0s.init))					\
-	KEEP(*(.initcall1.init))					\
-	KEEP(*(.initcall1s.init))					\
-	KEEP(*(.initcall2.init))					\
-	KEEP(*(.initcall2s.init))					\
-	KEEP(*(.initcall3.init))					\
-	KEEP(*(.initcall3s.init))					\
-	KEEP(*(.initcall4.init))					\
-	KEEP(*(.initcall4s.init))					\
-	KEEP(*(.initcall5.init))					\
-	KEEP(*(.initcall5s.init))					\
-	KEEP(*(.initcallrootfs.init))					\
-	KEEP(*(.initcall6.init))					\
-	KEEP(*(.initcall6s.init))					\
-	KEEP(*(.initcall7.init))					\
-	KEEP(*(.initcall7s.init))
+	KEEP(*(.initcall0.init*))					\
+	KEEP(*(.initcall0s.init*))					\
+	KEEP(*(.initcall1.init*))					\
+	KEEP(*(.initcall1s.init*))					\
+	KEEP(*(.initcall2.init*))					\
+	KEEP(*(.initcall2s.init*))					\
+	KEEP(*(.initcall3.init*))					\
+	KEEP(*(.initcall3s.init*))					\
+	KEEP(*(.initcall4.init*))					\
+	KEEP(*(.initcall4s.init*))					\
+	KEEP(*(.initcall5.init*))					\
+	KEEP(*(.initcall5s.init*))					\
+	KEEP(*(.initcallrootfs.init*))					\
+	KEEP(*(.initcall6.init*))					\
+	KEEP(*(.initcall6s.init*))					\
+	KEEP(*(.initcall7.init*))					\
+	KEEP(*(.initcall7s.init*))
 
 #define INIT_CALLS							\
 		VMLINUX_SYMBOL(__initcall_start) = .;			\
@@ -663,12 +663,12 @@
 
 #define CON_INITCALL							\
 		VMLINUX_SYMBOL(__con_initcall_start) = .;		\
-		KEEP(*(.con_initcall.init))				\
+		KEEP(*(.con_initcall.init*))				\
 		VMLINUX_SYMBOL(__con_initcall_end) = .;
 
 #define SECURITY_INITCALL						\
 		VMLINUX_SYMBOL(__security_initcall_start) = .;		\
-		KEEP(*(.security_initcall.init))			\
+		KEEP(*(.security_initcall.init*))			\
 		VMLINUX_SYMBOL(__security_initcall_end) = .;
 
 #ifdef CONFIG_BLK_DEV_INITRD
@@ -695,7 +695,7 @@
 	EXIT_TEXT							\
 	EXIT_DATA							\
 	EXIT_CALL							\
-	*(.discard)							\
+	*(.discard*)							\
 	}
 
 /**

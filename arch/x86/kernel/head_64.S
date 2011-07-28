@@ -271,7 +271,7 @@ ENTRY(secondary_startup_64)
 bad_address:
 	jmp bad_address
 
-	.section ".init.text","ax"
+	__asm_section(.init.text),"ax"
 #ifdef CONFIG_EARLY_PRINTK
 	.globl early_idt_handlers
 early_idt_handlers:
@@ -414,7 +414,7 @@ ENTRY(phys_base)
 
 #include "../../x86/xen/xen-head.S"
 	
-	.section .bss, "aw", @nobits
+	__asm_section(.bss), "aw", @nobits
 	.align L1_CACHE_BYTES
 ENTRY(idt_table)
 	.skip IDT_ENTRIES * 16

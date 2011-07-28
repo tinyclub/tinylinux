@@ -24,7 +24,7 @@
  * The .section line puts this code in .init.text so it will be discarded after
  * boot.
  */
-.section .init.text, "ax", @progbits
+__asm_section(.init.text), "ax", @progbits
 ENTRY(lguest_entry)
 	/*
 	 * We make the "initialization" hypercall now to tell the Host about

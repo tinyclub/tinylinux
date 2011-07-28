@@ -167,17 +167,17 @@ SECTIONS
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.vsyscall_fn : AT(VLOAD(.vsyscall_fn)) {
-		KEEP(*(.vsyscall_fn))
+		KEEP(*(.vsyscall_fn*))
 	}
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.vsyscall_gtod_data : AT(VLOAD(.vsyscall_gtod_data)) {
-		KEEP(*(.vsyscall_gtod_data))
+		KEEP(*(.vsyscall_gtod_data*))
 	}
 
 	vsyscall_gtod_data = VVIRT(.vsyscall_gtod_data);
 	.vsyscall_clock : AT(VLOAD(.vsyscall_clock)) {
-		KEEP(*(.vsyscall_clock))
+		KEEP(*(.vsyscall_clock*))
 	}
 	vsyscall_clock = VVIRT(.vsyscall_clock);
 
@@ -190,13 +190,13 @@ SECTIONS
 	}
 
 	.vgetcpu_mode : AT(VLOAD(.vgetcpu_mode)) {
-		KEEP(*(.vgetcpu_mode))
+		KEEP(*(.vgetcpu_mode*))
 	}
 	vgetcpu_mode = VVIRT(.vgetcpu_mode);
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.jiffies : AT(VLOAD(.jiffies)) {
-		KEEP(*(.jiffies))
+		KEEP(*(.jiffies*))
 	}
 	jiffies = VVIRT(.jiffies);
 
@@ -238,7 +238,7 @@ SECTIONS
 
 	.x86_cpu_dev.init : AT(ADDR(.x86_cpu_dev.init) - LOAD_OFFSET) {
 		__x86_cpu_dev_start = .;
-		*(.x86_cpu_dev.init)
+		*(.x86_cpu_dev.init*)
 		__x86_cpu_dev_end = .;
 	}
 

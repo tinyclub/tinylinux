@@ -821,7 +821,7 @@ ptregs_clone:
  * We pack 7 stubs into a single 32-byte chunk, which will fit in a
  * single cache line on all modern x86 implementations.
  */
-.section .init.rodata,"a"
+__asm_section(.init.rodata),"a"
 ENTRY(interrupt)
 .text
 	.p2align 5
@@ -1273,7 +1273,7 @@ return_to_handler:
 	jmp *%ecx
 #endif
 
-.section .rodata,"a"
+__asm_section(.rodata),"a"
 #include "syscall_table_32.S"
 
 syscall_table_size=(.-sys_call_table)

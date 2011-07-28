@@ -33,7 +33,7 @@
 #include <asm/processor-flags.h>
 
 #ifdef CONFIG_ACPI_SLEEP
-.section .rodata, "a", @progbits
+__asm_section(.rodata), "a", @progbits
 #else
 /* We can free up the trampoline after bootup if cpu hotplug is not supported. */
 __CPUINITRODATA

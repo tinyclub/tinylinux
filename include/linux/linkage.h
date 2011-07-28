@@ -27,8 +27,8 @@
  * Note when using these that you must specify the appropriate
  * alignment directives yourself
  */
-#define __PAGE_ALIGNED_DATA	.section ".data..page_aligned", "aw"
-#define __PAGE_ALIGNED_BSS	.section ".bss..page_aligned", "aw"
+#define __PAGE_ALIGNED_DATA	__asm_section(.data..page_aligned), "aw"
+#define __PAGE_ALIGNED_BSS	__asm_section(.bss..page_aligned), "aw"
 
 /*
  * This is used by architectures to keep arguments on the stack

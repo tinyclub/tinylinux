@@ -751,7 +751,7 @@ END(stub_rt_sigreturn)
  * We pack 7 stubs into a single 32-byte chunk, which will fit in a
  * single cache line on all modern x86 implementations.
  */
-	.section .init.rodata,"a"
+	__asm_section(.init.rodata),"a"
 ENTRY(interrupt)
 	.text
 	.p2align 5

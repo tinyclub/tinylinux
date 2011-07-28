@@ -99,30 +99,30 @@
 #define __memexitconst   __section(.memexit.rodata)
 
 /* For assembly routines */
-#define __HEAD		.section	".head.text","ax"
-#define __INIT		.section	".init.text","ax"
+#define __HEAD		__asm_section(.head.text), "ax"
+#define __INIT		__asm_section(.init.text), "ax"
 #define __FINIT		.previous
 
-#define __INITDATA	.section	".init.data","aw",%progbits
-#define __INITRODATA	.section	".init.rodata","a",%progbits
+#define __INITDATA	__asm_section(.init.data), "aw",%progbits
+#define __INITRODATA	__asm_section(.init.rodata), "a",%progbits
 #define __FINITDATA	.previous
 
-#define __DEVINIT        .section	".devinit.text", "ax"
-#define __DEVINITDATA    .section	".devinit.data", "aw"
-#define __DEVINITRODATA  .section	".devinit.rodata", "a"
+#define __DEVINIT        __asm_section(.devinit.text), "ax"
+#define __DEVINITDATA    __asm_section(.devinit.data), "aw"
+#define __DEVINITRODATA  __asm_section(.devinit.rodata), "a"
 
-#define __CPUINIT        .section	".cpuinit.text", "ax"
-#define __CPUINITDATA    .section	".cpuinit.data", "aw"
-#define __CPUINITRODATA  .section	".cpuinit.rodata", "a"
+#define __CPUINIT        __asm_section(.cpuinit.text), "ax"
+#define __CPUINITDATA    __asm_section(.cpuinit.data), "aw"
+#define __CPUINITRODATA  __asm_section(.cpuinit.rodata), "a"
 
-#define __MEMINIT        .section	".meminit.text", "ax"
-#define __MEMINITDATA    .section	".meminit.data", "aw"
-#define __MEMINITRODATA  .section	".meminit.rodata", "a"
+#define __MEMINIT        __asm_section(.meminit.text), "ax"
+#define __MEMINITDATA    __asm_section(.meminit.data), "aw"
+#define __MEMINITRODATA  __asm_section(.meminit.rodata), "a"
 
 /* silence warnings when references are OK */
-#define __REF            .section       ".ref.text", "ax"
-#define __REFDATA        .section       ".ref.data", "aw"
-#define __REFCONST       .section       ".ref.rodata", "a"
+#define __REF            __asm_section(.ref.text), "ax"
+#define __REFDATA        __asm_section(.ref.data), "aw"
+#define __REFCONST       __asm_section(.ref.rodata), "a"
 
 #ifndef __ASSEMBLY__
 /*
@@ -311,7 +311,7 @@ void __init parse_early_options(char *cmdline);
 #define __initconst_or_module
 #define __INIT_OR_MODULE	.text
 #define __INITDATA_OR_MODULE	.data
-#define __INITRODATA_OR_MODULE	.section ".rodata","a",%progbits
+#define __INITRODATA_OR_MODULE	__asm_section(.rodata),"a",%progbits
 #else
 #define __init_or_module __init
 #define __initdata_or_module __initdata
