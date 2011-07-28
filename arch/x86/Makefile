@@ -13,7 +13,7 @@ endif
 export BITS
 
 ifndef CONFIG_FUNCTION_TRACER
-cflags-y := -ffunction-sections
+cflags-y += -ffunction-sections
 endif
 cflags-y += -fdata-sections
 
