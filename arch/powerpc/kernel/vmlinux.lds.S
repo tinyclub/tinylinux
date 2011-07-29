@@ -53,7 +53,7 @@ SECTIONS
 		HEAD_TEXT
 		_text = .;
 		/* careful! __ftr_alt_* sections need to be close to .text */
-		*(.text .fixup __ftr_alt_* .ref.text)
+		*(.text .text.[A-Za-z0-9_$^]* .fixup __ftr_alt_* .ref.text .ref.text.[A-Za-z0-9_$^]*)
 		SCHED_TEXT
 		LOCK_TEXT
 		KPROBES_TEXT

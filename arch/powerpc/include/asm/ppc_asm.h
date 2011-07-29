@@ -166,7 +166,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_PURR);					\
 #define GLUE(a,b) XGLUE(a,b)
 
 #define _GLOBAL(name) \
-	.section ".text"; \
+	.section ".text.asm.name"; \
 	.align 2 ; \
 	.globl name; \
 	.globl GLUE(.,name); \
@@ -208,7 +208,7 @@ name: \
 GLUE(.,name):
 
 #define _STATIC(name) \
-	.section ".text"; \
+	.section ".text.asm.name"; \
 	.align 2 ; \
 	.section ".opd","aw"; \
 name: \

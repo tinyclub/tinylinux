@@ -72,6 +72,12 @@ CFLAGS-$(CONFIG_PPC32)	:= -ffixed-r2 -mmultiple
 KBUILD_CPPFLAGS	+= -Iarch/$(ARCH)
 KBUILD_AFLAGS	+= -Iarch/$(ARCH)
 KBUILD_CFLAGS	+= -msoft-float -pipe -Iarch/$(ARCH) $(CFLAGS-y)
+
+ifndef CONFIG_FUNCTION_TRACER
+KBUILD_CFLAGS += -ffunction-sections
+endif
+KBUILD_CFLAGS += -fdata-sections
+
 CPP		= $(CC) -E $(KBUILD_CFLAGS)
 
 CHECKFLAGS	+= -m$(CONFIG_WORD_SIZE) -D__powerpc__ -D__powerpc$(CONFIG_WORD_SIZE)__
