@@ -79,8 +79,8 @@ ORIG_CFLAGS := $(KBUILD_CFLAGS)
 KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
 endif
 
-EXTRA_CFLAGS  := -fpic -fno-builtin
-EXTRA_AFLAGS  := -Wa,-march=all -ffunction-sections -fdata-sections
+EXTRA_CFLAGS  := -fpic -fno-builtin -ffunction-sections -fdata-sections
+EXTRA_AFLAGS  := -Wa,-march=all
 
 LDFLAGS_vmlinux := --gc-sections
 ifeq ($(KBUILD_VERBOSE),1)
