@@ -11,7 +11,7 @@ SECTIONS
 {
 	. = 0;
 	.bstext		: { *(.bstext) }
-	.bsdata		: { *(.bsdata) }
+	.bsdata		: { KEEP(*(.bsdata)) }
 
 	. = 497;
 	.header		: { *(.header) }
@@ -20,7 +20,7 @@ SECTIONS
 	.initdata	: { *(.initdata) }
 	__end_init = .;
 
-	.text		: { *(.text) *(.text.*) }
+	.text		: { *(.text) KEEP(*(.text.*)) }
 	.text32		: { *(.text32) }
 
 	. = ALIGN(16);

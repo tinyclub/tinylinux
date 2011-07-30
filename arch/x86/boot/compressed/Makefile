@@ -19,7 +19,14 @@ KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
 GCOV_PROFILE := n
 
 LDFLAGS := -m elf_$(UTS_MACHINE)
-LDFLAGS_vmlinux := -T
+
+LDFLAGS_vmlinux := --gc-sections
+
+ifeq ($(KBUILD_VERBOSE),1)
+LDFLAGS_vmlinux += --print-gc-sections
+endif
+
+LDFLAGS_vmlinux += -T
 
 hostprogs-y	:= mkpiggy
 
