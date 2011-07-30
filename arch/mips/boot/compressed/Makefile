@@ -29,6 +29,8 @@ KBUILD_CFLAGS := $(shell echo $(KBUILD_CFLAGS) | sed -e "s/-pg//")
 KBUILD_CFLAGS := $(LINUXINCLUDE) $(KBUILD_CFLAGS) -D__KERNEL__ \
 	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) -D"VMLINUX_LOAD_ADDRESS_ULL=$(VMLINUX_LOAD_ADDRESS)ull"
 
+KBUILD_CFLAGS += -ffunction-sections -fdata-sections
+
 KBUILD_AFLAGS := $(LINUXINCLUDE) $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
 	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) \
 	-DKERNEL_ENTRY=0x$(shell $(NM) $(objtree)/$(KBUILD_IMAGE) 2>/dev/null | grep " kernel_entry" | cut -f1 -d \ )
@@ -61,7 +63,13 @@ $(obj)/piggy.o: $(obj)/vmlinux.$(suffix_y) $(obj)/dummy.o
 		--set-section-flags=.image=contents,alloc,load,readonly,data \
 		$(obj)/dummy.o $@
 
-LDFLAGS_vmlinuz := $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T
+LDFLAGS_vmlinuz := --gc-sections
+
+ifeq ($(KBUILD_VERBOSE),1)
+LDFLAGS_vmlinuz += --print-gc-sections
+endif
+
+LDFLAGS_vmlinuz += $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T
 vmlinuz: $(src)/ld.script $(obj-y) $(obj)/piggy.o
 	$(call if_changed,ld)
 	$(Q)$(OBJCOPY) $(OBJCOPYFLAGS) $@
