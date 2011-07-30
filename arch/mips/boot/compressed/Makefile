@@ -35,9 +35,10 @@ KBUILD_AFLAGS := $(LINUXINCLUDE) $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
 	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) \
 	-DKERNEL_ENTRY=0x$(shell $(NM) $(objtree)/$(KBUILD_IMAGE) 2>/dev/null | grep " kernel_entry" | cut -f1 -d \ )
 
-obj-y := $(obj)/head.o $(obj)/decompress.o $(obj)/dbg.o
+obj-y := $(obj)/head.o $(obj)/decompress.o
 
 ifdef CONFIG_DEBUG_ZBOOT
+obj-y += $(obj)/dbg.o
 obj-$(CONFIG_SYS_SUPPORTS_ZBOOT_UART16550) += $(obj)/uart-16550.o
 obj-$(CONFIG_MACH_ALCHEMY)		   += $(obj)/uart-alchemy.o
 endif
