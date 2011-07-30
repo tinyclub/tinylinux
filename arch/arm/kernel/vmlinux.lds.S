@@ -32,13 +32,13 @@ SECTIONS
 			INIT_TEXT
 		_einittext = .;
 		__proc_info_begin = .;
-			KEEP(*(.proc.info.init))
+			KEEP(*(.proc.info.init*))
 		__proc_info_end = .;
 		__arch_info_begin = .;
-			KEEP(*(.arch.info.init))
+			KEEP(*(.arch.info.init*))
 		__arch_info_end = .;
 		__tagtable_begin = .;
-			KEEP(*(.taglist.init))
+			KEEP(*(.taglist.init*))
 		__tagtable_end = .;
 
 		INIT_SETUP(16)
@@ -193,8 +193,8 @@ SECTIONS
 	.text_itcm ITCM_OFFSET : AT(__itcm_start)
 	{
 		__sitcm_text = .;
-		*(.tcm.text)
-		*(.tcm.rodata)
+		*(.tcm.text*)
+		*(.tcm.rodata*)
 		. = ALIGN(4);
 		__eitcm_text = .;
 	}
@@ -214,7 +214,7 @@ SECTIONS
 	{
 		. = ALIGN(4);
 		__sdtcm_data = .;
-		*(.tcm.data)
+		*(.tcm.data*)
 		. = ALIGN(4);
 		__edtcm_data = .;
 	}

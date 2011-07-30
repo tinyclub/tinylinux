@@ -450,7 +450,7 @@ arm926_processor_functions:
 	.word	cpu_arm926_set_pte_ext
 	.size	arm926_processor_functions, . - arm926_processor_functions
 
-	.section ".rodata"
+	__asm_section(.rodata)
 
 	.type	cpu_arch_name, #object
 cpu_arch_name:
