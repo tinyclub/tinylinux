@@ -133,13 +133,13 @@ SECTIONS
 	. = ALIGN(8);
 	__ftr_fixup : AT(ADDR(__ftr_fixup) - LOAD_OFFSET) {
 		__start___ftr_fixup = .;
-		*(__ftr_fixup)
+		KEEP(*(__ftr_fixup))
 		__stop___ftr_fixup = .;
 	}
 	. = ALIGN(8);
 	__mmu_ftr_fixup : AT(ADDR(__mmu_ftr_fixup) - LOAD_OFFSET) {
 		__start___mmu_ftr_fixup = .;
-		*(__mmu_ftr_fixup)
+		KEEP(*(__mmu_ftr_fixup))
 		__stop___mmu_ftr_fixup = .;
 	}
 	. = ALIGN(8);
