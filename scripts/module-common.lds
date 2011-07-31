@@ -27,5 +27,5 @@ SECTIONS {
 	.data   0 : AT(0) { *(.data .data.[A-Za-z0-9_$^]*) }
 	.bss    0 : AT(0) { *(.bss .bss.[A-Za-z0-9_$^]*) }
 
-	/DISCARD/ : { *(.discard) }
+	/DISCARD/ : { *(.discard*) }
 }
