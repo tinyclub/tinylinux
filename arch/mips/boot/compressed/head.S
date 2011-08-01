@@ -17,8 +17,7 @@
 
 	.set noreorder
 	.cprestore
-	LEAF(start)
-start:
+LEAF(start)
 	/* Save boot rom start args */
 	move	s0, a0
 	move	s1, a1
@@ -26,8 +25,8 @@ start:
 	move	s3, a3
 
 	/* Clear BSS */
-	PTR_LA	a0, _edata
-	PTR_LA	a2, _end
+	PTR_LA	a0, __bss_begin
+	PTR_LA	a2, __bss_end
 1:	sw	zero, 0(a0)
 	bne	a2, a0, 1b
 	 addiu	a0, a0, 4

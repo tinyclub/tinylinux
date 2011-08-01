@@ -2,70 +2,48 @@
  * ld.script for compressed kernel support of MIPS
  *
  * Copyright (C) 2009 Lemote Inc.
- * Author: Wu Zhangjin <wuzj@lemote.com>
+ * Author: Wu Zhangjin <wuzhanjing@gmail.com>
+ * Copyright (C) 2010 "Wu Zhangjin" <wuzhanjing@gmail.com>
  */
 
 OUTPUT_ARCH(mips)
 ENTRY(start)
 SECTIONS
 {
-	/* . = VMLINUZ_LOAD_ADDRESS */
-	/* read-only */
-	_text = .;	/* Text and read-only data */
-	.text	: {
-		_ftext = . ;
-		*(.text)
-		*(.text.[A-Za-z0-9_$^]*)
-		*(.rodata)
-		*(.rodata.[A-Za-z0-9_$^]*)
-	} = 0
-	_etext = .;	/* End of text section */
-
-	/* writable */
-	.data	: {	/* Data */
-		_fdata = . ;
-		*(.data)
-		*(.data.[A-Za-z0-9_$^]*)
-		/* Put the compressed image here, so bss is on the end. */
+	/* Text and read-only data */
+	/* . = VMLINUZ_LOAD_ADDRESS; */
+	.text : {
+		*(.text.asm.start)
+		/* Put the compressed image here */
 		__image_begin = .;
 		KEEP(*(.image))
 		__image_end = .;
-		CONSTRUCTORS
+		*(.text)
+		*(.text.*)
+		*(.text.[A-Za-z0-9_$^]*)
+		*(.rodata)
+		*(.rodata.*)
+		*(.rodata.[A-Za-z0-9_$^]*)
 	}
-	.sdata	: { *(.sdata) }
-	. = ALIGN(4);
-	_edata  =  .;	/* End of data section */
 
 	/* BSS */
-	__bss_start = .;
-	_fbss = .;
-	.sbss	: { *(.sbss) *(.scommon) }
-	.bss	: {
-		*(.dynbss)
+	.bss : {
+		__bss_begin = .;
 		*(.bss)
+		*(.bss.*)
 		*(.bss.[A-Za-z0-9_$^]*)
-		*(COMMON)
+		__bss_end = .;
 	}
-	.  = ALIGN(4);
-	_end = . ;
-
-	/* These are needed for ELF backends which have not yet been converted
-	 * to the new style linker.  */
-
-	.stab 0 : { *(.stab) }
-	.stabstr 0 : { *(.stabstr) }
-
-	/* These must appear regardless of  .  */
-	.gptab.sdata : { *(.gptab.data) *(.gptab.sdata) }
-	.gptab.sbss : { *(.gptab.bss) *(.gptab.sbss) }
 
 	/* Sections to be discarded */
-	/DISCARD/	: {
+	/DISCARD/ : {
 		*(.MIPS.options)
 		*(.options)
 		*(.pdr)
 		*(.reginfo)
 		*(.comment)
 		*(.note)
+		*(.gnu.attributes)
+		*(.data)
 	}
 }
