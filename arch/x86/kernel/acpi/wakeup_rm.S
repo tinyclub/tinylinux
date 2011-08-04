@@ -2,6 +2,9 @@
  * Wrapper script for the realmode binary as a transport object
  * before copying to low memory.
  */
+
+#include <linux/compiler.h>
+
 	__asm_section(.rodata),"a"
 	.globl	wakeup_code_start, wakeup_code_end
 wakeup_code_start:
