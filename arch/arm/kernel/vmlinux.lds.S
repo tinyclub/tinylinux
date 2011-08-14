@@ -66,15 +66,15 @@ SECTIONS
 	 * unwind sections get included.
 	 */
 	/DISCARD/ : {
-		*(.ARM.exidx.exit.text)
-		*(.ARM.extab.exit.text)
+		*(.ARM.exidx.exit.text*)
+		*(.ARM.extab.exit.text*)
 #ifndef CONFIG_HOTPLUG_CPU
-		*(.ARM.exidx.cpuexit.text)
-		*(.ARM.extab.cpuexit.text)
+		*(.ARM.exidx.cpuexit.text*)
+		*(.ARM.extab.cpuexit.text*)
 #endif
 #ifndef CONFIG_HOTPLUG
-		*(.ARM.exidx.devexit.text)
-		*(.ARM.extab.devexit.text)
+		*(.ARM.exidx.devexit.text*)
+		*(.ARM.extab.devexit.text*)
 #endif
 #ifndef CONFIG_MMU
 		*(.fixup)
