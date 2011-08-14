@@ -20,12 +20,12 @@
 SECTIONS {
 
 	/* Coalesce sections produced by gcc -ffunction-sections */
-	.text   0 : AT(0) { *(.text *.text.* .text.[A-Za-z0-9_$^]*) }
+	.text   0 : AT(0) { *(.text .text.[A-Za-z0-9_$^]*) }
 
 	/* Coalesce sections produced by gcc -fdata-sections */
-	.rodata 0 : AT(0) { *(.rodata *.rodata.* .rodata.[A-Za-z0-9_$^]*) }
-	.data   0 : AT(0) { *(.data *.data.* .data.[A-Za-z0-9_$^]*) }
-	.bss    0 : AT(0) { *(.bss .bss.* .bss.[A-Za-z0-9_$^]*) }
+	.rodata 0 : AT(0) { *(.rodata .rodata.[A-Za-z0-9_$^]*) }
+	.data   0 : AT(0) { *(.data .data.[A-Za-z0-9_$^]*) }
+	.bss    0 : AT(0) { *(.bss .bss.[A-Za-z0-9_$^]*) }
 
 	/DISCARD/ : { *(.discard*) }
 }
