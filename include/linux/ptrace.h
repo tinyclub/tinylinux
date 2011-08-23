@@ -274,8 +274,13 @@ static inline void user_disable_single_step(struct task_struct *task)
 {
 }
 #else
+#ifdef CONFIG_PTRACE
 extern void user_enable_single_step(struct task_struct *);
 extern void user_disable_single_step(struct task_struct *);
+#else
+#define user_enable_single_step(task) do { } while (0)
+#define user_disable_single_step(task) do { } while (0)
+#endif
 #endif	/* arch_has_single_step */
 
 #ifndef arch_has_block_step

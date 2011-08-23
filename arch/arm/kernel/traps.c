@@ -481,10 +481,12 @@ asmlinkage int arm_syscall(int no, struct pt_regs *regs)
 		arm_notify_die("branch through zero", regs, &info, 0, 0);
 		return 0;
 
+#ifdef CONFIG_PTRACE
 	case NR(breakpoint): /* SWI BREAK_POINT */
 		regs->ARM_pc -= thumb_mode(regs) ? 2 : 4;
 		ptrace_break(current, regs);
 		return regs->ARM_r0;
+#endif
 
 	/*
 	 * Flush a region from virtual address 'r0' to virtual address 'r1'

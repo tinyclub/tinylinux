@@ -75,6 +75,7 @@ ENDPROC(ret_to_user)
 ENTRY(ret_from_fork)
 	bl	schedule_tail
 	get_thread_info tsk
+#ifdef CONFIG_PTRACE
 	ldr	r1, [tsk, #TI_FLAGS]		@ check for syscall tracing
 	mov	why, #1
 	tst	r1, #_TIF_SYSCALL_TRACE		@ are we tracing syscalls?
@@ -82,6 +83,7 @@ ENTRY(ret_from_fork)
 	mov	r1, sp
 	mov	r0, #1				@ trace exit [IP = 1]
 	bl	syscall_trace
+#endif
 	b	ret_slow_syscall
 ENDPROC(ret_from_fork)
 
@@ -275,8 +277,10 @@ ENTRY(vector_swi)
 #endif
 
 	stmdb	sp!, {r4, r5}			@ push fifth and sixth args
+#ifdef CONFIG_PTRACE
 	tst	ip, #_TIF_SYSCALL_TRACE		@ are we tracing syscalls?
 	bne	__sys_trace
+#endif
 
 	cmp	scno, #NR_syscalls		@ check upper syscall limit
 	adr	lr, BSYM(ret_fast_syscall)	@ return address
@@ -294,6 +298,7 @@ ENDPROC(vector_swi)
 	 * This is the really slow path.  We're going to be doing
 	 * context switches, and waiting for our parent to respond.
 	 */
+#ifdef CONFIG_PTRACE
 __sys_trace:
 	mov	r2, scno
 	add	r1, sp, #S_OFF
@@ -315,6 +320,7 @@ __sys_trace_return:
 	mov	r0, #1				@ trace exit [IP = 1]
 	bl	syscall_trace
 	b	ret_slow_syscall
+#endif
 
 	.align	5
 #ifdef CONFIG_ALIGNMENT_TRAP
