@@ -225,6 +225,7 @@ int xfpregs_set(struct task_struct *target, const struct user_regset *regset,
 	return ret;
 }
 
+#ifdef CONFIG_PTRACE
 int xstateregs_get(struct task_struct *target, const struct user_regset *regset,
 		unsigned int pos, unsigned int count,
 		void *kbuf, void __user *ubuf)
@@ -286,6 +287,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
 
 	return ret;
 }
+#endif
 
 #if defined CONFIG_X86_32 || defined CONFIG_IA32_EMULATION
 

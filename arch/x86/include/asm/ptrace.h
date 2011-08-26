@@ -218,8 +218,13 @@ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
 }
 
 /* Query offset/name of register from its name/offset */
+#ifdef CONFIG_PTRACE
 extern int regs_query_register_offset(const char *name);
 extern const char *regs_query_register_name(unsigned int offset);
+#else
+#define regs_query_register_offset(name) (-EINVAL)
+#define regs_query_register_name(offset) NULL
+#endif
 #define MAX_REG_OFFSET (offsetof(struct pt_regs, ss))
 
 /**

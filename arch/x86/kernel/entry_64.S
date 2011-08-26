@@ -587,6 +587,7 @@ tracesys:
 	testl $(_TIF_WORK_SYSCALL_ENTRY & ~_TIF_SYSCALL_AUDIT),TI_flags(%rcx)
 	jz auditsys
 #endif
+#ifdef CONFIG_PTRACE
 	SAVE_REST
 	movq $-ENOSYS,RAX(%rsp) /* ptrace can change this for a bad syscall */
 	FIXUP_TOP_OF_STACK %rdi
@@ -599,6 +600,7 @@ tracesys:
 	 */
 	LOAD_ARGS ARGOFFSET, 1
 	RESTORE_REST
+#endif
 	cmpq $__NR_syscall_max,%rax
 	ja   int_ret_from_sys_call	/* RAX(%rsp) set to -ENOSYS above */
 	movq %r10,%rcx	/* fixup for C */
@@ -652,11 +654,13 @@ int_check_syscall_exit_work:
 	/* Check for syscall exit trace */
 	testl $_TIF_WORK_SYSCALL_EXIT,%edx
 	jz int_signal
+#ifdef CONFIG_PTRACE
 	pushq %rdi
 	CFI_ADJUST_CFA_OFFSET 8
 	leaq 8(%rsp),%rdi	# &ptregs -> arg1
 	call syscall_trace_leave
 	popq %rdi
+#endif
 	CFI_ADJUST_CFA_OFFSET -8
 	andl $~(_TIF_WORK_SYSCALL_EXIT|_TIF_SYSCALL_EMU),%edi
 	jmp int_restore_rest

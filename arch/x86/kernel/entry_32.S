@@ -450,8 +450,10 @@ sysenter_past_esp:
 
 	GET_THREAD_INFO(%ebp)
 
+#ifdef CONFIG_PTRACE
 	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%ebp)
 	jnz sysenter_audit
+#endif
 sysenter_do_call:
 	cmpl $(nr_syscalls), %eax
 	jae syscall_badsys
@@ -460,9 +462,11 @@ sysenter_do_call:
 	LOCKDEP_SYS_EXIT
 	DISABLE_INTERRUPTS(CLBR_ANY)
 	TRACE_IRQS_OFF
+#ifdef CONFIG_PTRACE
 	movl TI_flags(%ebp), %ecx
 	testl $_TIF_ALLWORK_MASK, %ecx
 	jne sysexit_audit
+#endif
 sysenter_exit:
 /* if something modifies registers it must also disable sysexit */
 	movl PT_EIP(%esp), %edx
@@ -533,9 +537,11 @@ ENTRY(system_call)
 	CFI_ADJUST_CFA_OFFSET 4
 	SAVE_ALL
 	GET_THREAD_INFO(%ebp)
+#ifdef CONFIG_PTRACE
 					# system call tracing in operation / emulation
 	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%ebp)
 	jnz syscall_trace_entry
+#endif
 	cmpl $(nr_syscalls), %eax
 	jae syscall_badsys
 syscall_call:
@@ -680,6 +686,7 @@ work_notifysig_v86:
 	jmp resume_userspace_sig
 END(work_pending)
 
+#ifdef CONFIG_PTRACE
 	# perform syscall exit tracing
 	ALIGN
 syscall_trace_entry:
@@ -691,6 +698,7 @@ syscall_trace_entry:
 	jnae syscall_call
 	jmp syscall_exit
 END(syscall_trace_entry)
+#endif
 
 	# perform syscall exit tracing
 	ALIGN
@@ -700,8 +708,10 @@ syscall_exit_work:
 	TRACE_IRQS_ON
 	ENABLE_INTERRUPTS(CLBR_ANY)	# could let syscall_trace_leave() call
 					# schedule() instead
+#ifdef CONFIG_PTRACE
 	movl %esp, %eax
 	call syscall_trace_leave
+#endif
 	jmp resume_userspace
 END(syscall_exit_work)
 	CFI_ENDPROC
