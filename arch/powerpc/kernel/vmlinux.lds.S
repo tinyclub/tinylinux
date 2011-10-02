@@ -8,6 +8,22 @@
 #include <asm/cache.h>
 #include <asm/thread_info.h>
 
+#define PPC_TEXT_TEXT							\
+		ALIGN_FUNCTION();					\
+		*(.text.hot)						\
+		*(.text)						\
+		*(.text.[A-Za-z0-9_$^]*)				\
+		*(.fixup __ftr_alt_*)					\
+		*(.ref.text*)						\
+	DEV_KEEP(init.text*)						\
+	DEV_KEEP(exit.text*)						\
+	CPU_KEEP(init.text*)						\
+	CPU_KEEP(exit.text*)						\
+	MEM_KEEP(init.text*)						\
+	MEM_KEEP(exit.text*)						\
+		*(.text.unlikely*)
+
+
 ENTRY(_stext)
 
 PHDRS {
@@ -52,8 +68,7 @@ SECTIONS
 		ALIGN_FUNCTION();
 		HEAD_TEXT
 		_text = .;
-		/* careful! __ftr_alt_* sections need to be close to .text */
-		*(.text .text.[A-Za-z0-9_$^]* .fixup __ftr_alt_* .ref.text .ref.text.[A-Za-z0-9_$^]*)
+		PPC_TEXT_TEXT
 		SCHED_TEXT
 		LOCK_TEXT
 		KPROBES_TEXT
