@@ -1,15 +1,20 @@
 #ifndef __LINUX_COMPILER_H
 #define __LINUX_COMPILER_H
 
-/* __unique() and __unistr() are provided to define unique variables and
-   strings */
+/* __unique() are provided to define unique variables and strings */
 
 #include <linux/stringify.h>
 
 #define __concat(a, b) a##b
 #define __unique_impl(a, b) __concat(a, b)
-#define __unique(a) __unique_impl(a, __COUNTER__)
+#define __ui(a, b) __unique_impl(a, b)
+#define __unique_counter(a) __ui(a, __COUNTER__)
+#define __uc(a) __unique_counter(a)
+#define __unique_line(a) __ui(a, __LINE__)
+#define __ul(a) __unique_line(a)
+#define __unique(a) __uc(__ui(__ul(a),.))
 #define __unique_string(a) __stringify(__unique(a))
+#define __us(a) __unique_string(a)
 
 #ifndef __ASSEMBLY__
 
@@ -279,11 +284,11 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 
 /* Simple shorthand for a section definition */
 #ifndef __section
-# define __section(S) __attribute__ ((__section__(__unique_string(S.))))
+# define __section(S) __attribute__ ((__section__(__us(S.))))
 #endif
 
 #ifndef __asm_section
-# define __asm_section(S)	.section __unique_string(S.)
+# define __asm_section(S)	.section __us(S.)
 #endif
 
 /* Are two types/vars the same type (ignoring qualifiers)? */
