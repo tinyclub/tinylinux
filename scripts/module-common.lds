@@ -21,6 +21,8 @@ SECTIONS {
 
 	/* Coalesce sections produced by gcc -ffunction-sections */
 	.text   0 : AT(0) { *(.text .text.[A-Za-z0-9_$^]*) }
+	.init.text   0 : AT(0) { *(.init.text .init.text.[A-Za-z0-9_$^]*) }
+	.exit.text   0 : AT(0) { *(.exit.text .exit.text.[A-Za-z0-9_$^]*) }
 
 	/* Coalesce sections produced by gcc -fdata-sections */
 	.rodata 0 : AT(0) { *(.rodata .rodata.[A-Za-z0-9_$^]*) }
