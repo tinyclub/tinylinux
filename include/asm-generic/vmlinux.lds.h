@@ -546,6 +546,7 @@
 	. = ALIGN(sbss_align);						\
 	.sbss : AT(ADDR(.sbss) - LOAD_OFFSET) {				\
 		*(.sbss)						\
+		*(.sbss.[A-Za-z0-9_$^]*)				\
 		*(.scommon)						\
 	}
 
