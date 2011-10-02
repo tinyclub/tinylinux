@@ -169,9 +169,9 @@ static inline void tracepoint_update_probe_range(struct tracepoint *begin,
 
 #define DEFINE_TRACE_FN(name, reg, unreg)				\
 	static const char __tpstrtab_##name[]				\
-	__attribute__((section("__tracepoints_strings"))) = #name;	\
+	__section(__tracepoints_strings) = #name;	\
 	struct tracepoint __tracepoint_##name				\
-	__attribute__((section("__tracepoints"), aligned(32))) =	\
+	__section_aligned(__tracepoints, 32) =	\
 		{ __tpstrtab_##name, 0, reg, unreg, NULL }
 
 #define DEFINE_TRACE(name)						\

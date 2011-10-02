@@ -29,7 +29,7 @@
  *
  * It is written to by the hypervisor so cannot end up in the BSS.
  */
-struct hvlpevent_queue hvlpevent_queue __attribute__((__section__(".data")));
+struct hvlpevent_queue hvlpevent_queue __section(.data);
 
 DEFINE_PER_CPU(unsigned long[HvLpEvent_Type_NumTypes], hvlpevent_counts);
 

@@ -402,7 +402,7 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func, int *depth,
  * We want to which function is an entrypoint of a hardirq.
  * That will help us to put a signal on output.
  */
-#define __irq_entry		 __attribute__((__section__(".irqentry.text")))
+#define __irq_entry		 __section(.irqentry.text)
 
 /* Limits of hardirq entrypoints */
 extern char __irqentry_text_start[];

@@ -575,7 +575,7 @@ static struct ftrace_event_class __used event_class_##call = {		\
 									\
 static struct ftrace_event_call __used					\
 __attribute__((__aligned__(4)))						\
-__attribute__((section("_ftrace_events"))) event_##call = {		\
+__section(_ftrace_events) event_##call = {		\
 	.name			= #call,				\
 	.class			= &event_class_##template,		\
 	.event.funcs		= &ftrace_event_type_funcs_##template,	\
@@ -589,7 +589,7 @@ static const char print_fmt_##call[] = print;				\
 									\
 static struct ftrace_event_call __used					\
 __attribute__((__aligned__(4)))						\
-__attribute__((section("_ftrace_events"))) event_##call = {		\
+__section(_ftrace_events) event_##call = {		\
 	.name			= #call,				\
 	.class			= &event_class_##template,		\
 	.event.funcs		= &ftrace_event_type_funcs_##call,	\

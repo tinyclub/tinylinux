@@ -543,7 +543,7 @@ do {									\
 	__trace_printk_check_format(fmt, ##args);			\
 	if (__builtin_constant_p(fmt)) {				\
 		static const char *trace_printk_fmt			\
-		  __attribute__((section("__trace_printk_fmt"))) =	\
+		  __section(__trace_printk_fmt) =	\
 			__builtin_constant_p(fmt) ? fmt : NULL;		\
 									\
 		__trace_bprintk(_THIS_IP_, trace_printk_fmt, ##args);	\
@@ -570,7 +570,7 @@ extern void trace_dump_stack(void);
 do {									\
 	if (__builtin_constant_p(fmt)) {				\
 		static const char *trace_printk_fmt			\
-		  __attribute__((section("__trace_printk_fmt"))) =	\
+		  __section(__trace_printk_fmt) =	\
 			__builtin_constant_p(fmt) ? fmt : NULL;		\
 									\
 		__ftrace_vbprintk(_THIS_IP_, trace_printk_fmt, vargs);	\

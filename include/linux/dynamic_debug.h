@@ -53,7 +53,7 @@ extern int ddebug_remove_module(const char *mod_name);
 #define dynamic_pr_debug(fmt, ...) do {					\
 	static struct _ddebug descriptor				\
 	__used								\
-	__attribute__((section("__verbose"), aligned(8))) =		\
+	__section(__verbose, 8) =		\
 	{ KBUILD_MODNAME, __func__, __FILE__, fmt, DEBUG_HASH,	\
 		DEBUG_HASH2, __LINE__, _DPRINTK_FLAGS_DEFAULT };	\
 	if (__dynamic_dbg_enabled(descriptor))				\
@@ -64,7 +64,7 @@ extern int ddebug_remove_module(const char *mod_name);
 #define dynamic_dev_dbg(dev, fmt, ...) do {				\
 	static struct _ddebug descriptor				\
 	__used								\
-	__attribute__((section("__verbose"), aligned(8))) =		\
+	__section(__verbose, 8) =		\
 	{ KBUILD_MODNAME, __func__, __FILE__, fmt, DEBUG_HASH,	\
 		DEBUG_HASH2, __LINE__, _DPRINTK_FLAGS_DEFAULT };	\
 	if (__dynamic_dbg_enabled(descriptor))				\

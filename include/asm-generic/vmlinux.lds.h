@@ -108,7 +108,7 @@
 
 #ifdef CONFIG_TRACE_BRANCH_PROFILING
 #define LIKELY_PROFILE()	VMLINUX_SYMBOL(__start_annotated_branch_profile) = .; \
-				KEEP(*(_ftrace_annotated_branch))		      \
+				KEEP(*(_ftrace_annotated_branch*))		      \
 				VMLINUX_SYMBOL(__stop_annotated_branch_profile) = .;
 #else
 #define LIKELY_PROFILE()
@@ -116,7 +116,7 @@
 
 #ifdef CONFIG_PROFILE_ALL_BRANCHES
 #define BRANCH_PROFILE()	VMLINUX_SYMBOL(__start_branch_profile) = .;   \
-				KEEP(*(_ftrace_branch))			      \
+				KEEP(*(_ftrace_branch*))			      \
 				VMLINUX_SYMBOL(__stop_branch_profile) = .;
 #else
 #define BRANCH_PROFILE()
@@ -124,7 +124,7 @@
 
 #ifdef CONFIG_EVENT_TRACING
 #define FTRACE_EVENTS()	VMLINUX_SYMBOL(__start_ftrace_events) = .;	\
-			KEEP(*(_ftrace_events))				\
+			KEEP(*(_ftrace_events*))				\
 			VMLINUX_SYMBOL(__stop_ftrace_events) = .;
 #else
 #define FTRACE_EVENTS()
@@ -132,7 +132,7 @@
 
 #ifdef CONFIG_TRACING
 #define TRACE_PRINTKS() VMLINUX_SYMBOL(__start___trace_bprintk_fmt) = .;      \
-			 KEEP(*(__trace_printk_fmt)) /* Trace_printk fmt' pointer */ \
+			 KEEP(*(__trace_printk_fmt*)) /* Trace_printk fmt' pointer */ \
 			 VMLINUX_SYMBOL(__stop___trace_bprintk_fmt) = .;
 #else
 #define TRACE_PRINTKS()
@@ -140,7 +140,7 @@
 
 #ifdef CONFIG_FTRACE_SYSCALLS
 #define TRACE_SYSCALLS() VMLINUX_SYMBOL(__start_syscalls_metadata) = .;	\
-			 KEEP(*(__syscalls_metadata))			\
+			 KEEP(*(__syscalls_metadata*))			\
 			 VMLINUX_SYMBOL(__stop_syscalls_metadata) = .;
 #else
 #define TRACE_SYSCALLS()
@@ -161,10 +161,10 @@
 #ifdef CONFIG_TRACEPOINTS
 #define TRACEPOINTS()							\
 	VMLINUX_SYMBOL(__start___tracepoints) = .;			\
-	KEEP(*(__tracepoints))						\
+	KEEP(*(__tracepoints*))						\
 	VMLINUX_SYMBOL(__stop___tracepoints) = .;
 #define TRACEPOINTS_STRINGS()						\
-	KEEP(*(__tracepoints_strings))
+	KEEP(*(__tracepoints_strings*))
 #else
 #define TRACEPOINTS()
 #define TRACEPOINTS_STRINGS()
@@ -173,7 +173,7 @@
 #ifdef CONFIG_DYNAMIC_DEBUG
 #define DEBUG_VERBOSE()							\
 	VMLINUX_SYMBOL(__start___verbose) = .;                          \
-	KEEP(*(__verbose))                                              \
+	KEEP(*(__verbose*))                                              \
 	VMLINUX_SYMBOL(__stop___verbose) = .;
 #else
 #define DEBUG_VERBOSE()
@@ -445,7 +445,7 @@
 #define LOCK_TEXT							\
 		ALIGN_FUNCTION();					\
 		VMLINUX_SYMBOL(__lock_text_start) = .;			\
-		*(.spinlock.text)					\
+		*(.spinlock.text*)					\
 		VMLINUX_SYMBOL(__lock_text_end) = .;
 
 #define KPROBES_TEXT							\
@@ -723,10 +723,10 @@
 	.data..percpu vaddr : AT(VMLINUX_SYMBOL(__per_cpu_load)		\
 				- LOAD_OFFSET) {			\
 		VMLINUX_SYMBOL(__per_cpu_start) = .;			\
-		*(.data..percpu..first)					\
-		*(.data..percpu..page_aligned)				\
-		*(.data..percpu)					\
-		*(.data..percpu..shared_aligned)			\
+		*(.data..percpu..first*)				\
+		*(.data..percpu..page_aligned*)				\
+		*(.data..percpu*)					\
+		*(.data..percpu..shared_aligned*)			\
 		VMLINUX_SYMBOL(__per_cpu_end) = .;			\
 	} phdr								\
 	. = VMLINUX_SYMBOL(__per_cpu_load) + SIZEOF(.data..percpu);
@@ -749,10 +749,10 @@
 	.data..percpu	: AT(ADDR(.data..percpu) - LOAD_OFFSET) {	\
 		VMLINUX_SYMBOL(__per_cpu_load) = .;			\
 		VMLINUX_SYMBOL(__per_cpu_start) = .;			\
-		*(.data..percpu..first)					\
-		*(.data..percpu..page_aligned)				\
-		*(.data..percpu)					\
-		*(.data..percpu..shared_aligned)			\
+		*(.data..percpu..first*)				\
+		*(.data..percpu..page_aligned*)				\
+		*(.data..percpu*)					\
+		*(.data..percpu..shared_aligned*)			\
 		VMLINUX_SYMBOL(__per_cpu_end) = .;			\
 	}
 

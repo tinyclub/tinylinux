@@ -30,7 +30,7 @@
  * obviously not be running from flash.  The __xipram is therefore marking
  * those functions so they get relocated to ram.
  */
-#define __xipram noinline __attribute__ ((__section__ (".data")))
+#define __xipram noinline __section(.data)
 
 /*
  * Each architecture has to provide the following macros.  They must access

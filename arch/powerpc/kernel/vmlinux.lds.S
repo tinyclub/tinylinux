@@ -165,7 +165,7 @@ SECTIONS
 	. = ALIGN(8);
 	.machine.desc : AT(ADDR(.machine.desc) - LOAD_OFFSET) {
 		__machine_desc_start = . ;
-		*(.machine.desc)
+		*(.machine.desc*)
 		__machine_desc_end = . ;
 	}
 #ifdef CONFIG_RELOCATABLE

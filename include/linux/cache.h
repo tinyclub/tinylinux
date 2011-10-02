@@ -29,9 +29,7 @@
 #endif
 
 #ifndef __cacheline_aligned
-#define __cacheline_aligned					\
-  __attribute__((__aligned__(SMP_CACHE_BYTES),			\
-		 __section__(".data..cacheline_aligned")))
+#define __cacheline_aligned __section_aligned(.data..cacheline_aligned, SMP_CACHE_BYTES)
 #endif /* __cacheline_aligned */
 
 #ifndef __cacheline_aligned_in_smp

@@ -186,10 +186,10 @@ struct ItLpNaca itLpNaca = {
 };
 
 /* May be filled in by the hypervisor so cannot end up in the BSS */
-static struct ItIplParmsReal xItIplParmsReal __attribute__((__section__(".data")));
+static struct ItIplParmsReal xItIplParmsReal __section(.data);
 
 /* May be filled in by the hypervisor so cannot end up in the BSS */
-struct ItExtVpdPanel xItExtVpdPanel __attribute__((__section__(".data")));
+struct ItExtVpdPanel xItExtVpdPanel __section(.data);
 
 #define maxPhysicalProcessors 32
 
@@ -205,11 +205,11 @@ struct IoHriProcessorVpd xIoHriProcessorVpd[maxPhysicalProcessors] = {
 
 /* Space for Main Store Vpd 27,200 bytes */
 /* May be filled in by the hypervisor so cannot end up in the BSS */
-u64    xMsVpd[3400] __attribute__((__section__(".data")));
+u64    xMsVpd[3400] __section(.data);
 
 /* Space for Recovery Log Buffer */
 /* May be filled in by the hypervisor so cannot end up in the BSS */
-static u64    xRecoveryLogBuffer[32] __attribute__((__section__(".data")));
+static u64    xRecoveryLogBuffer[32] __section(.data);
 
 static const struct SpCommArea xSpCommArea = {
 	.xDesc = 0xE2D7C3C2,

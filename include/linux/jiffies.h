@@ -71,7 +71,7 @@
  * but that can only take up to, say, 4-byte variables. jiffies being part of
  * an 8-byte variable may not be correctly accessed unless we force the issue
  */
-#define __jiffy_data  __attribute__((section(".data")))
+#define __jiffy_data  __section(.data)
 
 /*
  * The 64-bit value is not atomic - you MUST NOT read it

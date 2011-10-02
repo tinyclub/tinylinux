@@ -6,14 +6,16 @@
 #include <linux/stringify.h>
 
 #define __concat(a, b) a##b
-#define __unique_impl(a, b) __concat(a, b)
-#define __ui(a, b) __unique_impl(a, b)
-#define __unique_counter(a) __ui(a, __COUNTER__)
-#define __uc(a) __unique_counter(a)
-#define __unique_line(a) __ui(a, __LINE__)
-#define __ul(a) __unique_line(a)
-#define __unique(a) __uc(__ui(__ul(a),.))
+#define __c2(a, b) __concat(a, b)
+#define __c3(a, b, c) __c2(__c2(a, b), c)
+
+#define __concat_counter(a) __c2(a, __COUNTER__)
+#define __concat_line(a) __c2(a, __LINE__)
+#define __cc(a) __concat_counter(a)
+#define __cl(a) __concat_line(a)
+#define __unique(a) __cc(__c2(__cl(a),.))
 #define __unique_string(a) __stringify(__unique(a))
+#define __u(a) __unique(a)
 #define __us(a) __unique_string(a)
 
 #ifndef __ASSEMBLY__
@@ -104,7 +106,7 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 			int ______r;					\
 			static struct ftrace_branch_data		\
 				__attribute__((__aligned__(4)))		\
-				__attribute__((section("_ftrace_annotated_branch"))) \
+				__section(_ftrace_annotated_branch) \
 				______f = {				\
 				.func = __func__,			\
 				.file = __FILE__,			\
@@ -139,7 +141,7 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 		int ______r;						\
 		static struct ftrace_branch_data			\
 			__attribute__((__aligned__(4)))			\
-			__attribute__((section("_ftrace_branch")))	\
+			__section(_ftrace_branch)	\
 			______f = {					\
 				.func = __func__,			\
 				.file = __FILE__,			\
@@ -284,7 +286,43 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 
 /* Simple shorthand for a section definition */
 #ifndef __section
+/* Input is Symbol without quotes */
 # define __section(S) __attribute__ ((__section__(__us(S.))))
+#endif
+
+#ifndef __section_str
+/* Input is string, with quotes */
+# define __section_str(s) __attribute__ ((__section__(s __us(.))))
+#endif
+
+#ifndef __section_aligned
+# define __section_aligned(S, n) \
+        __attribute__ ((__aligned__(n), __section__(__us(S.))))
+#endif
+
+#ifndef __section_aligned_str
+# define __section_aligned_str(s, n) \
+        __attribute__ ((__aligned__(n), __section__(s __us(.))))
+#endif
+
+#ifndef __section_unused_aligned
+# define __section_unused_aligned(S, n) \
+        __attribute__ ((unused, __aligned__(n), __section__(__us(S.))))
+#endif
+
+#ifndef __section_unused_aligned_str
+# define __section_unused_aligned_str(s, n) \
+        __attribute__ ((unused, __aligned__(n), __section__(S __us(.))))
+#endif
+
+#ifndef __section_unused
+# define __section_unused(S, n) \
+        __attribute__ ((unused, __section__(__us(S.))))
+#endif
+
+#ifndef __section_unused
+# define __section_unused_str(s, n) \
+        __attribute__ ((unused, __section__(s __us(.))))
 #endif
 
 #ifndef __asm_section

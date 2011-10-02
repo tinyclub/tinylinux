@@ -91,7 +91,7 @@ struct kparam_array
 	static const char __param_str_##name[] = prefix #name;		\
 	static struct kernel_param __moduleparam_const __param_##name	\
 	__used								\
-    __attribute__ ((unused,__section__ ("__param"),aligned(sizeof(void *)))) \
+	__section_unused_aligned(__param, (sizeof(void *)))		\
 	= { __param_str_##name, perm, isbool ? KPARAM_ISBOOL : 0,	\
 	    set, get, { arg } }
 
