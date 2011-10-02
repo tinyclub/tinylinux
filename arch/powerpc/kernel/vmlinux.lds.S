@@ -12,8 +12,9 @@
 		ALIGN_FUNCTION();					\
 		*(.text.hot)						\
 		*(.text)						\
-		*(.text.[A-Za-z0-9_$^]*)				\
 		*(.fixup __ftr_alt_*)					\
+		*(.text.[A-Za-z0-9_$^]*)				\
+		*(.text.*)						\
 		*(.ref.text*)						\
 	DEV_KEEP(init.text*)						\
 	DEV_KEEP(exit.text*)						\
@@ -22,6 +23,27 @@
 	MEM_KEEP(init.text*)						\
 	MEM_KEEP(exit.text*)						\
 		*(.text.unlikely*)
+
+#undef SBSS
+#define SBSS(sbss_align)						\
+	. = ALIGN(sbss_align);						\
+	.sbss : AT(ADDR(.sbss) - LOAD_OFFSET) {				\
+		*(.sbss)						\
+		*(.sbss.[A-Za-z0-9_$^]*)				\
+		*(.sbss.*)						\
+		*(.scommon)						\
+	}
+#undef BSS
+#define BSS(bss_align)							\
+	. = ALIGN(bss_align);						\
+	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {				\
+		*(.bss..page_aligned*)					\
+		*(.dynbss)						\
+		*(.bss)							\
+		*(.bss.[A-Za-z0-9_$^]*)					\
+		*(.bss.*)						\
+		*(COMMON)						\
+	}
 
 
 ENTRY(_stext)
@@ -205,38 +227,6 @@ SECTIONS
 	. = ALIGN(PAGE_SIZE);
 	__init_end = .;
 
-/*
- * And now the various read/write data
- */
-
-	. = ALIGN(PAGE_SIZE);
-	_sdata = .;
-
-#ifdef CONFIG_PPC32
-	.data : AT(ADDR(.data) - LOAD_OFFSET) {
-		DATA_DATA
-		*(.sdata)
-		*(.got.plt) *(.got)
-	}
-#else
-	.data : AT(ADDR(.data) - LOAD_OFFSET) {
-		DATA_DATA
-		*(.data.rel*)
-		*(.toc1)
-		*(.branch_lt)
-	}
-
-	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
-		*(.opd)
-	}
-
-	.got : AT(ADDR(.got) - LOAD_OFFSET) {
-		__toc_start = .;
-		*(.got)
-		*(.toc)
-	}
-#endif
-
 	/* The initial task and kernel stack */
 	INIT_TASK_DATA_SECTION(THREAD_SIZE)
 
@@ -256,6 +246,43 @@ SECTIONS
 	.data_nosave : AT(ADDR(.data_nosave) - LOAD_OFFSET) {
 		NOSAVE_DATA
 	}
+
+/*
+ * And now the various read/write data
+ */
+
+	. = ALIGN(PAGE_SIZE);
+	_sdata = .;
+
+#ifdef CONFIG_PPC32
+	.data : AT(ADDR(.data) - LOAD_OFFSET) {
+		DATA_DATA
+		*(.data.*)
+		*(.sdata)
+		*(.sdata.[A-Za-z0-9_$^]*)
+		*(.sdata.*)
+		*(.got.plt) *(.got)
+	}
+#else
+	.data : AT(ADDR(.data) - LOAD_OFFSET) {
+		DATA_DATA
+		*(.data.*)
+		*(.data.rel*)
+		*(.toc1)
+		*(.branch_lt)
+	}
+
+	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
+		*(.opd)
+	}
+
+	.got : AT(ADDR(.got) - LOAD_OFFSET) {
+		__toc_start = .;
+		*(.got)
+		*(.toc)
+	}
+#endif
+
 
 	. = ALIGN(PAGE_SIZE);
 	_edata  =  .;
