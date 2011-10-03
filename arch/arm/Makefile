@@ -18,11 +18,6 @@ endif
 OBJCOPYFLAGS	:=-O binary -R .note -R .note.gnu.build-id -R .comment -S
 GZFLAGS		:=-9
 
-ifndef CONFIG_FUNCTION_TRACER
-KBUILD_CFLAGS	+= -ffunction-sections
-endif
-KBUILD_CFLAGS	+= -fdata-sections
-
 #KBUILD_CFLAGS	+=-pipe
 # Explicitly specifiy 32-bit ARM ISA since toolchain default can be -mthumb:
 KBUILD_CFLAGS	+=$(call cc-option,-marm,)

@@ -794,6 +794,38 @@ menuconfig EMBEDDED
           environments which can tolerate a "non-standard" kernel.
           Only use this if you really know what you are doing.
 
+config SECTIONS
+	bool "Configure support of -ffunction-sections or -fdata-sections"
+	default y
+	help
+	  This option enables the -ffunction-sections and -fdata-sections,
+	  Which puts every symbol into its own section, which helps
+	  --gc-sections of ld to eliminate the dead symbols automatically.
+
+	  This also enables the 'unique' version of __section* and
+	  __asm_section* macros, these sections make sure every section
+	  defined by the section attribute instruction of gcc be unique.
+
+	  Note: Due to a bug of the old ld (<2.21), this feature may generate
+	  bigger kernel image, therefore, this feature will only be
+	  enabled if the ld version is >= 2.21.
+
+config FUNC_SECTIONS
+	bool "Configure -ffunction-sections"
+	depends on SECTIONS
+	default y
+	help
+	  This allows to configure -ffunction-sections individually, this
+	  conflicts with -p (required by Ftrace), hence, it will be disabled
+	  if Ftrace is using.
+
+config DATA_SECTIONS
+	bool "Configure -fdata-sections"
+	depends on SECTIONS
+	default y
+	help
+	  This allows to configure -fdata-sections
+
 config UID16
 	bool "Enable 16-bit UID system calls" if EMBEDDED
 	depends on ARM || BLACKFIN || CRIS || FRV || H8300 || X86_32 || M68K || (S390 && !64BIT) || SUPERH || SPARC32 || (SPARC64 && COMPAT) || UML || (X86_64 && IA32_EMULATION)

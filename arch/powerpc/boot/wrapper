@@ -29,6 +29,10 @@ if [ "$V" = 1 ]; then
     set -x
 fi
 
+if [ "x$LDFLAGS_GCS" != "x" ]; then
+    ldflags="$LDFLAGS_GCS"
+fi
+
 # defaults
 kernel=
 ofile=zImage
@@ -312,7 +316,7 @@ if [ "$platform" != "miboot" ]; then
     if [ -n "$link_address" ] ; then
         text_start="-Ttext $link_address --defsym _start=$link_address"
     fi
-    ${CROSS}ld -m elf32ppc -T $lds $text_start -o "$ofile" \
+    ${CROSS}ld $ldflags -m elf32ppc -T $lds $text_start -o "$ofile" \
 	$platformo $tmp $object/wrapper.a
     rm $tmp
 fi

@@ -284,49 +284,59 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 #define __cold
 #endif
 
+#ifdef KBUILD_ENABLE_SECTIONS
+# define __usym(S) __us(S.)
+# define __ustr(s) s __us(.)
+#else
+# define __usym(S) #S
+# define __ustr(s) s
+#endif
+
 /* Simple shorthand for a section definition */
 #ifndef __section
-/* Input is Symbol without quotes */
-# define __section(S) __attribute__ ((__section__(__us(S.))))
+# define __section(S) __attribute__ ((__section__(__usym(S))))
 #endif
 
 #ifndef __section_str
-/* Input is string, with quotes */
-# define __section_str(s) __attribute__ ((__section__(s __us(.))))
+# define __section_str(s) __attribute__ ((__section__(__ustr(s))))
 #endif
 
 #ifndef __section_aligned
 # define __section_aligned(S, n) \
-        __attribute__ ((__aligned__(n), __section__(__us(S.))))
+        __attribute__ ((__aligned__(n), __section__(__usym(S))))
 #endif
 
 #ifndef __section_aligned_str
 # define __section_aligned_str(s, n) \
-        __attribute__ ((__aligned__(n), __section__(s __us(.))))
+        __attribute__ ((__aligned__(n), __section__(__ustr(s))))
 #endif
 
 #ifndef __section_unused_aligned
 # define __section_unused_aligned(S, n) \
-        __attribute__ ((unused, __aligned__(n), __section__(__us(S.))))
+        __attribute__ ((unused, __aligned__(n), __section__(__usym(S))))
 #endif
 
 #ifndef __section_unused_aligned_str
 # define __section_unused_aligned_str(s, n) \
-        __attribute__ ((unused, __aligned__(n), __section__(S __us(.))))
+        __attribute__ ((unused, __aligned__(n), __section__(__ustr(s))))
 #endif
 
 #ifndef __section_unused
 # define __section_unused(S, n) \
-        __attribute__ ((unused, __section__(__us(S.))))
+        __attribute__ ((unused, __section__(__usym(S))))
 #endif
 
 #ifndef __section_unused
 # define __section_unused_str(s, n) \
-        __attribute__ ((unused, __section__(s __us(.))))
+        __attribute__ ((unused, __section__(__ustr(s))))
 #endif
 
 #ifndef __asm_section
-# define __asm_section(S)	.section __us(S.)
+# define __asm_section(S)	.section __usym(S)
+#endif
+
+#ifndef __asm_section_str
+# define __asm_section_str(s)	.section __ustr(s)
 #endif
 
 /* Are two types/vars the same type (ignoring qualifiers)? */

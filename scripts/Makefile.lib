@@ -127,6 +127,40 @@ _c_flags += $(if $(patsubst n%,, \
 		$(CFLAGS_GCOV))
 endif
 
+#
+# Enable function/data sections support for a file, directory or for all files depending
+# on variables DATA_SECTIONS_obj.o, FUNC_SECTIONS_obj.o, DATA_SECTIONS, FUNC_SECTIONS
+# SECTIONS_obj.o, SECTIONS, CONFIG_SECTIONS and KBUILD_SUPPORT_SECTIONS (by ld version)
+#
+ifeq ($(KBUILD_SUPPORT_SECTIONS),y)
+
+ifeq ($(CONFIG_SECTIONS),y)
+
+_c_flags += -DKBUILD_ENABLE_SECTIONS
+
+# For compressed kernel image
+export KBUILD_CFLAGS_SECTIONS := $(CFLAGS_SECTIONS)
+
+ifeq ($(CONFIG_FUNC_SECTIONS),y)
+  CFLAGS_FUNC_SEC := -ffunction-sections
+endif
+ifeq ($(CONFIG_DATA_SECTIONS),y)
+  CFLAGS_DATA_SEC := -fdata-sections
+endif
+
+ifndef CONFIG_FUNCTION_TRACER
+_c_flags += $(if $(patsubst n%,, \
+		$(FUNC_SECTIONS_$(basetarget).o)$(FUNC_SECTIONS)$(SECTIONS_$(basetarget).o)$(SECTIONS)$(CONFIG_FUNC_SECTIONS)), \
+		$(CFLAGS_FUNC_SEC))
+endif
+
+_c_flags += $(if $(patsubst n%,, \
+		$(DATA_SECTIONS_$(basetarget).o)$(DATA_SECTIONS)$(SECTIONS_$(basetarget).o)$(SECTIONS)$(CONFIG_DATA_SECTIONS)), \
+		$(CFLAGS_DATA_SEC))
+
+endif # CONFIG_SECTIONS
+endif # SUPPORT_SECTIONS
+
 ifdef CONFIG_SYMBOL_PREFIX
 _cpp_flags += -DSYMBOL_PREFIX=$(patsubst "%",%,$(CONFIG_SYMBOL_PREFIX))
 endif

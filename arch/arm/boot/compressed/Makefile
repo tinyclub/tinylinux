@@ -79,13 +79,11 @@ ORIG_CFLAGS := $(KBUILD_CFLAGS)
 KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
 endif
 
-EXTRA_CFLAGS  := -fpic -fno-builtin -ffunction-sections -fdata-sections
+EXTRA_CFLAGS  := -fpic -fno-builtin
+EXTRA_CFLAGS  += $(KBUILD_CFLAGS_SECTIONS)
 EXTRA_AFLAGS  := -Wa,-march=all
 
-LDFLAGS_vmlinux := --gc-sections
-ifeq ($(KBUILD_VERBOSE),1)
-LDFLAGS_vmlinux += --print-gc-sections
-endif
+LDFLAGS_vmlinux := $(LDFLAGS_GCS)
 
 # Supply ZRELADDR, INITRD_PHYS and PARAMS_PHYS to the decompressor via
 # linker symbols.  We only define initrd_phys and params_phys if the

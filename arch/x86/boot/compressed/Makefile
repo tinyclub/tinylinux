@@ -8,7 +8,7 @@ targets := vmlinux.lds vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 vmlinu
 
 KBUILD_CFLAGS := -m$(BITS) -D__KERNEL__ $(LINUX_INCLUDE) -O2
 KBUILD_CFLAGS += -fno-strict-aliasing -fPIC
-KBUILD_CFLAGS += -ffunction-sections -fdata-sections
+KBUILD_CFLAGS += $(KBUILD_CFLAGS_SECTIONS)
 KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
 cflags-$(CONFIG_X86_32) := -march=i386
 cflags-$(CONFIG_X86_64) := -mcmodel=small
@@ -21,11 +21,7 @@ GCOV_PROFILE := n
 
 LDFLAGS := -m elf_$(UTS_MACHINE)
 
-LDFLAGS_vmlinux := --gc-sections
-
-ifeq ($(KBUILD_VERBOSE),1)
-LDFLAGS_vmlinux += --print-gc-sections
-endif
+LDFLAGS_vmlinux := $(LDFLAGS_GCS)
 
 LDFLAGS_vmlinux += -T
 

@@ -342,6 +342,20 @@ CFLAGS_KERNEL	=
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
+# Only ld >= 0221 can merge sections through *(.text.[A-Za-z0-9_$^]*) or
+# *(.text.[^.]*), therefore, disable the -ffunction-sections, -fdata-sections
+# and the 'unique' version of the macros: __section*, __asm_section*
+# Otherwise, it will generate bigger kernel image
+
+# Even ld supports, the sections can also be disabled by CONFIG_SECTIONS
+KBUILD_SUPPORT_SECTIONS := $(call ld-ifversion, -ge, 0221, y)
+ifeq ($(KBUILD_SUPPORT_SECTIONS),y)
+CFLAGS_SECTIONS := -ffunction-sections -fdata-sections
+endif
+LDFLAGS_GCS	:= --gc-sections
+ifeq ($(KBUILD_VERBOSE),1)
+LDFLAGS_GCS	+= --print-gc-sections
+endif
 
 # Use LINUXINCLUDE when you must reference the include/ directory.
 # Needed to be compatible with the O= option
@@ -370,6 +384,7 @@ export HOSTCXX HOSTCXXFLAGS LDFLAGS_MODULE CHECK CHECKFLAGS
 
 export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS LDFLAGS
 export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE CFLAGS_GCOV
+export KBUILD_SUPPORT_SECTIONS CFLAGS_SECTIONS LDFLAGS_GCS
 export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
 
 # When compiling out-of-tree modules, put MODVERDIR in the module
@@ -612,11 +627,7 @@ ifeq ($(CONFIG_STRIP_ASM_SYMS),y)
 LDFLAGS_vmlinux	+= $(call ld-option, -X,)
 endif
 
-LDFLAGS_vmlinux += --gc-sections
-
-ifeq ($(KBUILD_VERBOSE),1)
-LDFLAGS_vmlinux += --print-gc-sections
-endif
+LDFLAGS_vmlinux += $(LDFLAGS_GCS)
 
 # Default kernel image to build when no specific target is given.
 # KBUILD_IMAGE may be overruled on the command line or
