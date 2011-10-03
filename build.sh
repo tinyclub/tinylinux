@@ -40,13 +40,14 @@ fi
 
 # Configure with the defaut gc_sections_defconfig
 defcfg=gc_sections_defconfig
-defcfg_bak=$TARGET/$defcfg
+defcfg_bak=$ARCH.defconfig
 
 echo "** make config with $defcfg ..."
 
 mkdir -p $TARGET
 if [[ "$SUFFIX" == "gc" ]]; then
 	make ARCH=$ARCH $defcfg
+	cp .config $TARGET/$defcfg
 	cp .config $defcfg_bak
 else
 	cp $defcfg_bak arch/$ARCH/configs/$defcfg
