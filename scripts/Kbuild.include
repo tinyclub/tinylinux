@@ -136,6 +136,14 @@ cc-ifversion = $(shell [ $(call cc-version, $(CC)) $(1) $(2) ] && echo $(3))
 cc-ldoption = $(call try-run,\
 	$(CC) $(1) -nostdlib -xc /dev/null -o "$$TMP",$(1),$(2))
 
+# ld-version
+# Usage ld-ver := $(call ld-version)
+ld-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/ld-version.sh $(LD))
+
+# ld-ifversion
+# Usage: LD_BROKEN_VEC := $(call ld-ifversion, -lt, 0221, y)
+ld-ifversion = $(shell [ $(call ld-version, $(CC)) $(1) $(2) ] && echo $(3))
+
 # ld-option
 # Usage: LDFLAGS += $(call ld-option, -X)
 ld-option = $(call try-run,\
