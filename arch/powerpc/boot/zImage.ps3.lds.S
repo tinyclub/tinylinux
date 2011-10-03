@@ -4,17 +4,17 @@ EXTERN(_zimage_start)
 SECTIONS
 {
   _vmlinux_start =  .;
-  .kernel:vmlinux.bin : { *(.kernel:vmlinux.bin) }
+  .kernel:vmlinux.bin : { KEEP(*(.kernel:vmlinux.bin)) }
   _vmlinux_end =  .;
 
   . = ALIGN(4096);
   _dtb_start = .;
-  .kernel:dtb : { *(.kernel:dtb) }
+  .kernel:dtb : { KEEP(*(.kernel:dtb)) }
   _dtb_end = .;
 
   . = ALIGN(4096);
   _initrd_start =  .;
-  .kernel:initrd : { *(.kernel:initrd) }
+  .kernel:initrd : { KEEP(*(.kernel:initrd)) }
   _initrd_end =  .;
 
   _start = .;

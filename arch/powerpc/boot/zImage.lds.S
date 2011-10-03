@@ -24,17 +24,17 @@ SECTIONS
 
   . = ALIGN(8);
   _dtb_start = .;
-  .kernel:dtb : { *(.kernel:dtb) }
+  .kernel:dtb : { KEEP(*(.kernel:dtb)) }
   _dtb_end = .;
 
   . = ALIGN(4096);
   _vmlinux_start =  .;
-  .kernel:vmlinux.strip : { *(.kernel:vmlinux.strip) }
+  .kernel:vmlinux.strip : { KEEP(*(.kernel:vmlinux.strip)) }
   _vmlinux_end =  .;
 
   . = ALIGN(4096);
   _initrd_start =  .;
-  .kernel:initrd : { *(.kernel:initrd) }
+  .kernel:initrd : { KEEP(*(.kernel:initrd)) }
   _initrd_end =  .;
 
   . = ALIGN(4096);

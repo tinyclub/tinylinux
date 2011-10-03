@@ -23,15 +23,15 @@ SECTIONS
     __got2_end = .;
 
     _dtb_start = .;
-    *(.kernel:dtb)
+    KEEP(*(.kernel:dtb))
     _dtb_end = .;
 
     _vmlinux_start =  .;
-    *(.kernel:vmlinux.strip)
+    KEEP(*(.kernel:vmlinux.strip))
     _vmlinux_end =  .;
 
     _initrd_start =  .;
-    *(.kernel:initrd)
+    KEEP(*(.kernel:initrd))
     _initrd_end =  .;
   }
 
