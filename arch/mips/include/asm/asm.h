@@ -17,6 +17,8 @@
 #ifndef __ASM_ASM_H
 #define __ASM_ASM_H
 
+#include <linux/init.h>
+
 #include <asm/sgidefs.h>
 
 #ifndef CAT
@@ -49,7 +51,7 @@
  * LEAF - declare leaf routine
  */
 #define	LEAF(symbol)                                    \
-		.section	.text.asm.symbol;	\
+		__asm_section(.text);			\
 		.globl	symbol;                         \
 		.align	2;                              \
 		.type	symbol, @function;              \
@@ -60,7 +62,7 @@ symbol:		.frame	sp, 0, ra
  * NESTED - declare nested routine entry point
  */
 #define	NESTED(symbol, framesize, rpc)                  \
-		.section	.text.asm.symbol;	\
+		__asm_section(.text);			\
 		.globl	symbol;                         \
 		.align	2;                              \
 		.type	symbol, @function;              \
