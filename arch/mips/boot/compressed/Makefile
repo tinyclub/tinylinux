@@ -106,7 +106,6 @@ vmlinuz.srec: vmlinuz
 	$(call if_changed,objcopy)
 
 clean:
-clean-files += *.o \
-	       vmlinu*
+clean-files += *.o vmlinux.{bin,gz,bz2,lzma,lzo} vmlinuz.{32,ecoff,bin,srec,lds}
 
 extra-y := vmlinuz.lds
