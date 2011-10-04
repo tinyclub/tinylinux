@@ -13,7 +13,8 @@
 #define __concat_line(a) __c2(a, __LINE__)
 #define __cc(a) __concat_counter(a)
 #define __cl(a) __concat_line(a)
-#define __unique(a) __cc(__c2(__cl(a),.))
+/* contact __LINE__ and __COUNTER as suffix, e.g.: .init.data.142l_c0 */
+#define __unique(a) __cc(__c2(__cl(a),l_c))
 #define __unique_string(a) __stringify(__unique(a))
 #define __u(a) __unique(a)
 #define __us(a) __unique_string(a)

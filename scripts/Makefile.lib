@@ -130,8 +130,25 @@ endif
 #
 # Enable function/data sections support for a file, directory or for all files depending
 # on variables DATA_SECTIONS_obj.o, FUNC_SECTIONS_obj.o, DATA_SECTIONS, FUNC_SECTIONS
-# SECTIONS_obj.o, SECTIONS, CONFIG_SECTIONS and KBUILD_SUPPORT_SECTIONS (by ld version)
+# SECTIONS_obj.o, SECTIONS, CONFIG_SECTIONS and KBUILD_LD_SUPPORT_SECTIONS (by ld version) or
+# CONFIG_FIXED_SECTIONS (by linker script)
 #
+
+# Ensure ld can link the sections like .data..page_aligned and .data.*
+# respectively, this depends on the support of *(.text.[A-Za-z0-9_$^]*)
+# or the explict change of the linker script to avoid merging
+# .data..page_aligned being wrongly merged into .data by the pattern .data.*
+# Currently, only X86, PPC fixed this, more archs can be appended to
+# the dependency of the FIXED_SECTIONS config option in init/Kconfig
+
+ifeq ($(KBUILD_LD_SUPPORT_SECTIONS),y)
+KBUILD_SUPPORT_SECTIONS := y
+_cpp_flags += -DKBUILD_LD_SUPPORT_SECTIONS
+endif
+ifeq ($(CONFIG_FIXED_SECTIONS),y)
+KBUILD_SUPPORT_SECTIONS := y
+endif
+
 ifeq ($(KBUILD_SUPPORT_SECTIONS),y)
 
 ifeq ($(CONFIG_SECTIONS),y)

@@ -8,44 +8,6 @@
 #include <asm/cache.h>
 #include <asm/thread_info.h>
 
-#define PPC_TEXT_TEXT							\
-		ALIGN_FUNCTION();					\
-		*(.text.hot)						\
-		*(.text)						\
-		*(.fixup __ftr_alt_*)					\
-		*(.text.[A-Za-z0-9_$^]*)				\
-		*(.text.*)						\
-		*(.ref.text*)						\
-	DEV_KEEP(init.text*)						\
-	DEV_KEEP(exit.text*)						\
-	CPU_KEEP(init.text*)						\
-	CPU_KEEP(exit.text*)						\
-	MEM_KEEP(init.text*)						\
-	MEM_KEEP(exit.text*)						\
-		*(.text.unlikely*)
-
-#undef SBSS
-#define SBSS(sbss_align)						\
-	. = ALIGN(sbss_align);						\
-	.sbss : AT(ADDR(.sbss) - LOAD_OFFSET) {				\
-		*(.sbss)						\
-		*(.sbss.[A-Za-z0-9_$^]*)				\
-		*(.sbss.*)						\
-		*(.scommon)						\
-	}
-#undef BSS
-#define BSS(bss_align)							\
-	. = ALIGN(bss_align);						\
-	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {				\
-		*(.bss..page_aligned*)					\
-		*(.dynbss)						\
-		*(.bss)							\
-		*(.bss.[A-Za-z0-9_$^]*)					\
-		*(.bss.*)						\
-		*(COMMON)						\
-	}
-
-
 ENTRY(_stext)
 
 PHDRS {
@@ -90,7 +52,7 @@ SECTIONS
 		ALIGN_FUNCTION();
 		HEAD_TEXT
 		_text = .;
-		PPC_TEXT_TEXT
+		TEXT_TEXT_SECTION(*(.fixup __ftr_alt_*))
 		SCHED_TEXT
 		LOCK_TEXT
 		KPROBES_TEXT
@@ -257,16 +219,12 @@ SECTIONS
 #ifdef CONFIG_PPC32
 	.data : AT(ADDR(.data) - LOAD_OFFSET) {
 		DATA_DATA
-		*(.data.*)
-		*(.sdata)
-		*(.sdata.[A-Za-z0-9_$^]*)
-		*(.sdata.*)
+		ALL(.sdata)
 		*(.got.plt) *(.got)
 	}
 #else
 	.data : AT(ADDR(.data) - LOAD_OFFSET) {
 		DATA_DATA
-		*(.data.*)
 		*(.data.rel*)
 		*(.toc1)
 		*(.branch_lt)

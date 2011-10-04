@@ -16,16 +16,13 @@ enum vsyscall_num {
 #ifdef __KERNEL__
 #include <linux/seqlock.h>
 
-#define __section_vgetcpu_mode __attribute__ ((unused, __section__ (".vgetcpu_mode"), aligned(16)))
-#define __section_jiffies __attribute__ ((unused, __section__ (".jiffies"), aligned(16)))
+#define __section_vgetcpu_mode __section_unused_aligned(.vgetcpu_mode, 16)
+#define __section_jiffies __section_aligned(.jiffies, 16)
 
 /* Definitions for CONFIG_GENERIC_TIME definitions */
-#define __section_vsyscall_gtod_data __attribute__ \
-	((unused, __section__ (".vsyscall_gtod_data"),aligned(16)))
-#define __section_vsyscall_clock __attribute__ \
-	((unused, __section__ (".vsyscall_clock"),aligned(16)))
-#define __vsyscall_fn \
-	__attribute__ ((unused, __section__(".vsyscall_fn"))) notrace
+#define __section_vsyscall_gtod_data __section_unused_aligned(.vsyscall_gtod_data, 16)
+#define __section_vsyscall_clock __section_unused_aligned(.vsyscall_clock, 16)
+#define __vsyscall_fn __section_unused(.vsyscall_fn) notrace
 
 #define VGETCPU_RDTSCP	1
 #define VGETCPU_LSL	2

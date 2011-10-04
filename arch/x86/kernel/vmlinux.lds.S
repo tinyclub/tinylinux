@@ -96,8 +96,7 @@ SECTIONS
 		/* bootstrapping code */
 		HEAD_TEXT
 #ifdef CONFIG_X86_32
-		. = ALIGN(PAGE_SIZE);
-		*(.text..page_aligned)
+		PAGE_ALIGNED_TEXT(PAGE_SIZE)
 #endif
 		. = ALIGN(8);
 		_stext = .;
@@ -120,6 +119,22 @@ SECTIONS
 	RO_DATA(PAGE_SIZE)
 	X64_ALIGN_DEBUG_RODATA_END
 
+#if defined(CONFIG_X86_64) && defined(CONFIG_SMP)
+	/*
+	 * percpu offsets are zero-based on SMP.  PERCPU_VADDR() changes the
+	 * output PHDR, so the next output section - .init.text - should
+	 * start another segment - init.
+	 */
+	PERCPU_VADDR(0, :percpu)
+#else /* !defined(CONFIG_X86_64) || !defined(CONFIG_SMP) */
+	PERCPU(PAGE_SIZE)
+#endif
+
+#ifdef CONFIG_X86_64
+	.data_nosave : AT(ADDR(.data_nosave) - LOAD_OFFSET) {
+		NOSAVE_DATA
+	}
+#endif
 	/* Data */
 	.data : AT(ADDR(.data) - LOAD_OFFSET) {
 		/* Start of data section */
@@ -137,11 +152,11 @@ SECTIONS
 
 		CACHELINE_ALIGNED_DATA(L1_CACHE_BYTES)
 
-		DATA_DATA
-		CONSTRUCTORS
-
 		/* rarely changed data like cpu maps */
 		READ_MOSTLY_DATA(INTERNODE_CACHE_BYTES)
+
+		DATA_DATA
+		CONSTRUCTORS
 
 		/* End of data section */
 		_edata = .;
@@ -162,46 +177,46 @@ SECTIONS
 
 	. = VSYSCALL_ADDR;
 	.vsyscall_0 : AT(VLOAD(.vsyscall_0)) {
-		KEEP(*(.vsyscall_0))
+		ALL(.vsyscall_0)
 	} :user
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.vsyscall_fn : AT(VLOAD(.vsyscall_fn)) {
-		KEEP(*(.vsyscall_fn*))
+		ALL(.vsyscall_fn)
 	}
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.vsyscall_gtod_data : AT(VLOAD(.vsyscall_gtod_data)) {
-		KEEP(*(.vsyscall_gtod_data*))
+		ALL(.vsyscall_gtod_data)
 	}
 
 	vsyscall_gtod_data = VVIRT(.vsyscall_gtod_data);
 	.vsyscall_clock : AT(VLOAD(.vsyscall_clock)) {
-		KEEP(*(.vsyscall_clock*))
+		ALL(.vsyscall_clock)
 	}
 	vsyscall_clock = VVIRT(.vsyscall_clock);
 
 
 	.vsyscall_1 ADDR(.vsyscall_0) + 1024: AT(VLOAD(.vsyscall_1)) {
-		KEEP(*(.vsyscall_1))
+		ALL(.vsyscall_1)
 	}
 	.vsyscall_2 ADDR(.vsyscall_0) + 2048: AT(VLOAD(.vsyscall_2)) {
-		KEEP(*(.vsyscall_2))
+		ALL(.vsyscall_2)
 	}
 
 	.vgetcpu_mode : AT(VLOAD(.vgetcpu_mode)) {
-		KEEP(*(.vgetcpu_mode*))
+		ALL(.vgetcpu_mode)
 	}
 	vgetcpu_mode = VVIRT(.vgetcpu_mode);
 
 	. = ALIGN(L1_CACHE_BYTES);
 	.jiffies : AT(VLOAD(.jiffies)) {
-		KEEP(*(.jiffies*))
+		ALL(.jiffies)
 	}
 	jiffies = VVIRT(.jiffies);
 
 	.vsyscall_3 ADDR(.vsyscall_0) + 3072: AT(VLOAD(.vsyscall_3)) {
-		KEEP(*(.vsyscall_3))
+		ALL(.vsyscall_3)
 	}
 
 	. = __vsyscall_0 + PAGE_SIZE;
@@ -220,15 +235,6 @@ SECTIONS
 		__init_begin = .; /* paired with __init_end */
 	}
 
-#if defined(CONFIG_X86_64) && defined(CONFIG_SMP)
-	/*
-	 * percpu offsets are zero-based on SMP.  PERCPU_VADDR() changes the
-	 * output PHDR, so the next output section - .init.text - should
-	 * start another segment - init.
-	 */
-	PERCPU_VADDR(0, :percpu)
-#endif
-
 	INIT_TEXT_SECTION(PAGE_SIZE)
 #ifdef CONFIG_X86_64
 	:init
@@ -238,7 +244,7 @@ SECTIONS
 
 	.x86_cpu_dev.init : AT(ADDR(.x86_cpu_dev.init) - LOAD_OFFSET) {
 		__x86_cpu_dev_start = .;
-		*(.x86_cpu_dev.init*)
+		ALL(.x86_cpu_dev.init)
 		__x86_cpu_dev_end = .;
 	}
 
@@ -272,10 +278,6 @@ SECTIONS
 		EXIT_DATA
 	}
 
-#if !defined(CONFIG_X86_64) || !defined(CONFIG_SMP)
-	PERCPU(PAGE_SIZE)
-#endif
-
 	. = ALIGN(PAGE_SIZE);
 
 	/* freed after init ends here */
@@ -295,19 +297,12 @@ SECTIONS
 		__smp_locks_end = .;
 	}
 
-#ifdef CONFIG_X86_64
-	.data_nosave : AT(ADDR(.data_nosave) - LOAD_OFFSET) {
-		NOSAVE_DATA
-	}
-#endif
-
 	/* BSS */
 	. = ALIGN(PAGE_SIZE);
 	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {
 		__bss_start = .;
-		*(.bss..page_aligned)
-		*(.bss)
-		*(.bss.*)
+		ALL(.bss..page_aligned)
+		ALL(.bss)
 		. = ALIGN(4);
 		__bss_stop = .;
 	}

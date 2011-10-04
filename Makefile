@@ -348,10 +348,8 @@ CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 # Otherwise, it will generate bigger kernel image
 
 # Even ld supports, the sections can also be disabled by CONFIG_SECTIONS
-KBUILD_SUPPORT_SECTIONS := $(call ld-ifversion, -ge, 0221, y)
-ifeq ($(KBUILD_SUPPORT_SECTIONS),y)
+KBUILD_LD_SUPPORT_SECTIONS := $(call ld-ifversion, -ge, 0221, y)
 CFLAGS_SECTIONS := -ffunction-sections -fdata-sections
-endif
 LDFLAGS_GCS	:= --gc-sections
 ifeq ($(KBUILD_VERBOSE),1)
 LDFLAGS_GCS	+= --print-gc-sections
@@ -384,7 +382,7 @@ export HOSTCXX HOSTCXXFLAGS LDFLAGS_MODULE CHECK CHECKFLAGS
 
 export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS LDFLAGS
 export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE CFLAGS_GCOV
-export KBUILD_SUPPORT_SECTIONS CFLAGS_SECTIONS LDFLAGS_GCS
+export KBUILD_LD_SUPPORT_SECTIONS CFLAGS_SECTIONS LDFLAGS_GCS
 export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
 
 # When compiling out-of-tree modules, put MODVERDIR in the module
