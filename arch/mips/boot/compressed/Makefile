@@ -67,7 +67,7 @@ $(obj)/piggy.o: $(obj)/vmlinux.$(suffix_y) $(obj)/dummy.o
 LDFLAGS_vmlinuz := $(LDFLAGS_GCS)
 
 LDFLAGS_vmlinuz += $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T
-vmlinuz: $(src)/ld.script $(obj-y) $(obj)/piggy.o
+vmlinuz: $(src)/vmlinuz.lds $(obj-y) $(obj)/piggy.o
 	$(call if_changed,ld)
 	$(Q)$(OBJCOPY) $(OBJCOPYFLAGS) $@
 
@@ -108,3 +108,5 @@ vmlinuz.srec: vmlinuz
 clean:
 clean-files += *.o \
 	       vmlinu*
+
+extra-y := vmlinuz.lds
