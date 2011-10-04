@@ -32,13 +32,13 @@ SECTIONS
 			INIT_TEXT
 		_einittext = .;
 		__proc_info_begin = .;
-			KEEP(*(.proc.info.init*))
+			KEEP_ALL(.proc.info.init)
 		__proc_info_end = .;
 		__arch_info_begin = .;
-			KEEP(*(.arch.info.init*))
+			KEEP_ALL(.arch.info.init)
 		__arch_info_end = .;
 		__tagtable_begin = .;
-			KEEP(*(.taglist.init*))
+			KEEP_ALL(.taglist.init)
 		__tagtable_end = .;
 
 		INIT_SETUP(16)
@@ -95,8 +95,7 @@ SECTIONS
 			*(.fixup)
 #endif
 			*(.gnu.warning)
-			*(.rodata)
-			*(.rodata.*)
+			ALL(.rodata)
 			*(.glue_7)
 			*(.glue_7t)
 		*(.got)			/* Global offset table		*/

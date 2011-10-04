@@ -828,7 +828,7 @@ config DATA_SECTIONS
 
 config FIXED_SECTIONS
 	bool
-	default y if X86 || PPC || MIPS
+	default y if X86 || PPC || MIPS || ARM
 
 config UID16
 	bool "Enable 16-bit UID system calls" if EMBEDDED
