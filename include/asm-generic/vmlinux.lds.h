@@ -261,6 +261,46 @@
 	ALL(.data..init_task)
 
 #ifdef CONFIG_MODULES
+#ifdef CONFIG_MODVERSIONS
+#define KCRC_DATA							\
+	/* Kernel symbol table: Normal symbols */			\
+	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {		\
+		VMLINUX_SYMBOL(__start___kcrctab) = .;			\
+		KEEP_ALL(__kcrctab)					\
+		VMLINUX_SYMBOL(__stop___kcrctab) = .;			\
+	}								\
+									\
+	/* Kernel symbol table: GPL-only symbols */			\
+	__kcrctab_gpl     : AT(ADDR(__kcrctab_gpl) - LOAD_OFFSET) {	\
+		VMLINUX_SYMBOL(__start___kcrctab_gpl) = .;		\
+		KEEP_ALL(__kcrctab_gpl)					\
+		VMLINUX_SYMBOL(__stop___kcrctab_gpl) = .;		\
+	}								\
+									\
+	/* Kernel symbol table: Normal unused symbols */		\
+	__kcrctab_unused  : AT(ADDR(__kcrctab_unused) - LOAD_OFFSET) {	\
+		VMLINUX_SYMBOL(__start___kcrctab_unused) = .;		\
+		ALL(__kcrctab_unused)					\
+		VMLINUX_SYMBOL(__stop___kcrctab_unused) = .;		\
+	}								\
+									\
+	/* Kernel symbol table: GPL-only unused symbols */		\
+	__kcrctab_unused_gpl : AT(ADDR(__kcrctab_unused_gpl) - LOAD_OFFSET) { \
+		VMLINUX_SYMBOL(__start___kcrctab_unused_gpl) = .;	\
+		ALL(__kcrctab_unused_gpl)				\
+		VMLINUX_SYMBOL(__stop___kcrctab_unused_gpl) = .;	\
+	}								\
+									\
+	/* Kernel symbol table: GPL-future-only symbols */		\
+	__kcrctab_gpl_future : AT(ADDR(__kcrctab_gpl_future) - LOAD_OFFSET) { \
+		VMLINUX_SYMBOL(__start___kcrctab_gpl_future) = .;	\
+		ALL(__kcrctab_gpl_future)				\
+		VMLINUX_SYMBOL(__stop___kcrctab_gpl_future) = .;	\
+	}
+#else /* CONFIG_MODVERSIONS */
+#define KCRC_DATA
+#endif
+
 #define KSYM_DATA							\
 	/* Kernel symbol table: Normal symbols */			\
 	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET) {		\
@@ -297,45 +337,11 @@
 		VMLINUX_SYMBOL(__stop___ksymtab_gpl_future) = .;	\
 	}								\
 									\
-	/* Kernel symbol table: Normal symbols */			\
-	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {		\
-		VMLINUX_SYMBOL(__start___kcrctab) = .;			\
-		ALL(__kcrctab)						\
-		VMLINUX_SYMBOL(__stop___kcrctab) = .;			\
-	}								\
-									\
-	/* Kernel symbol table: GPL-only symbols */			\
-	__kcrctab_gpl     : AT(ADDR(__kcrctab_gpl) - LOAD_OFFSET) {	\
-		VMLINUX_SYMBOL(__start___kcrctab_gpl) = .;		\
-		ALL(__kcrctab_gpl)					\
-		VMLINUX_SYMBOL(__stop___kcrctab_gpl) = .;		\
-	}								\
-									\
-	/* Kernel symbol table: Normal unused symbols */		\
-	__kcrctab_unused  : AT(ADDR(__kcrctab_unused) - LOAD_OFFSET) {	\
-		VMLINUX_SYMBOL(__start___kcrctab_unused) = .;		\
-		ALL(__kcrctab_unused)					\
-		VMLINUX_SYMBOL(__stop___kcrctab_unused) = .;		\
-	}								\
-									\
-	/* Kernel symbol table: GPL-only unused symbols */		\
-	__kcrctab_unused_gpl : AT(ADDR(__kcrctab_unused_gpl) - LOAD_OFFSET) { \
-		VMLINUX_SYMBOL(__start___kcrctab_unused_gpl) = .;	\
-		ALL(__kcrctab_unused_gpl)				\
-		VMLINUX_SYMBOL(__stop___kcrctab_unused_gpl) = .;	\
-	}								\
-									\
-	/* Kernel symbol table: GPL-future-only symbols */		\
-	__kcrctab_gpl_future : AT(ADDR(__kcrctab_gpl_future) - LOAD_OFFSET) { \
-		VMLINUX_SYMBOL(__start___kcrctab_gpl_future) = .;	\
-		ALL(__kcrctab_gpl_future)				\
-		VMLINUX_SYMBOL(__stop___kcrctab_gpl_future) = .;	\
-	}								\
-									\
 	/* Kernel symbol table: strings */				\
         __ksymtab_strings : AT(ADDR(__ksymtab_strings) - LOAD_OFFSET) {	\
 		ALL(__ksymtab_strings)					\
-	}
+	}								\
+	KCRC_DATA
 
 #ifdef CONFIG_FIXED_SECTIONS
 #define MOD_MAGIC_TEXT							\
