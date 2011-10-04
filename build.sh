@@ -29,8 +29,8 @@ case $ARCH in
 		;;
 esac
 
-echo "** corss compiler: `${CORSS_COMPILE}gcc --version | head -n 1` "
-echo "** corss linker  : `${CORSS_COMPILE}ld -v` "
+echo "** cross compiler: `${CORSS_COMPILE}gcc --version | head -n 1` "
+echo "** cross linker  : `${CORSS_COMPILE}ld -v` "
 
 # Clean the old results
 if [ -n "$CLEAN" ]; then
