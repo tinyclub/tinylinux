@@ -116,7 +116,7 @@ $(obj)/empty.c:
 	@touch $@
 
 $(obj)/zImage.lds $(obj)/zImage.coff.lds $(obj)/zImage.ps3.lds: $(obj)/%: $(srctree)/$(src)/%.S
-	@cp $< $@
+	$(call cmd,cpp_lds_S)
 
 clean-files := $(zlib) $(zlibheader) $(zliblinuxheader) \
 		$(libfdt) $(libfdtheader) \

@@ -1,3 +1,9 @@
+#include <asm/page.h>
+#include <asm-generic/vmlinux.lds.h>
+#include <asm/cache.h>
+
+#undef powerpc
+
 OUTPUT_ARCH(powerpc:common)
 ENTRY(_zimage_start_opd)
 EXTERN(_zimage_start_opd)
@@ -6,18 +12,17 @@ SECTIONS
   _start = .;
   .text      :
   {
-    *(.text)
-    *(.text.*)
+    ALL(.text)
     *(.fixup)
   }
   _etext = .;
   . = ALIGN(4096);
   .data    :
   {
-    *(.rodata*)
-    *(.data*)
+    ALL(.rodata)
+    ALL(.data)
     *(__builtin_*)
-    *(.sdata*)
+    ALL(.sdata)
     __got2_start = .;
     *(.got2)
     __got2_end = .;
@@ -40,9 +45,8 @@ SECTIONS
   __bss_start = .;
   .bss       :
   {
-   *(.sbss)
-   *(.bss)
-   *(.bss.*)
+   ALL(.sbss)
+   ALL(.bss)
   }
   _end = . ;
 
