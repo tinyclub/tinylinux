@@ -8,3 +8,4 @@ zoffset.h
 setup
 setup.bin
 setup.elf
+setup.lds

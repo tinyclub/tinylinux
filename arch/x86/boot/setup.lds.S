@@ -1,8 +1,13 @@
 /*
- * setup.ld
- *
  * Linker script for the i386 setup code
  */
+
+#include <asm/page.h>
+#include <asm-generic/vmlinux.lds.h>
+#include <asm/cache.h>
+
+#undef i386
+
 OUTPUT_FORMAT("elf32-i386", "elf32-i386", "elf32-i386")
 OUTPUT_ARCH(i386)
 ENTRY(_start)
@@ -24,7 +29,7 @@ SECTIONS
 	.text32		: { *(.text32) }
 
 	. = ALIGN(16);
-	.rodata		: { *(.rodata*) }
+	.rodata		: { ALL(.rodata) }
 
 	.videocards	: {
 		video_cards = .;
@@ -33,7 +38,7 @@ SECTIONS
 	}
 
 	. = ALIGN(16);
-	.data		: { *(.data*) }
+	.data		: { ALL(.data) }
 
 	.signature	: {
 		setup_sig = .;
@@ -45,14 +50,13 @@ SECTIONS
 	.bss		:
 	{
 		__bss_start = .;
-		*(.bss)
-		*(.bss.*)
+		ALL(.bss)
 		__bss_end = .;
 	}
 	. = ALIGN(16);
 	_end = .;
 
-	/DISCARD/ : { *(.note*) }
+	/DISCARD/ : { ALL(.note) }
 
 	/*
 	 * The ASSERT() sink to . is intentional, for binutils 2.14 compatibility:

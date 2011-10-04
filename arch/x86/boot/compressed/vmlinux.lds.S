@@ -31,27 +31,23 @@ SECTIONS
 	}
 	.text :	{
 		_text = .; 	/* Text */
-		*(.text)
-		*(.text.*)
+		ALL(.text)
 		_etext = . ;
 	}
 	.rodata : {
 		_rodata = . ;
-		*(.rodata)	 /* read-only data */
-		*(.rodata.*)
+		ALL(.rodata)	 /* read-only data */
 		_erodata = . ;
 	}
 	.data :	{
 		_data = . ;
-		*(.data)
-		*(.data.*)
+		ALL(.data)
 		_edata = . ;
 	}
 	. = ALIGN(L1_CACHE_BYTES);
 	.bss : {
 		_bss = . ;
-		*(.bss)
-		*(.bss.*)
+		ALL(.bss)
 		*(COMMON)
 		. = ALIGN(8);	/* For convenience during zeroing */
 		_ebss = .;
