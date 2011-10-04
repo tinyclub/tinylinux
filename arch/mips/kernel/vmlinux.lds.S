@@ -66,6 +66,8 @@ SECTIONS
 
 	RODATA
 
+	PERCPU(PAGE_SIZE)
+
 	/* writeable */
 	.data : {	/* Data */
 		. = . + DATAOFFSET;		/* for CONFIG_MAPPED_KERNEL */
@@ -87,7 +89,7 @@ SECTIONS
 	   can access them all, and initialized data all before uninitialized, so
 	   we can shorten the on-disk segment size.  */
 	.sdata : {
-		*(.sdata)
+		ALL(.sdata)
 	}
 	_edata =  .;			/* End of data section */
 
@@ -107,7 +109,6 @@ SECTIONS
 		EXIT_DATA
 	}
 
-	PERCPU(PAGE_SIZE)
 	. = ALIGN(PAGE_SIZE);
 	__init_end = .;
 	/* freed after init ends here */

@@ -9,7 +9,6 @@
 #ifndef _ASM_PAGE_H
 #define _ASM_PAGE_H
 
-#include <spaces.h>
 #include <linux/const.h>
 
 /*
