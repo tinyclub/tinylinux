@@ -22,6 +22,7 @@ case $ARCH in
 		;;
 	mips)
 		CROSS_COMPILE=mipsel-unknown-linux-uclibc-
+		vmlinuz=vmlinuz
 		;;
 	*)
 		ARCH=x86
@@ -56,7 +57,7 @@ fi
 
 # Compile
 echo "** compiling with ${CROSS_COMPILE}gcc for $ARCH ..."
-make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j$3 V=$V
+make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j$3 V=$V $vmlinuz
 
 # Save the kernel image and dump size information
 echo "** saving kernel image and dump size info ..."
@@ -96,5 +97,6 @@ case $ARCH in
 		cp -v vmlinuz vmlinuz.$ARCH
 		;;
 	*)
+		cp -v vmlinux vmlinux.$ARCH
 		;;
 esac
