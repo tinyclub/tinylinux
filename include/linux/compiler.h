@@ -322,12 +322,12 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 #endif
 
 #ifndef __section_unused
-# define __section_unused(S, n) \
+# define __section_unused(S) \
         __attribute__ ((unused, __section__(__usym(S))))
 #endif
 
-#ifndef __section_unused
-# define __section_unused_str(s, n) \
+#ifndef __section_unused_str
+# define __section_unused_str(s) \
         __attribute__ ((unused, __section__(__ustr(s))))
 #endif
 
