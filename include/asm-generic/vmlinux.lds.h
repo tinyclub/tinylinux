@@ -361,30 +361,30 @@
 #define KSYM_DATA
 #endif
 
-#ifdef CONFIG_PCI_QUIRKS 
+#ifdef CONFIG_PCI_QUIRKS
 #define PCI_QUIRKS							\
 	/* PCI quirks */						\
 	.pci_fixup        : AT(ADDR(.pci_fixup) - LOAD_OFFSET) {	\
 		VMLINUX_SYMBOL(__start_pci_fixups_early) = .;		\
-		ALL(.pci_fixup_early)					\
+		KEEP_ALL(.pci_fixup_early)				\
 		VMLINUX_SYMBOL(__end_pci_fixups_early) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_header) = .;		\
-		ALL(.pci_fixup_header)					\
+		KEEP_ALL(.pci_fixup_header)				\
 		VMLINUX_SYMBOL(__end_pci_fixups_header) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_final) = .;		\
-		ALL(.pci_fixup_final)					\
+		KEEP_ALL(.pci_fixup_final)				\
 		VMLINUX_SYMBOL(__end_pci_fixups_final) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_enable) = .;		\
-		ALL(.pci_fixup_enable)					\
+		KEEP_ALL(.pci_fixup_enable)				\
 		VMLINUX_SYMBOL(__end_pci_fixups_enable) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_resume) = .;		\
-		ALL(.pci_fixup_resume)					\
+		KEEP_ALL(.pci_fixup_resume)				\
 		VMLINUX_SYMBOL(__end_pci_fixups_resume) = .;		\
 		VMLINUX_SYMBOL(__start_pci_fixups_resume_early) = .;	\
-		ALL(.pci_fixup_resume_early)				\
+		KEEP_ALL(.pci_fixup_resume_early)			\
 		VMLINUX_SYMBOL(__end_pci_fixups_resume_early) = .;	\
 		VMLINUX_SYMBOL(__start_pci_fixups_suspend) = .;		\
-		ALL(.pci_fixup_suspend)					\
+		KEEP_ALL(.pci_fixup_suspend)				\
 		VMLINUX_SYMBOL(__end_pci_fixups_suspend) = .;		\
 	}
 #else /* !CONFIG_PCI_QUIRKS */
