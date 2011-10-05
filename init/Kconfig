@@ -813,6 +813,7 @@ config SECTIONS
 config FUNC_SECTIONS
 	bool "Configure -ffunction-sections"
 	depends on SECTIONS
+	depends on !FUNCTION_TRACER
 	default y
 	help
 	  This allows to configure -ffunction-sections individually, this

@@ -142,41 +142,31 @@ endif
 # the dependency of the FIXED_SECTIONS config option in init/Kconfig
 
 ifeq ($(KBUILD_LD_SUPPORT_SECTIONS),y)
-KBUILD_SUPPORT_SECTIONS := y
 _cpp_flags += -DKBUILD_LD_SUPPORT_SECTIONS
+KBUILD_SUPPORT_SECTIONS := y
 endif
 ifeq ($(CONFIG_FIXED_SECTIONS),y)
 KBUILD_SUPPORT_SECTIONS := y
 endif
 
 ifeq ($(KBUILD_SUPPORT_SECTIONS),y)
-
-ifeq ($(CONFIG_SECTIONS),y)
-
-_c_flags += -DKBUILD_ENABLE_SECTIONS
-
-# For compressed kernel image
-export KBUILD_CFLAGS_SECTIONS := $(CFLAGS_SECTIONS)
-
-ifeq ($(CONFIG_FUNC_SECTIONS),y)
-  CFLAGS_FUNC_SEC := -ffunction-sections
-endif
-ifeq ($(CONFIG_DATA_SECTIONS),y)
-  CFLAGS_DATA_SEC := -fdata-sections
+  ifeq ($(CONFIG_SECTIONS),y)
+    _c_flags += -DKBUILD_ENABLE_SECTIONS
+    KBUILD_ENABLE_SECTIONS := y
+    # For compressed kernel image
+    export KBUILD_CFLAGS_SECTIONS := $(CFLAGS_SECTIONS)
+  endif
 endif
 
-ifndef CONFIG_FUNCTION_TRACER
+ifeq ($(KBUILD_ENABLE_SECTIONS),y)
 _c_flags += $(if $(patsubst n%,, \
 		$(FUNC_SECTIONS_$(basetarget).o)$(FUNC_SECTIONS)$(SECTIONS_$(basetarget).o)$(SECTIONS)$(CONFIG_FUNC_SECTIONS)), \
-		$(CFLAGS_FUNC_SEC))
-endif
+		-ffunction-sections)
 
 _c_flags += $(if $(patsubst n%,, \
 		$(DATA_SECTIONS_$(basetarget).o)$(DATA_SECTIONS)$(SECTIONS_$(basetarget).o)$(SECTIONS)$(CONFIG_DATA_SECTIONS)), \
-		$(CFLAGS_DATA_SEC))
-
-endif # CONFIG_SECTIONS
-endif # SUPPORT_SECTIONS
+		-fdata-sections)
+endif
 
 ifdef CONFIG_SYMBOL_PREFIX
 _cpp_flags += -DSYMBOL_PREFIX=$(patsubst "%",%,$(CONFIG_SYMBOL_PREFIX))
