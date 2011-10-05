@@ -21,7 +21,10 @@ case $ARCH in
 		CROSS_COMPILE=powerpc-linux-gnu-
 		;;
 	mips)
-		CROSS_COMPILE=mipsel-unknown-linux-uclibc-
+		# 2.21
+		# CROSS_COMPILE=mipsel-unknown-linux-uclibc-
+		# 2.20
+		CROSS_COMPILE=mipsel-linux-gnu-
 		vmlinuz=vmlinuz
 		;;
 	*)
@@ -39,13 +42,14 @@ echo "** make clean ..."
 make clean ARCH=$ARCH
 fi
 
+mkdir -p $TARGET
+
 # Configure with the defaut gc_sections_defconfig
 defcfg=gc_sections_defconfig
 defcfg_bak=$ARCH.defconfig
 
 echo "** make config with $defcfg ..."
-
-mkdir -p $TARGET
+if [ -z "$NO_CONFIG" ]; then
 if [[ "$SUFFIX" == "gc" ]]; then
 	make ARCH=$ARCH $defcfg
 	cp .config $TARGET/$defcfg
@@ -53,6 +57,7 @@ if [[ "$SUFFIX" == "gc" ]]; then
 else
 	cp $defcfg_bak arch/$ARCH/configs/$defcfg
 	make ARCH=$ARCH $defcfg
+fi
 fi
 
 # Compile
