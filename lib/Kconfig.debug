@@ -1112,6 +1112,7 @@ config DMA_API_DEBUG
 
 config ATOMIC64_SELFTEST
 	bool "Perform an atomic64_t self-test at boot"
+	depends on GENERIC_ATOMIC64
 	help
 	  Enable this option to test the atomic64_t functions at boot.
 
