@@ -67,7 +67,7 @@ enum cname {
 enum ctype {
 	NONE,
 	PANIC,
-	BUG,
+	BUG1,
 	EXCEPTION,
 	LOOP,
 	OVERFLOW,
@@ -277,7 +277,7 @@ static void lkdtm_do_action(enum ctype which)
 	case PANIC:
 		panic("dumptest");
 		break;
-	case BUG:
+	case BUG1:
 		BUG();
 		break;
 	case EXCEPTION:
